@@ -27,6 +27,10 @@ class TableShowController extends Controller
         $today = Carbon::today();
         $dayOfMonth = $today->day;
 
+        if ($dayOfMonth >= 1 && $dayOfMonth <= 16) {
+            // Return the previous month
+            $month = $today->subMonth()->format('m'); // or 'Y-m' for Year-Month format
+        }
         $givenDate = Carbon::parse($year . '-' . $month . '-16');
 
         // Default logic for 1st to 15th
@@ -51,10 +55,12 @@ class TableShowController extends Controller
 
     );
     $attendanceTypeRecords = AttendanceTypeRecord::all();
+
      // Fetch bosses who belong to the same office as the authenticated user
      $bosses = User::where('is_boss', true)
      ->where('office_id', $officeId)  // Only fetch bosses from the same office
      ->get();
+
 
     // dd($attendanceTypeRecords);
     //bREAK MODEL -OOR HOLBOSONOO END DUUDAJ AJILUULAH
@@ -80,15 +86,23 @@ class TableShowController extends Controller
             // Group by date (Y-m-d format) to calculate the total minutes per day
             return Carbon::parse($break->start_time)->format('Y-m-d');
         })
+
+
+
         ->map(function ($dayBreaks) {
             // Sum the total minutes for each break across the three intervals
             return $dayBreaks->sum(function ($break) {
                 $totalMinutes = 0;
 
+
+                // dd($break);
+
                 // Define the skip range for the day of the first break
                 $firstBreakDate = Carbon::parse($break->start_time);
                 $skipStart = Carbon::createFromFormat('Y-m-d H:i', $firstBreakDate->format('Y-m-d') . ' 12:00');
                 $skipEnd = Carbon::createFromFormat('Y-m-d H:i', $firstBreakDate->format('Y-m-d') . ' 13:00');
+
+
 
                 // Calculate duration for the first break
                 $firstStart = Carbon::parse($break->start_time);
@@ -119,10 +133,18 @@ class TableShowController extends Controller
                     $totalMinutes += $this->calculateValidMinutes($thirdStart, $thirdEnd, $skipStart, $skipEnd);
                 }
 
+
                 return $totalMinutes;
 
+
             });
+
+
         });
+
+        // dd([
+        //     'break'=>$breaks
+        // ]);
 
     // Send the $breaks array (which contains total minutes for each day) to the view
     $tbody = view('includes.time-table-body', [
@@ -138,7 +160,6 @@ class TableShowController extends Controller
         'bosses' => $bosses,
         'breaks' => $breaks,
     ])->render();
-    // return ["break"=>$breaks, "start" => $startDate, "end" => $endDate];
 
 
     return view('dashboard', compact('tbody'));
@@ -283,14 +304,11 @@ class TableShowController extends Controller
             'month' => $month,
             'year' => $year,
             'holidays' => $holidays,
+            'breaks'=>$breaks,
             'daysInPreviousMonth' => $daysInPreviousMonth,
-            // 'totalMinutes' => $totalMinutes, // This contains the total minutes for each day
-            'startDate' => $startDate,
-            'endDate' => $endDate,
             'attendanceTypeRecords' => $attendanceTypeRecords,
-            'bosses' => $bosses,
-            'breaks' => $breaks,
-            //  'breaks' => $breaks,
+             'bosses' => $bosses,
+             'breaks' => $breaks,
 
         ])->render();
 
@@ -379,10 +397,8 @@ class TableShowController extends Controller
             'month' => $month,
             'year' => $year,
             'holidays' => $holidays,
+            'breaks'=>$breaks,
             'daysInPreviousMonth' => $daysInPreviousMonth,
-            // 'totalMinutes' => $totalMinutes, // This contains the total minutes for each day
-            'startDate' => $startDate,
-            'endDate' => $endDate,
             'attendanceTypeRecords' => $attendanceTypeRecords,
             'bosses' => $bosses,
             'breaks' => $breaks,

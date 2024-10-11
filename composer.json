@@ -4,6 +4,8 @@
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
+
+
     "require": {
         "php": "^8.1",
         "azuyalabs/yasumi": "^2.7",
@@ -16,7 +18,7 @@
         "laravel/tinker": "^2.8",
         "league/csv": "*",
         "league/flysystem-aws-s3-v3": "^3.27",
-        "maatwebsite/excel": "^3.1",
+        "maatwebsite/excel": "^3.1.58",
 
         "rap2hpoutre/fast-excel": "^5.4",
         "spatie/laravel-permission": "^6.4"

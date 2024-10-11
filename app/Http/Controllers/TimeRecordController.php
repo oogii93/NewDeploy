@@ -257,20 +257,21 @@ private function checkIfSecondArrivalExists($user, $date)
 
     private function getSuccessMessage($buttonType, $date)
     {
-        switch($buttonType)
-        {
-            case 'ArrivalRecord':
-                return "出勤時間が登録されました。$date";
+        $messages = [
+            'ArrivalRecord' => ['message' => '出勤時間が登録されました。', 'date' => $date],
+            'DepartureRecord' => ['message' => '退社時間が登録されました。', 'date' => $date],
+            'SecondArrivalRecord' => ['message' => '二回目の出勤時間が登録されました。', 'date' => $date],
+            'SecondDepartureRecord' => ['message' => '二回目の退社時間が登録されました。', 'date' => $date]
+        ];
 
-            case 'DepartureRecord':
-                return "退社時間が登録されました。$date";
-            case 'SecondArrivalRecord':
-                return "二回目の出勤時間が登録されました。$date";
-            case 'SecondDepartureRecord':
-                return "二回目の退社時間が登録されました。$date";
-
+        if (!isset($messages[$buttonType])) {
+            return '';
         }
+
+        return $messages[$buttonType]['message'] . '<br><span class="text-lg">' . $messages[$buttonType]['date'] . '</span>';
     }
+
+
 
 
 

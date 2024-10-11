@@ -169,6 +169,8 @@ class CSVController extends Controller
         $totalOverWorkedTimeB = '00:00:00';
         $totalOverWorkedTimeC = '00:00:00';
         $totalOverWorkedTimeD = '00:00:00';
+        //
+
 
 
 
@@ -329,17 +331,17 @@ class CSVController extends Controller
 
 
         //
-        $breaks=Breaks::where('user_id', $user->id)
-        ->whereBetween('start_time', [$startDate,$endDate])
-        ->get()
-        ->groupBy(function ($break){
-            return Carbon::parse($break->start_time)->format('Y-m-d');
-        })
-        ->map(function ($dayBreaks){
-            return $dayBreaks->sum(function ($break){
-                return $break->getTotalBreakTimeInMinutes();
-            });
+     $breaks = Breaks::where('user_id', $user->id)
+    ->whereBetween('start_time', [$startDate, $endDate])
+    ->get()
+    ->groupBy(function ($break) {
+        return Carbon::parse($break->start_time)->format('Y-m-d');
+    })
+    ->map(function ($dayBreaks) {
+        return $dayBreaks->sum(function ($break) {
+            return $break->getTotalBreakTimeInMinutesWithSkip();
         });
+    });
 
 
 
@@ -350,6 +352,16 @@ class CSVController extends Controller
         $overtimeSecondsC = 0;
         $lateArrivalSeconds = 0;
         $weekendOvertimeSeconds = 0;
+        $morningOverTimeSeconds=0;
+
+
+        // Initialize variables outside the loop
+$totalOvertimeSecondsA = 0;
+$totalOvertimeSecondsB = 0;
+$totalOvertimeSecondsC = 0;
+$totalWeekendOvertimeSeconds = 0;
+$totalWorkedTime = 0;
+
 
         foreach ($arrivalRecords as $date => $dailyRecords) {
 
@@ -358,15 +370,23 @@ class CSVController extends Controller
             $lateArrivalSeconds = 0;
             $overTimeSeconds = 0;
 
+
             // Get the total break time for this day
             // Get the break time for this date, if any
             $breakTimeInMinutes = $breaks[$date] ?? 0;
             $breakTimeInSeconds = $breakTimeInMinutes * 60;
+            $dailyOvertimeSecondsA=0;
+            $dailyOvertimeSecondsB=0;
+            $morningOverTimeSeconds = 0;
 
 
             foreach ($dailyRecords as $arrivalRecord) {
 
                 $startTime = Carbon::parse($arrivalRecord->recorded_at)->format('H:i');
+                $startTimeCarbon = Carbon::parse($startTime);
+
+
+                $workStartTimeCarbon = Carbon::parse($workStartTimeConfig); // 8:30
 
                 if ($startTime > $workStartTimeConfig && !in_array($date, $halfDayDates)) {
                     $lateArrivalSeconds += Carbon::parse($startTime)->diffInSeconds(Carbon::parse($workStartTimeConfig));
@@ -386,12 +406,44 @@ class CSVController extends Controller
                 }
 
                 if ($startTime && $endTime) {
-                    $startTimeCarbon = Carbon::parse($startTime);
                     $endTimeCarbon = Carbon::parse($endTime);
+
                     //adding new
-                    $totalOverWorkedTimeA += $lateArrivalSeconds;
-                    //dd($lateArrivalSeconds);
+                    $overtimeSecondsA += $lateArrivalSeconds;
+                //  dump([
+                //     'late'=>$overtimeSecondsA
+                //  ]);
                     //need to check condition here
+
+
+
+                    // dump("17:40 $overtimeSecondsB - $arrivalRecord->user_id",$this->formatSeconds($overTimeSeconds));
+                    //21300
+
+                    $morningOvertimeStart = Carbon::parse($morningOverTime);
+                    $morningOvertimeEnd = Carbon::parse($workStartTimeConfig);
+
+
+                    if ($startTimeCarbon->between($morningOvertimeStart, $morningOvertimeEnd, true)) {
+                        $overlapStart = max($startTimeCarbon, $morningOvertimeStart);
+                        $overlapEnd = min($endTimeCarbon, $morningOvertimeEnd);
+                        $morningOverTimeSeconds = $overlapEnd->diffInSeconds($overlapStart, true);
+                        // dump(
+                        //     [
+                        //         'd'=>$morningOverTimeSeconds,
+
+                        //     ]
+                        // );
+                        // $overtimeSecondsB+=$overlapEnd->diffInSeconds($overlapStart, true);
+                        // $overtimeSecondsA=$morningOverTimeSeconds-$overtimeSecondsB;
+
+                        // $overtimeSecondsA= $overtimeSecondsB-;
+
+                    }
+
+
+
+
                     $overtimeStartB = Carbon::parse($startOverTime);
                     $overtimeEndB = Carbon::parse($endOverTime)->addDay();
 
@@ -399,23 +451,71 @@ class CSVController extends Controller
                         $overlapStart = max($startTimeCarbon, $overtimeStartB);
                         $overlapEnd = min($endTimeCarbon, $overtimeEndB);
                         $overtimeSecondsB += $overlapEnd->diffInSeconds($overlapStart, true);
+
                         $overTimeSeconds = $overlapEnd->diffInSeconds($overlapStart, true);
+
                     }
 
-                    // dd($overTimeSeconds);
-                    // dump("17:40 $overtimeSecondsB - $arrivalRecord->user_id",$this->formatSeconds($overTimeSeconds));
-                    //21300
+                    //   // Formula 1 - For overtimeSecondsA
+                    // if(!empty($breakTimeInSeconds) || $lateArrivalSeconds >0){
+                    //     $timeDiff1=$breakTimeInSeconds+max(0, $startTimeCarbon->timestamp-$workStartTimeCarbon->timestamp);
 
-                    $morningOvertimeStart = Carbon::parse($morningOverTime);
-                    $morningOvertimeEnd = Carbon::parse($workStartTimeConfig);
+                    //     if($timeDiff1 > $overTimeSeconds){
+                    //         $dailyOvertimeSecondsA+=$overTimeSeconds;
+                    //         $dailyOvertimeSecondsB +=0;
+                    //     }else{
+                    //         $dailyOvertimeSecondsA+=$timeDiff1;
+                    //         $dailyOvertimeSecondsB += max(0, $overTimeSeconds - $timeDiff1);
+                    //     }
 
-                    if ($startTimeCarbon->between($morningOvertimeStart, $morningOvertimeEnd, true)) {
-                        $overlapStart = max($startTimeCarbon, $morningOvertimeStart);
-                        $overlapEnd = min($endTimeCarbon, $morningOvertimeEnd);
-                        $overtimeSecondsB += $overlapEnd->diffInSeconds($overlapStart, true);
-                    }
 
-                    // dump("17:40 $overtimeSecondsB - $arrivalRecord->user_id",$this->formatSeconds($overTimeSeconds));
+                    // }else{
+                    //     $dailyOvertimeSecondsB+=$overTimeSeconds;
+                    // }
+
+// Formula 1 - For overtimeSecondsA
+if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+    // Calculate the time difference
+    $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+
+    // Check if timeDiff1 exceeds overTimeSeconds
+    if ($timeDiff1 > $overTimeSeconds) {
+        $dailyOvertimeSecondsA += $overTimeSeconds;
+    } else {
+        // Set dailyOvertimeSecondsA based on timeDiff1
+        $dailyOvertimeSecondsA += $timeDiff1;
+
+        // Ensure dailyOvertimeSecondsA is not negative
+        // if ($dailyOvertimeSecondsA < 0) {
+        //     $dailyOvertimeSecondsA = 0;
+        // }
+    }
+}
+
+// Formula 2 - For overtimeSecondsB
+if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+    // Calculate the same time difference as before
+    $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+
+    // Check if timeDiff1 exceeds overTimeSeconds
+    if ($timeDiff1 > $overTimeSeconds) {
+        $dailyOvertimeSecondsB += 0; // Reset overtimeSecondsB to 0 in this case
+    } else {
+        // Set dailyOvertimeSecondsB based on overTimeSeconds and timeDiff1
+        $dailyOvertimeSecondsB += max(0, $overTimeSeconds - $timeDiff1);
+    }
+} else {
+    // If no break or late arrival, set full overtime to dailyOvertimeSecondsB
+    $dailyOvertimeSecondsB += $overTimeSeconds;
+
+}
+
+
+
+
+
+
+                   // dump("17:40 $overtimeSecondsB - $arrivalRecord->user_id",$this->formatSeconds($overTimeSeconds));
                     // dd($overtimeSecondsB );
                     //24900
 
@@ -429,14 +529,19 @@ class CSVController extends Controller
                         } else {
                             $lateFillSeconds = $overTimeSeconds;
                             $overTimeSeconds -= $overTimeSeconds;
-                            //$overtimeSecondsB -= $lateArrivalSeconds;
+                            // $overtimeSecondsB += $lateArrivalSeconds;
                         }
                     }
 
-                    //dd($overTimeSeconds);
+                    // dd($overTimeSeconds);
 
-                    $overtimeSecondsA += $lateFillSeconds;
-                    //$overtimeSecondsBB += $overTimeSeconds;
+                    // $overtimeSecondsA += $lateFillSeconds;
+                        //   dump([
+                        //     'a'=>$overtimeSecondsA,
+                        //     'late'=>$lateFillSeconds,
+                        //     'LATE2'=>$lateArrivalSeconds
+                        //   ]);
+
 
                     $overtimeStartC = Carbon::parse($overTime2start);
                     $overtimeEndC = Carbon::parse($overTime2end)->addDay();
@@ -500,7 +605,27 @@ class CSVController extends Controller
             }
 
 
-            //dd($overTimeSeconds,$overtimeSecondsA);
+
+       // Accumulate daily totals to overall totals
+
+
+    $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
+    $totalOvertimeSecondsB += $dailyOvertimeSecondsB + $morningOverTimeSeconds;
+    $totalWorkedTime += $dailyWorkedSeconds;
+
+        // dump([
+
+        //     'B'=>$totalOvertimeSecondsB
+        // ]);
+        // dump([
+        //     'Final A' => $totalOvertimeSecondsA,
+        //     // 'daily'=>$dailyOvertimeSecondsA
+
+        // ]);
+
+
+
+            // dd($overTimeSeconds,$overtimeSecondsA);
 
             //saraa hedneed hedniig hvrtelheer ni dawtaj baina
 
@@ -516,7 +641,7 @@ class CSVController extends Controller
 
             //subsract break time from daily worked time
 
-            $totalWorkedTime += $dailyWorkedSeconds;
+            // $totalWorkedTime += $dailyWorkedSeconds;
 
             $date = Carbon::parse($date);
             if ($date->isWeekend()) {
@@ -535,38 +660,87 @@ class CSVController extends Controller
             //     $lateArrivalSeconds += $startTimeCarbon->diffInSeconds(Carbon::parse('08:30'));
             //     $countLate++;
             // }
+            // dd($timeDiff1);
             // dd($countLate);
+
+            // dump([
+//     'Final A' => $overWorkedTimeB,
+
+// ]);
+
+// $Bpisda=($morningOverTimeSeconds+$overTimeSeconds)-$totalOvertimeSecondsA;
+// dump([
+//     'GF'=>$morningOverTimeSeconds,
+//     'GG'=>$overTimeSeconds,
+//     'a'=>$totalOvertimeSecondsA,
+//     'A2'=>$overtimeSecondsA,
+//     'b1'=>$overtimeSecondsB,
+
+// ]);
+
         }
 
-        // dd($overtimeSecondsA,$overtimeSecondsB);
+       // Debug dump after the loop
 
-        $totalOverWorkedTimeA = $this->formatSeconds($overtimeSecondsA);
-        $totalOverWorkedTimeC = $this->formatSeconds($overtimeSecondsC);
-        $overWorkedTimeB = $this->formatSeconds(max(0, $overtimeSecondsB - $overtimeSecondsA));
-        $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
+
+// dump([
+//     'D'=>$weekendOvertimeSeconds,
+//     'sda danaa'=>$totalWeekendOvertimeSeconds
+// ]);
+
+  // Final calculations
+$totalOverWorkedTimeA = $this->formatSeconds($totalOvertimeSecondsA);
+$totalOverWorkedTimeC = $this->formatSeconds($overtimeSecondsC);
+$overWorkedTimeB = $this->formatSeconds($totalOvertimeSecondsB);
+$overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
+
+
+
+
+
+
+
+
+        // $overWorkedTimeB+=
+        // dump([
+        //     'b second'=>$overtimeSecondsB,
+        //     'a second'=>$totalOvertimeSecondsA,
+        // ]);
+
 
         //$totalOverWorkedTimeA = $this->formatSeconds($totalOverWorkedTimeA);
 
         // $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
-        $subtractedOverWorkedTimeB = '00:00:00';
-        // dd($totalOverWorkedTimeA);
 
+
+
+
+
+        $subtractedOverWorkedTimeB = '00:00:00';
+        // dump([
+        //     'b second'=>$overtimeSecondsB,
+        //     'sda'=>$subtractedOverWorkedTimeB
+        // ]);
+
+
+                //   $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
         if ($this->isValidTimeString($overWorkedTimeB) && $this->isValidTimeString($overWorkedTimeD)) {
             $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
         }
 
-        // if ($this->isValidTimeString($subtractedOverWorkedTimeB) && $this->isValidTimeString($lateArrivalSeconds)) {
-        //     $subtractedOverWorkedTimeSeconds = Carbon::parse($subtractedOverWorkedTimeB)->diffInSeconds(Carbon::parse('00:00:00'));
-        //     $lateArrivalSeconds = Carbon::parse($lateArrivalSeconds)->diffInSeconds(Carbon::parse('00:00:00'));
-        //     $totalOverWorkedTimeA = $this->formatSeconds(max(0, $subtractedOverWorkedTimeSeconds - $lateArrivalSeconds));
-        // } else {
-        //     $totalOverWorkedTimeA = '00:00:00';
-        // }
-        //  dd($lateArrivalSeconds);
+
 
         $formattedTotalWorkedTime = $this->formatSeconds($totalWorkedTime);
         $formattedLateSeconds = $this->formatSeconds($lateArrivalSeconds);
 
+
+        // dump([
+        //     'lalarchinbaa'=>$subtractedOverWorkedTimeB,
+        //     'lalarDanaa'=>$overWorkedTimeD,
+        //   ]);
+// dump([
+//     'lalar Chinbaa'=>$subtractedOverWorkedTimeB
+// ]);
 
         return [
             'staff_number' => $user->id,
@@ -577,7 +751,7 @@ class CSVController extends Controller
             'countLate' => $countLate,
             'earlyLeave' => $earlyLeave,
             'vacationRecordsCounts' => $vacationRecordsCounts,
-            'overWorkedTimeA' => $this->formatSeconds($overtimeSecondsA) ?: '00:00:00',
+            'overWorkedTimeA' => $this->formatSeconds($totalOvertimeSecondsA) ?: '00:00:00',
             'overWorkedTimeB' => $subtractedOverWorkedTimeB,
             'overWorkedTimeC' => $totalOverWorkedTimeC,
             'overWorkedTimeD' => $overWorkedTimeD,
@@ -859,3 +1033,4 @@ class CSVController extends Controller
         return FileResponse::make($csv, 200, $headers);
     }
 }
+

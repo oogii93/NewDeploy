@@ -87,56 +87,57 @@
             <div class="max-w-sm mx-auto px-8">
 
 
-                <div class="bg-white px-4 py-10 rounded-lg shadow-lg">
-                    <form id="timeRecordForm" method="POST">
+                <div class="bg-white p-6 rounded-md shadow-md max-w-2xl mx-auto font-sans">
+                    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">勤怠記録</h2>
+                    <form id="timeRecordForm" method="POST" class="space-y-6">
                         @csrf
                         <input type="hidden" name="button" id="buttonValue">
+
                         <div class="text-center">
                             <input value="{{ now()->format('Y-m-d H:i') }}" type="datetime-local" name="recorded_at"
                                 id="recordedAt"
-                                class="form-control bg-stone-100 border border-gray-500 dark:border-black rounded-lg p-3 text-lg"
-                                style="max-width: 400px; margin-bottom: 10px;" lang="ja">
+                                class="form-input w-full max-w-md bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-md focus:ring-blue-500 focus:border-blue-500 p-3"
+                                lang="ja">
                         </div>
-                        <br>
-                        <!-- First row of buttons -->
-                        <div class="mb-4 flex justify-center space-x-6">
+
+                        <div class="grid grid-cols-2 gap-4">
                             <button type="button"
-                                class="bg-green-300 hover:bg-green-400 text-gray-800 font-semibold py-6 px-9 text-lg rounded-lg"
+                                class="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-md transition duration-300 ease-in-out"
                                 data-value="ArrivalRecord">
-                                <span class="relative">出勤</span>
+                                出勤
                             </button>
                             <button type="button"
-                                class="bg-orange-200 hover:bg-orange-300 text-gray-800 font-semibold py-6 px-9 text-lg rounded-lg"
+                                class="btn-primary bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-md transition duration-300 ease-in-out"
                                 data-value="DepartureRecord">
-                                <span class="relative">退社</span>
+                                退勤
                             </button>
                         </div>
 
                         @if (auth()->user()->office && auth()->user()->office->corp && auth()->user()->office->corp->corp_name === 'ユメヤ')
-                            <p class="text-center mb-3 font-semibold">ユメヤ専用
-                                <br><small>二回目出勤する場合は押してください</small>
-                            </p>
-                            <div class="flex justify-center space-x-6 mb-5">
-                                <button type="button" data-value="SecondArrivalRecord"
-                                    class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-6 px-6 text-lg rounded-lg">
-                                    <small>二回出勤</small>
-                                </button>
-                                <button type="button" data-value="SecondDepartureRecord"
-                                    class="bg-pink-300 hover:bg-pink-400 text-white font-semibold py-6 px-6 text-lg rounded-lg">
-                                    <small>二回退勤</small>
-                                </button>
+                            <div class="bg-gray-100 p-4 rounded-md">
+                                <p class="text-center mb-3 font-semibold text-gray-700">ユメヤ専用</p>
+                                <p class="text-center mb-3 text-sm text-gray-600">二回目出勤する場合は押してください</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button type="button" data-value="SecondArrivalRecord"
+                                        class="btn-secondary bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 ease-in-out">
+                                        二回出勤
+                                    </button>
+                                    <button type="button" data-value="SecondDepartureRecord"
+                                        class="btn-secondary bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md transition duration-300 ease-in-out">
+                                        二回退勤
+                                    </button>
+                                </div>
                             </div>
                         @endif
 
-                        <!-- Break buttons -->
-                        <div class="mb-4 flex justify-center space-x-6">
+                        <div class="grid grid-cols-2 gap-4">
                             <button type="button" id="startBreakButton" data-value="StartBreak"
-                                class="bg-blue-200 hover:bg-blue-300 text-gray-800 font-semibold py-6 px-9 text-lg rounded-lg">
-                                休憩
+                                class="btn-secondary bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-4 px-6 rounded-md transition duration-300 ease-in-out">
+                                休憩開始
                             </button>
                             <button type="button" id="endBreakButton" data-value="EndBreak"
-                                class="bg-red-200 hover:bg-red-300 text-gray-800 font-semibold py-6 px-9 text-lg rounded-lg">
-                                戻り
+                                class="btn-secondary bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-md transition duration-300 ease-in-out">
+                                休憩終了
                             </button>
                         </div>
                     </form>
@@ -153,30 +154,78 @@
 
 
 
-
                 @if (session('status') || session('error'))
-                    <div id="statusToast" class="flex items-center fixed top-16 left-1/2 transform -translate-x-1/2">
+                <div id="statusToast" class="fixed top-16 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
+                    <div class="bg-white border-l-4 @if(session('status')) border-blue-500 @else border-red-500 @endif rounded-r-lg shadow-md overflow-hidden">
+                        <div class="p-4 flex items-center">
+                            <div class="flex-shrink-0">
+                                @if (session('status'))
+                                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                @else
+                                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                @endif
+                            </div>
+                            <div class="ml-3 w-0 flex-1">
+                                @if (session('status'))
+                                    <p class="text-lg font-semibold text-blue-900">
+                                        {!! session('status') !!}
+                                    </p>
+                                @endif
+                                @if (session('error'))
+                                    <p class="text-sm font-medium text-gray-900">
+                                        {{ session('error') }}
+                                    </p>
+                                @endif
 
-                        <div>
-                            @if (session('status'))
-                                <p class="bg-green-600 text-white font-semibold p-4 rounded">{{ session('status') }}</p>
-                            @endif
 
-                            @if (session('error'))
-                                <p class="bg-red-500 text-white font-semibold p-4 rounded">{{ session('error') }}</p>
-                            @endif
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                            <button id="closeToast" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                閉じる
+                            </button>
                         </div>
                     </div>
+                </div>
 
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            var statusToast = document.getElementById('statusToast');
-                            setTimeout(function() {
-                                statusToast.classList.add('hidden');
-                            }, 5000); // Disappear after 5 seconds
+                <style>
+                    @keyframes slideDown {
+                        from { transform: translate(-50%, -100%); }
+                        to { transform: translate(-50%, 0); }
+                    }
+                    #statusToast {
+                        animation: slideDown 0.5s ease-out;
+                    }
+                </style>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var statusToast = document.getElementById('statusToast');
+                        var closeToast = document.getElementById('closeToast');
+
+                        var hideTimeout = setTimeout(function() {
+                            hideToast();
+                        }, 8000);
+
+                        closeToast.addEventListener('click', function() {
+                            clearTimeout(hideTimeout);
+                            hideToast();
                         });
-                    </script>
-                @endif
+
+                        function hideToast() {
+                            statusToast.style.transform = 'translate(-50%, -100%)';
+                            statusToast.style.transition = 'transform 0.5s ease-in-out';
+                            setTimeout(function() {
+                                statusToast.style.display = 'none';
+                            }, 500);
+                        }
+                    });
+                </script>
+            @endif
 
 
             </div>
@@ -206,34 +255,41 @@
 
         <div class="table-responsive bg-white max-w-6xl mx-auto shadow-lg rounded-2xl overflow-hidden mb-10">
             <div class="overflow-y-auto max-h-80 mb-10">
-                <table class="min-w-full table-auto border border-slate-400">
+                <table class="min-w-full table-auto border border-slate-400 text-sm md:text-base">
                     <thead class="bg-blue-200 text-gray-700 sticky top-0 z-10 shadow-md">
                         <tr>
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">日付け
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[80px] md:min-w-[100px]">
+                                <span class="block text-xs md:text-sm">日付け</span>
                             </th>
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">勤怠
-                                区分</th>
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">外出
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[80px] md:min-w-[100px]">
+                                <span class="block text-xs md:text-sm">勤怠区分</span>
                             </th>
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">出社時間
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[60px] md:min-w-[80px]">
+                                <span class="block text-xs md:text-sm">外出</span>
                             </th>
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">退社時間
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
+                                <span class="block text-xs md:text-sm">出社時間</span>
+                            </th>
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
+                                <span class="block text-xs md:text-sm">退社時間</span>
                             </th>
                             @if (auth()->user()->office && auth()->user()->office->corp && auth()->user()->office->corp->corp_name === 'ユメヤ')
-                                <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">
-                                    二回出席
+                                <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
+                                    <span class="block text-xs md:text-sm">二回出席</span>
                                 </th>
-                                <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">
-                                    二回退勤
+                                <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
+                                    <span class="block text-xs md:text-sm">二回退勤</span>
                                 </th>
                             @endif
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">労働時間
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
+                                <span class="block text-xs md:text-sm">労働時間</span>
                             </th>
-                            <th class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">残業時間
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
+                                <span class="block text-xs md:text-sm">残業時間</span>
                             </th>
-                            <th
-                                class="border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm hidden md:table-cell">
-                                残業時間2</th>
+                            <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px] hidden md:table-cell">
+                                <span class="block text-xs md:text-sm">残業時間2</span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200 text-gray-800">
