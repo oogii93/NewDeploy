@@ -68,29 +68,24 @@ class PDFController extends Controller
 
 
 
-public function view(PDF $pdf)
-{
-    if ($pdf->type === 'pdf') {
-        $path = Storage::disk('public')->path($pdf->path);
-        if (!file_exists($path)) {
-            \Log::error("File not found: " . $path);
-            return back()->with('error', 'ファイルが見つかりません');
+    public function view(PDF $pdf)
+    {
+        if ($pdf->type === 'pdf') {
+            return response()->file(Storage::path($pdf->path));
+        } elseif ($pdf->type === 'pptx') {
+            $viewUrl = asset(Storage::url($pdf->path));
+            $downloadUrl = route('pdf.download', $pdf);
+            return view('pdfCompany.pptx-viewer', [
+                'fileUrl' => $viewUrl,
+                'downloadUrl' => $downloadUrl,
+                'filename' => $pdf->filename
+            ]);
+        } elseif ($pdf->type === 'youtube') {
+            return redirect()->away($pdf->path);
+        } else {
+            return back()->with('error', 'サポートされていないファイルタイプ');
         }
-        return response()->file($path);
-    } elseif ($pdf->type === 'pptx') {
-        $viewUrl = Storage::disk('public')->url($pdf->path);
-        $downloadUrl = route('pdf.download', $pdf);
-        return view('pdfCompany.pptx-viewer', [
-            'fileUrl' => $viewUrl,
-            'downloadUrl' => $downloadUrl,
-            'filename' => $pdf->filename
-        ]);
-    } elseif ($pdf->type === 'youtube') {
-        return redirect()->away($pdf->path);
-    } else {
-        return back()->with('error', 'サポートされていないファイルタイプ');
     }
-}
 
 
 
