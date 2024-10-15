@@ -18,7 +18,7 @@ class TableShowController extends Controller
 
     // $isOnBreak = $this->getBreakStatus($request)->original['isOnBreak'];
 
-        $year = date('Y');
+        $year = date(format: 'Y');
         $user = auth()->user();
 
         $month = date('m');
