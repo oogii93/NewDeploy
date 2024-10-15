@@ -21,7 +21,7 @@
             <tr class="border-b border-gray-200 hover:bg-gray-200">
                 <td class="border border-slate-300 px-2 py-1 md:px-4 md:py-2">{{ $application->id }}</td>
 
-                <td class="border border-slate-300 px-2 py-1 md:px-4 md:py-2">{{ $application->user->name }}</td>
+                <td class="border border-slate-300 px-2 py-1 md:px-4 md:py-2">{{ $application->user->name ?? 'N/A'}}</td>
 
 
                 <td class="border border-slate-300 px-2 py-1 md:px-4 md:py-2 whitespace-nowrap hidden md:table-cell">{{ $application->applicationable_id }}</td>
