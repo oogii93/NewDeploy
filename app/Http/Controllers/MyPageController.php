@@ -59,7 +59,7 @@ class MyPageController extends Controller
 
             // dd($user);
 
-            return redirect()->route('mypage.show-update')
+            return redirect()->route('myPage.show-update')
                 ->with('success', '正常に更新されました');
         }
 
@@ -156,7 +156,7 @@ class MyPageController extends Controller
 
             // dd($user);
 
-            return redirect()->route('mypage.bank-show-update')
+            return redirect()->route('myPage.bank-show-update')
                 ->with('success', '更新されました');
         }
 
@@ -178,7 +178,7 @@ class MyPageController extends Controller
         $user=auth()->user()->load('userFamily');
         $familyMembers = $user->familyMembers; // Assuming you have a relationship set up
         // dd($user);
-        return view('mypage.family-index', compact('user', 'familyMembers'));
+        return view('myPage.family-index', compact('user', 'familyMembers'));
     }
 
 //     public function family()
@@ -193,7 +193,7 @@ class MyPageController extends Controller
     {
         $user = auth()->user(); // Get the authenticated user
 
-        return view('mypage.family-create', compact('user')); // Pass the user to the view
+        return view('myPage.family-create', compact('user')); // Pass the user to the view
     }
 
 
@@ -230,7 +230,7 @@ class MyPageController extends Controller
     }
 
     // If it's not a POST request, you might want to return a view
-    return view('mypage.family-index', compact('user'));
+    return view('myPage.family-index', compact('user'));
 }
 
 
