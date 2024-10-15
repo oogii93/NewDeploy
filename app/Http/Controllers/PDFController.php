@@ -94,7 +94,12 @@ class PDFController extends Controller
     public function download(PDF $pdf)
     {
         if ($pdf->type === 'pptx') {
-            $fullPath = storage_path('app/' . $pdf->path);
+            $fullPath = str_replace('\\', '/', storage_path('app/' . $pdf->path));
+            // dump([
+            //     'pptx'=>$pdf->type === 'pptx',
+            //     'zam'=>$fullPath,
+            //     'ner'=>$pdf->filename
+            // ]);
 
             \Log::info('Attempting PPTX download', [
                 'pdf_id' => $pdf->id,
@@ -109,10 +114,18 @@ class PDFController extends Controller
                 return back()->with('error', 'ファイルが見つかりません');
             }
 
-            return response()->download($fullPath, $pdf->filename);
+            return response()->download($fullPath, urlencode($pdf->filename));
         }
         // ... rest of the method remains the same
     }
+
+    // public function download($id)
+    // {
+    //     dd([
+    //         'sadfsfd'=>$id
+    //     ]);
+
+    // }
 
 
     // {
