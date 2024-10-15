@@ -94,27 +94,23 @@ class PDFController extends Controller
     public function download(PDF $pdf)
     {
         if ($pdf->type === 'pptx') {
-            $fullPath = str_replace('\\', '/', storage_path('app/' . $pdf->path));
-            // dump([
-            //     'pptx'=>$pdf->type === 'pptx',
-            //     'zam'=>$fullPath,
-            //     'ner'=>$pdf->filename
-            // ]);
+            $fullPath = Storage::path($pdf->path);
 
             \Log::info('Attempting PPTX download', [
                 'pdf_id' => $pdf->id,
                 'filename' => $pdf->filename,
                 'stored_path' => $pdf->path,
                 'full_path' => $fullPath,
-                'file_exists' => file_exists($fullPath)
+                'file_exists' => Storage::exists($pdf->path),
+                'disk' => config('filesystems.default')
             ]);
 
-            if (!file_exists($fullPath)) {
-                \Log::error('File not found', ['path' => $fullPath]);
+            if (!Storage::exists($pdf->path)) {
+                \Log::error('File not found', ['path' => $pdf->path]);
                 return back()->with('error', 'ファイルが見つかりません');
             }
 
-            return response()->download($fullPath, urlencode($pdf->filename));
+            return Storage::download($pdf->path, $pdf->filename);
         }
         // ... rest of the method remains the same
     }
