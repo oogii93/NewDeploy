@@ -93,12 +93,16 @@ class PDFController extends Controller
 
     public function download(PDF $pdf)
     {
-        \Log::info('Download attempted', ['pdf_id' => $pdf->id, 'type' => $pdf->type, 'path' => $pdf->path]);
-
-        if($pdf->type === 'pptx')
-        {
+        if ($pdf->type === 'pptx') {
             $fullPath = storage_path('app/' . $pdf->path);
-            \Log::info('Attempting PPTX download', ['full_path' => $fullPath, 'exists' => file_exists($fullPath)]);
+
+            \Log::info('Attempting PPTX download', [
+                'pdf_id' => $pdf->id,
+                'filename' => $pdf->filename,
+                'stored_path' => $pdf->path,
+                'full_path' => $fullPath,
+                'file_exists' => file_exists($fullPath)
+            ]);
 
             if (!file_exists($fullPath)) {
                 \Log::error('File not found', ['path' => $fullPath]);
