@@ -30,11 +30,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div>
                             <label for="family_name" class="block text-sm font-medium text-gray-700">家族：氏名</label>
-                            <input type="text" id="family_name" name="family_name" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="text" id="family_name" name="family_name" placeholder="Taisei太郎" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         </div>
                         <div>
                             <label for="family_relationship" class="block text-sm font-medium text-gray-700">家族：続柄</label>
-                            <input type="text" id="family_relationship" name="family_relationship" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="text" id="family_relationship" name="family_relationship" placeholder="子供" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         </div>
                         <div>
                             <label for="family_birthdate" class="block text-sm font-medium text-gray-700">家族：生年月日</label>
@@ -51,11 +51,11 @@
                         </div>
                         <div>
                             <label for="family_address" class="block text-sm font-medium text-gray-700">家族：住所</label>
-                            <input type="text" id="family_address" name="family_address" placeholder="三重県津市乙部45－２３1" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="text" id="family_address" name="family_address" placeholder="三重県津市乙部41-2" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         </div>
                         <div>
                             <label for="family_estimated_income" class="block text-sm font-medium text-gray-700">家族：見積所得</label>
-                            <input type="number" id="family_estimated_income" name="family_estimated_income" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <input type="number" id="family_estimated_income" name="family_estimated_income" placeholder="3" class="mt-1 block w-full rounded-md border-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                         </div>
                         <div>
                             <label for="family_insurance_status" class="block text-sm font-medium text-gray-700">家族：社会保険被扶養者区分</label>

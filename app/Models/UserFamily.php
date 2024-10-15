@@ -21,6 +21,7 @@ class UserFamily extends Model
         'family_cohabiting_parent',
         'family_disability_status',
         'family_address_type',
+        'family_address',
         'family_estimated_income',
         'family_insurance_status',
         'family_name_furigana'
