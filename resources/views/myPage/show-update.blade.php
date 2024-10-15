@@ -52,7 +52,7 @@
         </script>
 
 
-    <form method="POST" action="{{ route('mypage.show-update') }}">
+    <form method="POST" action="{{ route('myPage.show-update') }}">
         @csrf
 
 

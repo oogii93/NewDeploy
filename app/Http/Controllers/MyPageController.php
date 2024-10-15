@@ -161,7 +161,7 @@ class MyPageController extends Controller
         }
 
 
-        return view('mypage.bank-show-update', compact('user'));
+        return view('myPage.bank-show-update', compact('user'));
     }
 
 

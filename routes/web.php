@@ -924,10 +924,11 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     Route::get('/myPage', [MyPageController::class, 'index'])
         ->name('myPage.index');
 
-        Route::match(['get', 'post'], '/mypage/update', [MyPageController::class, 'showAndUpdate'])->name('mypage.show-update');
+        Route::match(['get', 'post'], '/myPage/update', [MyPageController::class, 'showAndUpdate'])
+        ->name('myPage.show-update');
 
-        Route::match(['get', 'post'], '/mypage/bank', [MyPageController::class,'showAndUpdateBank'])
-        ->name('mypage.bank-show-update');
+        Route::match(['get', 'post'], '/myPage/bank', [MyPageController::class,'showAndUpdateBank'])
+        ->name('myPage.bank-show-update');
 
 
         Route::get('/myPage/family', [MyPageController::class, 'family'])

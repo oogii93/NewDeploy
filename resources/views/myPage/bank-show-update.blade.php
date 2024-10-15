@@ -58,7 +58,7 @@
 
 
 
-        <form action="{{ route('mypage.bank-show-update') }}" method="POST">
+        <form action="{{ route('myPage.bank-show-update') }}" method="POST">
             @csrf
 
             <!-- Employee Information Section -->
