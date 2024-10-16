@@ -21,6 +21,10 @@
             <div class="p-6 bg-white shadow-md rounded-xl border border-gray-200 mb-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-semibold text-gray-800">基本情報</h3>
+
+                    <x-button purpose="search" href="{{ route('myPage.profile') }}" class="bg-orange-300 hover:bg-orange-400">
+                        <span class="text-3xl">+</span> 情報編集
+                    </x-button>
                 </div>
                 <div class="grid grid-cols-3 gap-6">
                     <div>

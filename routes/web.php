@@ -924,6 +924,13 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     Route::get('/myPage', [MyPageController::class, 'index'])
         ->name('myPage.index');
 
+        //new route for profile update
+    Route::match(['get', 'put'], '/profile', [MyPageController::class, 'profile'])
+
+    ->name('myPage.profile');
+
+        //end
+
         Route::match(['get', 'post'], '/myPage/update', [MyPageController::class, 'showAndUpdate'])
         ->name('myPage.show-update');
 

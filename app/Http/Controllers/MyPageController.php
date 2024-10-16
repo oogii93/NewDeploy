@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserDetail;
-use Illuminate\Http\Request;
 use App\Models\UserFamily;
+use Illuminate\Http\Request;
 
 use App\Models\UserBankDetails;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class MyPageController extends Controller
@@ -17,6 +19,54 @@ class MyPageController extends Controller
         $user = auth()->user()->load(['corp', 'office', 'division','userDetail']);
 
         return view('myPage.index', compact('user'));
+    }
+
+
+    public function profile(Request $request)
+    {
+        $user = auth()->user();
+
+        if ($request->isMethod('put')) {
+            try {
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255',
+                    'furigana' => 'required|string|max:255',
+                    'gender' => 'required|in:男性,女性',
+                    'birthdate' => 'required|date',
+                    'post_number' => 'required|string|max:8',
+                    'address' => 'required|string|max:255',
+                    'email' => [
+                        'required',
+                        'email',
+                        'max:255',
+                        Rule::unique('users')->ignore($user->id),
+                    ],
+                    'password' => 'nullable|string|min:8|max:20|confirmed',
+                ]);
+
+                $userData = [
+                    'name' => $validated['name'],
+                    'furigana' => $validated['furigana'],
+                    'gender' => $validated['gender'],
+                    'birthdate' => $validated['birthdate'],
+                    'post_number' => $validated['post_number'],
+                    'address' => $validated['address'],
+                    'email' => $validated['email'],
+                ];
+
+                if (!empty($validated['password'])) {
+                    $userData['password'] = Hash::make($validated['password']);
+                }
+
+                $user->update($userData);
+
+                return redirect()->route('myPage.profile')->with('success', 'プロフィールが正常に更新されました');
+            } catch (ValidationException $e) {
+                return redirect()->back()->withErrors($e->errors())->withInput();
+            }
+        }
+
+        return view('myPage.profile', compact('user'));
     }
 
 
