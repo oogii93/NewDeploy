@@ -51,8 +51,8 @@
 
                         <div class="sm:col-span-2">
                             <label for="email" class="block text-sm font-medium text-gray-700">メール</label>
-                            <input type="email" id="email" name="email" required value="{{ old('email', $user->email) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" readonly>
-                            <p class="mt-1 text-sm text-gray-500">※もしくは変更したい場合は管理者へ連絡してください</p>
+                            <input type="email" id="email" name="email" required value="{{ old('email', $user->email) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                            <p class="mt-1 text-sm text-gray-500">※会社のメールのみ</p>
                         </div>
 
                         <div>
@@ -61,7 +61,10 @@
                             <p class="mt-1 text-sm text-gray-500">※変更する場合のみ入力（8～20文字）</p>
                         </div>
 
-
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700">新しいパスワード（確認）</label>
+                            <input type="password" id="password_confirmation" name="password_confirmation" minlength="8" maxlength="20" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        </div>
                     </div>
 
                     <div class="flex justify-end mt-6">
@@ -69,9 +72,6 @@
                         <x-button purpose="search" type="submit">
                             更新
                         </x-button>
-                        {{-- <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300">
-                            更新
-                        </button> --}}
                     </div>
                 </form>
             </div>

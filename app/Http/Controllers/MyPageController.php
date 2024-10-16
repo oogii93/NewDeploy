@@ -60,15 +60,20 @@ class MyPageController extends Controller
 
                 $user->update($userData);
 
+                // If you want to debug, you can use this instead of dd()
+                // \Log::info('User updated', ['user' => $user->toArray()]);
+
                 return redirect()->route('myPage.profile')->with('success', 'プロフィールが正常に更新されました');
             } catch (ValidationException $e) {
                 return redirect()->back()->withErrors($e->errors())->withInput();
+            } catch (\Exception $e) {
+                \Log::error('Profile update error: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'プロフィールの更新中にエラーが発生しました。')->withInput();
             }
         }
 
         return view('myPage.profile', compact('user'));
     }
-
 
     public function showAndUpdate(Request $request)
     {
