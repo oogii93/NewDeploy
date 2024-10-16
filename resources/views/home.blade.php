@@ -1,172 +1,20 @@
-<!DOCTYPE html>
-<html lang="ja">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taisei Holdings Co.,Ltd.</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            padding-top: 80px; /* Adjust this value based on your nav height */
-        }
-        .bg-white.shadow-md.fixed {
-        z-index: 1000; /* Ensure this is higher than other elements */
-        }
-
-        #mobile-menu {
-        z-index: 2000; /* Higher than the fixed nav */
-    }
-
-    #mobile-menu .flex {
-        padding-top: 80px; /* Adjust this to match your nav height */
-    }
-
-
-        @media (max-width: 1023px) {
-            #nav-menu {
-                position: fixed;
-                top: 20px; /* Adjust this value to match your nav height */
-                left: 0;
-                right: 0;
-                background-color: white;
-                padding: 1rem;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                z-index: 999; /* Just below the main nav */
-            }
-
-            #nav-menu a {
-                display: block;
-                padding: 0.5rem 0;
-            }
-        }
-
-
-
-            /* Add this to ensure content doesn't overlap */
-    .container {
-        position: relative;
-        z-index: 1;
-    }
-    </style>
-</head>
-
-<body class="bg-gray-100 pt-32">
-    <canvas id="backgroundCanvas" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
-    <div class="bg-white shadow-md z-50 fixed top-0 left-0 right-0 w-full">
-
-        <nav class="container mx-auto px-4 py-2 flex flex-col sm:flex-row items-center justify-between">
-            <div class="flex items-center mb-4 sm:mb-0">
-                <img src="{{ asset('logo22.png') }}" alt="Taisei Holdings Logo" class="h-16 sm:h-20 mr-3 sm:mr-5">
-
-                <span class="text-lg sm:text-xl font-serif font-medium text-sky-600">Taisei Holdings Co.,Ltd.</span>
-            </div>
-
-            <button id="menu-toggle"
-            class="text-3xl focus:outline-none absolute right-4 top-4 text-black lg:hidden z-[1001]">☰</button>
-
-            {{-- <div id="nav-menu" class="hidden lg:flex flex-col lg:flex-row items-center w-full lg:w-auto"> --}}
-            <div class="hidden lg:flex space-x-10">
-
-                <a href="{{ route('home') }}" class="text-gray-800 hover:text-gray-900 relative group">
-                    <span>ホーム</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-                <a href="{{ route('dashboard') }}" class="text-gray-800 hover:text-gray-900 relative group">
-                    <span>社内システム</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-                <a href="https://app.metalife.co.jp/spaces"
-                      class="text-gray-800 hover:text-gray-900 relative group"
-                      target="_blank"
-                      rel="noopener noreferrer">
-                    <span>メタライフ</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-                <a href="{{ route('suggestion.index') }}" class="text-gray-800 hover:text-gray-900 relative group">
-                    <span>投書箱</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-
-
-
-
-                <form method="POST" action="{{ route('logout') }}" class="relative group">
-                    @csrf
-                    <button type="submit" class="text-gray-800 hover:text-gray-900 relative group">
-                        <span>{{ __('ログアウト') }}</span>
-                        <span
-                            class="absolute left-0 -bottom-2 w-full h-0.5 bg-red-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                    </button>
-                </form>
-
-                <a href="{{ route('notifications.index') }}" class="relative flex items-center"> <!-- Modified this line -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                        </path>
-                    </svg>
-                    @if(auth()->user()->unreadNotifications->count() > 0)
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 py-1 text-xs">
-                            {{ auth()->user()->unreadNotifications->count() }}
-                        </span>
-                    @endif
-                </a>
-            </div>
-        </nav>
-    </div>
-    <!--screen for mobile-->
-
-    <div id="mobile-menu"
-         class="fixed inset-0 w-full bg-black z-[2000] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
-         <div class="flex flex-col h-full justify-start items-center pt-20">
-            <button id="close-menu" class="absolute top-4 right-4 text-3xl text-white focus:outline-none">
-                ✖
-            </button>
-            <a href="{{ route('home') }}" class="text-white text-m my-4 border-b border-gray-400">ホーム</a>
-            <a href="{{ route('dashboard') }}" class="text-white text-m my-4 border-b border-gray-400">社内システム</a>
-            <a href="https://app.metalife.co.jp/spaces"
-                class="text-white text-m my-4 border-b border-gray-400"
-                target="_blank"
-                rel="noopener noreferrer">
-                メタライフ
-            </a>
-            <a href="{{ route('suggestion.index') }}" class="text-white text-m my-4 border-b border-gray-400">投書箱</a>
-            <form method="POST" action="{{ route('logout') }}" class="relative group">
-                @csrf
-                <button type="submit" class="text-white text-m my-4 border-b border-gray-400">
-                    <span>{{ __('ログアウト') }}</span>
-                </button>
-            </form>
-
-        </div>
-
+ <x-app-layout>
+    <div class="fixed inset-0 overflow-hidden" style="z-index: 0;">
+        <canvas id="backgroundCanvas" class="w-full h-full"></canvas>
     </div>
 
 
-<!--notifications-->
 
 
-        {{-- @foreach(auth()->user()->unreadNotifications as $notification)
-            <div class="alert alert-info">
-                {{ $notification->data['message'] }}
-                <a href="{{ route('posts.show', $notification->data['post_id']) }}">View Post</a>
-            </div>
-            @php
-                $notification->markAsRead();
-            @endphp
-        @endforeach
- --}}
-
-
+    <div class="relative min-h-screen" style="z-index: 1;">
     <div class="flex justify-center items-center p-4 sm:p-6">
 
 
-                <div class="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 w-full max-w-6xl">
+
+
+                <div class="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-10 w-full max-w-6xl mt-8">
+
 
 
 
@@ -231,7 +79,7 @@
 
 
         <div class="col-span-1 h-24 sm:h-28 lg:h-32 flex items-center justify-center text-white font-bold text-center rounded-lg cursor-pointer bg-green-500 hover:bg-green-600 transition-all"
-            onclick="window.location.href=''">
+            onclick="window.location.href='{{ route('request.index') }}'">
 
                 <svg fill="#ffffff" height="60px"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 viewBox="0 0 600 600" xml:space="preserve" stroke="#ffffff" stroke-width="15.000"><g id="SVGRepo_bgCarrier" stroke-width=""
@@ -255,69 +103,7 @@
 
 
 
-{{-- <div class="grid grid-cols-2 sm:grid-cols-3  lg:grid-cols-3 gap-6 sm:gap-6 lg:gap-10 w-full max-w-6xl">
 
-    <div class="col-span-1 h-32 sm:h-40 lg:h-48 relative overflow-hidden rounded-lg cursor-pointer group"
-        onclick="window.location.href='{{ route('dashboard') }}'">
-        <div class="absolute inset-0 bg-opacity-90 bg-cover bg-center transition-transform duration-300 group-hover:scale-110">
-            <img src="{{ asset('tsag.jpg') }}" class="object-cover w-full h-full" alt="勤怠入力">
-        </div>
-        <div class="relative h-full flex items-center justify-center mt-8">
-            <span class="text-sm sm:text-base font-bold text-black bg-white bg-opacity-70 px-2 py-1 rounded">勤怠入力</span>
-        </div>
-    </div>
-
-    <div class="col-span-1 h-32 sm:h-40 lg:h-48 relative overflow-hidden rounded-lg cursor-pointer group"
-        onclick="window.location.href='{{  route('forms.index') }}'">
-        <div class="absolute inset-0 bg-opacity-90 bg-cover bg-center transition-transform duration-300 group-hover:scale-110">
-            <img src="{{ asset('docu.jpg') }}" class="object-cover w-full h-full" alt="社内書式集">
-       </div>
-       <div class="relative h-full flex items-center justify-center mt-8">
-           <span class="text-sm sm:text-base font-bold text-black bg-white bg-opacity-70 px-2 py-1 rounded">社内書式集</span>
-       </div>
-   </div>
-
-
-
-
-        <div class="col-span-1 h-32 sm:h-40 lg:h-48 relative overflow-hidden rounded-lg cursor-pointer group"
-            onclick="window.location.href='{{ route('actionSchedule.index') }}'">
-           <div class="absolute inset-0  opacity-90 bg-cover bg-center transition-transform duration-300 group-hover:scale-110">
-            <img src="{{ asset('truck.jpg') }}" class="object-cover w-full h-full" alt="行動予定表">
-
-
-           </div>
-           <div class="relative h-full flex items-center justify-center mt-8">
-               <span class="text-sm sm:text-base font-bold text-black bg-white bg-opacity-70 px-2 py-1 rounded">行動予定表</span>
-           </div>
-       </div>
-
-       <div class="col-span-1 h-32 sm:h-40 lg:h-48 relative overflow-hidden rounded-lg cursor-pointer group"
-            onclick="window.location.href='{{ route('companySchedule.index') }}'">
-           <div class="absolute inset-0 bg-gray-300 opacity-90 bg-cover bg-center transition-transform duration-300 group-hover:scale-110">
-            <img src="{{ asset('calendar.jpg') }}" class="object-cover w-full h-full" alt="予定表">
-           </div>
-           <div class="relative h-full flex items-center justify-center mt-8">
-               <span class="text-sm sm:text-base font-bold text-black bg-white bg-opacity-70 px-2 py-1 rounded">予定表</span>
-           </div>
-       </div>
-
-
-
-
-
-
-
-
-            <div class="col-span-1 h-32 sm:h-40 lg:h-48 flex items-center justify-center text-white font-bold text-center rounded-lg cursor-pointer bg-green-300">
-                <span class="text-sm sm:text-base">出張申請</span>
-            </div>
-            <div class="col-span-1 h-32 sm:h-40 lg:h-48 flex items-center justify-center text-white font-bold text-center rounded-lg cursor-pointer bg-stone-200">
-
-                <span class="text-sm sm:text-base">FAQ</span>
-            </div>
-        </div>
-</div> --}}
 
     <div class="items-center justify-center bg-gray-150 relative z-1">
         <div class="container mx-auto px-4 py-5 max-w-3xl">
@@ -345,130 +131,132 @@
         </div>
     </div>
 
+</div>
 
-</body>
-<script>
-const canvas = document.getElementById('backgroundCanvas');
-const ctx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
 
-let nodes = [];
-const connections = [];
-let nodeCount;
-let connectionDistance;
+                <script>
+                const canvas = document.getElementById('backgroundCanvas');
+                const ctx = canvas.getContext('2d');
 
-// Function to determine node count and connection distance based on screen size
-function calculateParameters() {
-    const minDimension = Math.min(canvas.width, canvas.height);
-    nodeCount = Math.floor(minDimension / 20); // Adjust this divisor to change node density
-    connectionDistance = minDimension / 5; // Adjust this divisor to change connection density
-}
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
 
-class Node {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 2;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.color = '#3498db';
-    }
+                let nodes = [];
+                const connections = [];
+                let nodeCount;
+                let connectionDistance;
 
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
+                // Function to determine node count and connection distance based on screen size
+                function calculateParameters() {
+                    const minDimension = Math.min(canvas.width, canvas.height);
+                    nodeCount = Math.floor(minDimension / 20); // Adjust this divisor to change node density
+                    connectionDistance = minDimension / 5; // Adjust this divisor to change connection density
+                }
 
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-    }
+                class Node {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 2;
+                        this.speedX = (Math.random() - 0.5) * 0.5;
+                        this.speedY = (Math.random() - 0.5) * 0.5;
+                        this.color = '#3498db';
+                    }
 
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-    }
-}
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
 
-function init() {
-    calculateParameters();
-    nodes = [];
-    for (let i = 0; i < nodeCount; i++) {
-        nodes.push(new Node());
-    }
-}
+                        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+                    }
 
-function drawConnections() {
-    ctx.strokeStyle = 'rgba(52, 152, 219, 0.1)';
-    ctx.lineWidth = 1;
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color;
+                        ctx.fill();
+                    }
+                }
 
-    for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-            const dx = nodes[i].x - nodes[j].x;
-            const dy = nodes[i].y - nodes[j].y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+                function init() {
+                    calculateParameters();
+                    nodes = [];
+                    for (let i = 0; i < nodeCount; i++) {
+                        nodes.push(new Node());
+                    }
+                }
 
-            if (distance < connectionDistance) {
-                ctx.beginPath();
-                ctx.moveTo(nodes[i].x, nodes[i].y);
-                ctx.lineTo(nodes[j].x, nodes[j].y);
-                ctx.stroke();
-            }
-        }
-    }
-}
+                function drawConnections() {
+                    ctx.strokeStyle = 'rgba(52, 152, 219, 0.1)';
+                    ctx.lineWidth = 1;
 
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = 0; i < nodes.length; i++) {
+                        for (let j = i + 1; j < nodes.length; j++) {
+                            const dx = nodes[i].x - nodes[j].x;
+                            const dy = nodes[i].y - nodes[j].y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
 
-    drawConnections();
+                            if (distance < connectionDistance) {
+                                ctx.beginPath();
+                                ctx.moveTo(nodes[i].x, nodes[i].y);
+                                ctx.lineTo(nodes[j].x, nodes[j].y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
 
-    nodes.forEach(node => {
-        node.update();
-        node.draw();
-    });
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    requestAnimationFrame(animate);
-}
+                    drawConnections();
 
-init();
-animate();
+                    nodes.forEach(node => {
+                        node.update();
+                        node.draw();
+                    });
 
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    init();
-});
+                    requestAnimationFrame(animate);
+                }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const closeMenu = document.getElementById('close-menu');
+                init();
+                animate();
 
-        menuToggle.addEventListener('click', function() {
-            mobileMenu.classList.remove('translate-x-full');
-        });
-        closeMenu.addEventListener('click', function() {
-            mobileMenu.classList.add('translate-x-full');
-        });
-    });
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    init();
+                });
 
-    const scheduleButton = document.getElementById('scheduleButton');
-    const buttonContainer = document.getElementById('buttonContainer');
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const menuToggle = document.getElementById('menu-toggle');
+                        const mobileMenu = document.getElementById('mobile-menu');
+                        const closeMenu = document.getElementById('close-menu');
 
-    scheduleButton.addEventListener('click', function() {
-        buttonContainer.classList.toggle('hidden');
-    });
+                        menuToggle.addEventListener('click', function() {
+                            mobileMenu.classList.remove('translate-x-full');
+                        });
+                        closeMenu.addEventListener('click', function() {
+                            mobileMenu.classList.add('translate-x-full');
+                        });
+                    });
 
-    function navigateTo(route) {
-        window.location.href = route;
-    }
-</script>
+                    const scheduleButton = document.getElementById('scheduleButton');
+                    const buttonContainer = document.getElementById('buttonContainer');
 
-<style>
+                    scheduleButton.addEventListener('click', function() {
+                        buttonContainer.classList.toggle('hidden');
+                    });
 
-</style>
+                    function navigateTo(route) {
+                        window.location.href = route;
+                    }
+                </script>
 
-</html>
+
+
+
+
+</x-app-layout>

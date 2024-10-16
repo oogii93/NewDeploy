@@ -67,12 +67,17 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-end mt-6">
 
-                        <x-button purpose="search" type="submit">
+
+                    <div class="flex justify-between mt-4">
+                        <x-button purpose="default" type="" href="{{ route('myPage.index') }}" >
+                            戻り
+                        </x-button>
+                        <x-button purpose="search" type="submit" >
                             更新
                         </x-button>
                     </div>
+
                 </form>
             </div>
         </div>

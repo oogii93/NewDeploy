@@ -145,36 +145,7 @@
 
             </div>
 
-            <!-- Assigned Facilities -->
-            <div class="p-4 bg-white rounded-xl">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-semibold">依頼系</h3>
-                    <x-button purpose="search" href="{{ route('request.index') }}">
-                        <span class="text-2xl">+</span> 新規依頼系
-                    </x-button>
-                </div>
 
-
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr class="text-left text-sm text-gray-500">
-                            <th class="py-2 px-4">Facility Name</th>
-                            <th class="py-2 px-4">Location</th>
-                            <th class="py-2 px-4">Since</th>
-                            <th class="py-2 px-4"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr>
-                            <td class="py-2 px-4">Ninja Training Site</td>
-                            <td class="py-2 px-4">Edison, NJ</td>
-                            <td class="py-2 px-4">09/18/2019</td>
-                            <td class="py-2 px-4"><button class="text-red-500">Remove</button></td>
-                        </tr>
-                        <!-- Add more rows as needed -->
-                    </tbody>
-                </table>
-            </div>
 
     </div>
     </div>

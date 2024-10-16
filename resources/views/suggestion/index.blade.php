@@ -1,128 +1,11 @@
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taisei Holdings Co.,Ltd.</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            padding-top: 80px; /* Adjust this value based on your nav height */
-        }
-        .bg-white.shadow-md.fixed {
-        z-index: 1000; /* Ensure this is higher than other elements */
-        }
-
-        #mobile-menu {
-        z-index: 2000; /* Higher than the fixed nav */
-    }
-
-    #mobile-menu .flex {
-        padding-top: 80px; /* Adjust this to match your nav height */
-    }
+<x-app-layout>
 
 
-        @media (max-width: 1023px) {
-            #nav-menu {
-                position: fixed;
-                top: 80px; /* Adjust this value to match your nav height */
-                left: 0;
-                right: 0;
-                background-color: white;
-                padding: 1rem;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                z-index: 999; /* Just below the main nav */
-            }
 
-            #nav-menu a {
-                display: block;
-                padding: 0.5rem 0;
-            }
-        }
-
-            /* Add this to ensure content doesn't overlap */
-    .container {
-        position: relative;
-        z-index: 1;
-    }
-    </style>
-</head>
 
 <body class="bg-gray-100 pt-32">
     <canvas id="backgroundCanvas" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
-    <div class="bg-white shadow-md z-50 fixed top-0 left-0 right-0 w-full">
 
-
-        <nav class="container mx-auto px-4 py-2 flex flex-col sm:flex-row items-center justify-between">
-            <div class="flex items-center mb-4 sm:mb-0">
-                <img src="{{ asset('logo22.png') }}" alt="Taisei Holdings Logo" class="h-16 sm:h-20 mr-3 sm:mr-5">
-                <span class="text-lg sm:text-xl font-serif font-medium text-sky-600">Taisei Holdings Co.,Ltd.</span>
-            </div>
-
-            <button id="menu-toggle"
-                class="text-3xl focus:outline-none absolute right-4 top-4 text-black lg:hidden z-[1001]">☰</button>
-
-            {{-- <div id="nav-menu" class="hidden lg:flex flex-col lg:flex-row items-center w-full lg:w-auto"> --}}
-            <div class="hidden lg:flex space-x-10">
-
-                <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-800 relative group">
-                    <span>ホーム</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-                <a href="{{ route('dashboard') }}" class="text-gray-600 hover:text-gray-800 relative group">
-                    <span>社内システム</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-                <a href="https://app.metalife.co.jp/spaces/yft6j00kgRBEgGnJwEsH"
-                    class="text-gray-600 hover:text-gray-800 relative group">
-                    <span>メタライフ</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-                <a href="{{ route('suggestion.index') }}" class="text-gray-600 hover:text-gray-800 relative group">
-                    <span>投書箱</span>
-                    <span
-                        class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                </a>
-
-                <form method="POST" action="{{ route('logout') }}" class="relative group">
-                    @csrf
-                    <button type="submit" class="text-gray-600 hover:text-gray-800">
-                        <span>{{ __('ログアウト') }}</span>
-                        <span
-                            class="absolute left-0 -bottom-2 w-full h-0.5 bg-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
-                    </button>
-                </form>
-            </div>
-        </nav>
-    </div>
-    <!--screen for mobile-->
-
-    <div id="mobile-menu"
-        class="fixed inset-0 w-full bg-black z-[2000] transform translate-x-full transition-transform duration-300 ease-in-out lg:hidden">
-        <div class="flex flex-col h-full justify-start items-center pt-20">
-
-            <button id="close-menu" class="absolute top-4 right-4 text-3xl text-white focus:outline-none">
-                ✖
-            </button>
-            <a href="{{ route('home') }}" class="text-white text-m my-4 border-b border-gray-400">ホーム</a>
-            <a href="{{ route('dashboard') }}" class="text-white text-m my-4 border-b border-gray-400">社内システム</a>
-            <a href="https://app.metalife.co.jp/spaces/yft6j00kgRBEgGnJwEsH"
-                class="text-white text-m my-4 border-b border-gray-400">メタライフ</a>
-            <a href="{{ route('suggestion.index') }}" class="text-white text-m my-4 border-b border-gray-400">投書箱</a>
-            <form method="POST" action="{{ route('logout') }}" class="relative group">
-                @csrf
-                <button type="submit" class="text-white text-m my-4 border-b border-gray-400">
-                    <span>{{ __('ログアウト') }}</span>
-                </button>
-            </form>
-
-        </div>
-
-    </div>
 
 
     <div class="mt-4 py-4 relative z-1">
@@ -431,3 +314,5 @@
 </script>
 
 </html>
+
+</x-app-layout>
