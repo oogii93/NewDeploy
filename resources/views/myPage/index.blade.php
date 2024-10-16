@@ -1,5 +1,36 @@
 <x-app-layout>
+
+
     <div class="max-w-7xl mx-auto p-4 bg-gray-100">
+        @if(session('success'))
+        <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 text-blue-800 rounded-lg shadow-md transition ease-in-out duration-300 transform hover:scale-105" role="alert">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-blue-600 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <p class="font-semibold text-lg">Success</p>
+            </div>
+            <p class="ml-8 text-blue-600">{{ session('success') }}</p>
+        </div>
+    @endif
+
+@if(session('error'))
+    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Error!</strong>
+        <span class="block sm:inline">{{ session('error') }}</span>
+    </div>
+@endif
+
+@if($errors->any())
+    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Validation Error!</strong>
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         <!-- Header -->
         <div class="bg-sky-300 p-4 rounded-xl  items-center mb-4">
             <div class="flex items-center">
@@ -147,6 +178,19 @@
 
     </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const alerts = document.querySelectorAll('[role="alert"]');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    alert.style.transition = 'opacity 0.5s';
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
 
 
 </x-app-layout>

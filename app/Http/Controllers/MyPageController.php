@@ -35,12 +35,12 @@ class MyPageController extends Controller
                     'birthdate' => 'required|date',
                     'post_number' => 'required|string|max:8',
                     'address' => 'required|string|max:255',
-                    'email' => [
-                        'required',
-                        'email',
-                        'max:255',
-                        Rule::unique('users')->ignore($user->id),
-                    ],
+                    // 'email' => [
+                    //     'required',
+                    //     'email',
+                    //     'max:255',
+                    //     Rule::unique('users')->ignore($user->id),
+                    // ],
                     'password' => 'nullable|string|min:8|max:20|confirmed',
                 ]);
 
@@ -51,7 +51,7 @@ class MyPageController extends Controller
                     'birthdate' => $validated['birthdate'],
                     'post_number' => $validated['post_number'],
                     'address' => $validated['address'],
-                    'email' => $validated['email'],
+                    // 'email' => $validated['email'],
                 ];
 
                 if (!empty($validated['password'])) {
@@ -63,7 +63,7 @@ class MyPageController extends Controller
                 // If you want to debug, you can use this instead of dd()
                 // \Log::info('User updated', ['user' => $user->toArray()]);
 
-                return redirect()->route('myPage.profile')->with('success', 'プロフィールが正常に更新されました');
+                return redirect()->route('myPage.index')->with('success', 'プロフィールが正常に更新されました');
             } catch (ValidationException $e) {
                 return redirect()->back()->withErrors($e->errors())->withInput();
             } catch (\Exception $e) {
