@@ -308,11 +308,14 @@
                                                 </tr>
                                             @endforeach
                                         </tbody>
+
                                     </table>
+                                    <div class="mt-4">
+                                        {{ $users->appends(['search' => $search])->links() }}
+                                    </div>
+
                                 </div>
-                                <div class="mt-4">
-                                    {{ $users->appends(['search' => $search])->links() }}
-                                </div>
+
                             </div>
                         </div>
         </div>
