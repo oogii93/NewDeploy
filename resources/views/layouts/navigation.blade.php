@@ -130,7 +130,7 @@
                             </g>
 
                         </svg>
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">勤怠画面</span>
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">勤怠入力</span>
                     </a>
                 </li>
 
@@ -231,7 +231,7 @@
                         </svg>
 
 
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">全員勤怠</span>
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">勤退情報確認</span>
                     </a>
                 </li>
 
@@ -396,7 +396,7 @@
 
 
 
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">倉庫</span>
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">在庫状況</span>
                     </a>
                 </li>
 
@@ -432,7 +432,8 @@
                                     </path>
                                 </g>
                             </svg>
-                            <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">管理ダッシュ</span>
+                            <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">管理者専用
+                            </span>
                         </a>
                     </li>
                 @endif
@@ -662,7 +663,7 @@
                             </g>
                         </svg>
 
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">フォーム</span>
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">各種申請</span>
                     </a>
                 </li>
 
@@ -693,7 +694,7 @@
                                         fill="#FFFFFF"></path>
                                 </g>
                             </svg>
-                            <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">申請管理</span>
+                            <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">申請履歴</span>
                         </a>
                     </li>
 
@@ -738,7 +739,7 @@
                                             </g>
                                         </g>
                                     </svg>
-                                    <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">上司画面</span>
+                                    <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">承認</span>
                                 </a>
 
 
@@ -823,7 +824,7 @@
                                             fill="#333336"></path>
                                     </g>
                                 </svg>
-                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">人事課画面</span>
+                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">申請管理</span>
                             </a>
 
 
@@ -1026,7 +1027,7 @@
             <li class="w-full">
                 <button onclick="window.location.href='{{ route('dashboard') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
-                    打刻
+                   勤退入力
                 </button>
             </li>
             <li class="w-full">
@@ -1038,7 +1039,7 @@
                 <button onclick="window.location.href='{{ route('other') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                    全員勤怠</button>
+                    勤退情報確認</button>
             </li>
             <li class="w-full">
                 <button onclick="window.location.href='{{ route('pdfCompany.index') }}'"
@@ -1050,14 +1051,14 @@
                 <button onclick="window.location.href='{{ route('warehouse.index') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                    倉庫</button>
+                    在庫状況</button>
             </li>
 
             <li class="w-full">
                 <button onclick="window.location.href='{{ route('posts.index') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                    社内情報</button>
+                    投稿</button>
             </li>
 
 
@@ -1085,7 +1086,7 @@
                     <button onclick="window.location.href='{{ route('admin.dashboard') }}'"
                         class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                        管理ダッシュボード</button>
+                        管理者専用</button>
                 </li>
             @endif
 
@@ -1093,14 +1094,14 @@
                 <button onclick="window.location.href='{{ route('forms.index') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                    フォーム</button>
+                    各種申請</button>
             </li>
 
             <li class="w-full">
                 <button onclick="window.location.href='{{ route('applications.index') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                    申請管理</button>
+                    申請履歴</button>
             </li>
 
 
@@ -1109,7 +1110,7 @@
                     <button onclick="window.location.href='{{ route('applications.boss_index') }}'"
                         class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                        上司画面</button>
+                        承認</button>
                 </li>
             @endif
 
@@ -1118,7 +1119,7 @@
                     <button onclick="window.location.href='{{ route('hr.hr.dashboard') }}'"
                         class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
-                        人事課</button>
+                        申請管理</button>
                 </li>
             @endif
             @if (auth()->user()->division && auth()->user()->division->name === '経理課')

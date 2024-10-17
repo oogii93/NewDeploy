@@ -1,5 +1,62 @@
 
  <x-app-layout>
+    <head>
+        <style>
+            .gradient-bg {
+                background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            }
+
+            .company-name {
+                position: relative;
+                overflow: hidden;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .shine-effect {
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(
+                    to right,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.9) 50%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                animation: shine 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            }
+
+            @keyframes shine {
+                0% {
+                    left: -100%;
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    left: 200%;
+                    opacity: 0;
+                }
+            }
+
+            .logo-shadow {
+                filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            }
+
+            .content-wrapper {
+                backdrop-filter: blur(8px);
+                background: rgba(255, 255, 255, 0.7);
+            }
+        </style>
+
+    </head>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <div class="fixed inset-0 overflow-hidden" style="z-index: 0;">
         <canvas id="backgroundCanvas" class="w-full h-full"></canvas>
     </div>
@@ -8,6 +65,44 @@
 
 
     <div class="relative min-h-screen" style="z-index: 1;">
+
+
+        <div class="logo-container min-h-[30vh] flex items-center justify-center">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col items-center space-y-6">
+                    <img src="{{ asset('logo22.png') }}" alt="Taisei Holdings Logo"
+                         class="animate-element h-20 w-auto object-contain">
+
+                    <div class="text-center space-y-4">
+                        <h2 class="animate-element company-name font-bold text-4xl text-sky-600">
+                            株式会社 TaiseiHoldings CO.,LTD
+                            <div class="shine-effect"></div>
+                        </h2>
+                        <div class="animate-element text-sky-700 font-bold text-3xl">
+                            TaiseiNet
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // GSAP Animation
+            window.addEventListener('load', () => {
+                gsap.from(".animate-element", {
+                    duration: 2,
+                    y: 30,
+                    opacity: 0,
+                    stagger: 0.2,
+                    ease: "power2.out"
+                });
+
+
+            });
+        </script>
     <div class="flex justify-center items-center p-4 sm:p-6">
 
 
