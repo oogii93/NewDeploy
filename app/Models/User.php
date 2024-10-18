@@ -102,6 +102,10 @@ public function applications()
     {
         return $this->hasMany(Application::class, 'user_id');
     }
+public function applications2()
+    {
+        return $this->hasMany(Application2::class, 'user_id');
+    }
 
 
 public function bossApplications()

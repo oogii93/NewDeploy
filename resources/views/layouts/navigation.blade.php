@@ -834,6 +834,8 @@
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a>
                                 <a href="{{ route('Kintaihr') }}"
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
+                                <a href="{{ route('applications2.index') }}"
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文</a>
                             </div>
 
                         </li>

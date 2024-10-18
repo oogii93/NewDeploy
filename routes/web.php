@@ -16,12 +16,14 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Form2Controller;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 
+use App\Http\Controllers\RequestController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
@@ -38,6 +40,7 @@ use App\Http\Controllers\UserDetailController;
 use App\Http\Controllers\UserFilterController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CalculationController;
+use App\Http\Controllers\Application2Controller;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoomScheduleController;
 use Spatie\Permission\Middleware\RoleMiddleware;
@@ -51,7 +54,6 @@ use App\Http\Controllers\CompanyScheduleController;
 use App\Http\Controllers\DepartureRecordController;
 use App\Http\Controllers\TestNotificationController;
 use App\Http\Controllers\AttendanceTypeRecordController;
-use App\Http\Controllers\RequestController;
 use App\Http\Controllers\TimeOffRequestRecordController;
 
 //Admin Group Route
@@ -957,10 +959,35 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
             ->name('myPage.family-destroy');
 
 
-            //Request route
+            //New Routes
 
-        Route::get('/request', [RequestController::class, 'index'])
-        ->name('request.index');
+
+
+    //Form and application routes
+
+    Route::get('/forms2', [Form2Controller::class, 'index'])
+    ->name('forms2.index');
+
+    Route::get('/forms2/{type}', [Form2Controller::class, 'show'])
+    ->name('forms2.show');
+
+    Route::post('/forms2/store/{type}', [Form2Controller::class, 'store'])
+    ->name('forms2.store');
+
+    // Route::match(['post', 'put'], '/forms/{type}/{id?}', [FormController::class, 'update'])
+    // ->name('forms.update');
+
+
+
+
+    Route::get('/applications2', [Application2Controller::class, 'index'])
+    ->name('applications2.index');
+
+
+    Route::get('/applications2/{id}', [Application2Controller::class, 'show'])
+    ->name('applications2.show');
+
+    Route::post('/applications2/{application2}/check', [Application2Controller::class, 'check'])->name('applications2.check');
 
 
 

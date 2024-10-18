@@ -29,10 +29,6 @@
                                         <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-2.4 0-3.6-1.2-4.8-3C5.6 3.2 5 3 4 3s-1.6.2-2.4 2C.8 7.2 0 8.4 0 10c0 1.6 0 3.2 2 4 2 1 2.4 0 4 0s2.4 1 4 0 3.2 1.2 4 0 2.4-2.4 4-3.2C18 7.2 17 4.8 15 3S12 0 12 0z"></path>
                                         </svg>
-
-
-
-
                                     </div>
                                     <div>
                                         <p class="text-lg font-semibold text-gray-700">新規投稿通知</p>
@@ -44,10 +40,9 @@
                                 </div>
 
                             {{-- Time-Off Request Notification --}}
-
-                            @elseif(isset($notification->data['user_name']))
-                                @if(auth()->user()->division_id ==6)
-                                {{-- Hr specific time off request notificatrion --}}
+                            @elseif(isset($notification->data['user_name']) && !isset($notification->data['type']))
+                                @if(auth()->user()->division_id == 6)
+                                {{-- HR specific time off request notification --}}
                                 <div class="flex items-center space-x-4">
                                     <div class="bg-pink-100 p-3 rounded-full">
                                         <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,22 +53,14 @@
                                         <p class="text-lg font-semibold text-gray-700">
                                             <span class="bg-green-200 px-2 py-1 rounded-md">{{ $notification->data['user_name'] }}</span> さんから勤怠届がありました。
                                         </p>
-                                    @if(isset($notification->data['date']))
-                                        <p class="text-sm text-gray-500">日付: {{ $notification->data['date'] }}</p>
-                                    @endif
-
-                                    @if (isset($notification->data['type']))
-                                    <p class="text-sm text-gray-500">タイプ: {{ $notification->data['type'] }}</p>
-                                    @endif
-
-                                        <p class="text-sm text-gray-500">理由: {{ $notification->data['reason'] }}</p>
+                                        @if(isset($notification->data['date']))
+                                            <p class="text-sm text-gray-500">日付: {{ $notification->data['date'] }}</p>
+                                        @endif
                                         <a href="{{ route('notifications.markAsRead', $notification->id) }}" class="text-blue-500 hover:text-blue-700">詳しくは</a>
                                     </div>
                                 </div>
-
                                 @else
-                                {{-- non HR time off request notification  --}}
-
+                                {{-- Non HR time off request notification --}}
                                 <div class="flex items-center space-x-4">
                                     <div class="bg-green-100 p-3 rounded-full">
                                         <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,19 +68,13 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-lg font-semibold ttext-gray-700">
-                                            <span class="bg-green-200 px-2 py-1 rounded-md">
-                                                {{ $notification->data['user_name'] }}</span> さんから勤怠届がありました。
-
+                                        <p class="text-lg font-semibold text-gray-700">
+                                            <span class="bg-green-200 px-2 py-1 rounded-md">{{ $notification->data['user_name'] }}</span> さんから勤怠届がありました。
                                         </p>
                                         <a href="{{ route('notifications.markAsRead', $notification->id) }}" class="text-blue-500 hover:text-blue-700">詳しくは</a>
                                     </div>
-
                                 </div>
-
                                 @endif
-
-
 
                             {{-- Time-Off Request Status Change Notification --}}
                             @elseif(isset($notification->data['status']))
@@ -110,6 +91,30 @@
                                         </p>
                                         <p class="text-sm text-gray-500">申請日: {{ $notification->data['date'] }}</p>
                                         <a href="{{ route('notifications.markAsRead', $notification->id) }}" class="text-blue-500 hover:text-blue-700">詳しくは</a>
+                                    </div>
+                                </div>
+
+                            {{-- Application2 Request Notification --}}
+                            @elseif(isset($notification->data['type']) && $notification->data['type'] === 'application2')
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-purple-100 p-3 rounded-full">
+                                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-semibold text-gray-700">社内注文申請通知</p>
+                                     
+                                        <p class="text-sm text-gray-500 font-semibold">申請者: {{ $notification->data['user_name'] }}</p>
+                                        <p class="text-sm text-gray-500 font-semibold">
+                                            申請日時: {{ \Carbon\Carbon::parse($notification->data['created_at'])->setTimezone('Asia/Tokyo')->format('Y-m-d H:i') }}
+                                        </p>
+                                        <a href="{{ route('notifications.markAsRead', $notification->id) }}"
+                                        class="text-blue-500 hover:text-blue-700">
+                                            詳しくは
+                                        </a>
                                     </div>
                                 </div>
                             @endif

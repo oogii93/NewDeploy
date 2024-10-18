@@ -174,7 +174,7 @@
 
 
         <div class="col-span-1 h-24 sm:h-28 lg:h-32 flex items-center justify-center text-white font-bold text-center rounded-lg cursor-pointer bg-green-500 hover:bg-green-600 transition-all"
-            onclick="window.location.href='{{ route('request.index') }}'">
+            onclick="window.location.href='{{ route('forms2.index') }}'">
 
                 <svg fill="#ffffff" height="60px"  version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 viewBox="0 0 600 600" xml:space="preserve" stroke="#ffffff" stroke-width="15.000"><g id="SVGRepo_bgCarrier" stroke-width=""

@@ -18,24 +18,17 @@ class NotificationController extends Controller
         $notification->markAsRead();
 
         // Redirect based on the notification type
-        if(isset($notification->data['post_id'])) {
-
+        if (isset($notification->data['post_id'])) {
             return redirect()->route('posts.show', $notification->data['post_id']);
-
-        } elseif(isset($notification->data['user_name'])) {
-
-            if(auth()->user()->division_id ==6){
-                return redirect()->route('Kintaihr'); // Assuming 6 is the HR division ID
-
-            }else{
+        } elseif (isset($notification->data['type']) && $notification->data['type'] === 'application2') {
+            return redirect()->route('applications2.index', $notification->data['application_id']);
+        } elseif (isset($notification->data['user_name']) && !isset($notification->data['type'])) {
+            if (auth()->user()->division_id == 6) {
+                return redirect()->route('Kintaihr');
+            } else {
                 return redirect()->route('time_off_boss.index');
             }
-
-
-
-
-
-        } elseif(isset($notification->data['status'])) {
+        } elseif (isset($notification->data['status'])) {
             return redirect()->route('dashboard');
         }
 
