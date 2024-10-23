@@ -10,18 +10,19 @@
         "php": "^8.1",
         "azuyalabs/yasumi": "^2.7",
         "barryvdh/laravel-dompdf": "^2.1",
-
         "guzzlehttp/guzzle": "^7.2",
-        "intervention/image": "^3.6",
+        "intervention/image": "^3.9",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "league/csv": "*",
         "league/flysystem-aws-s3-v3": "^3.27",
         "maatwebsite/excel": "^3.1.58",
-
         "rap2hpoutre/fast-excel": "^5.4",
-        "spatie/laravel-permission": "^6.4"
+        "spatie/laravel-permission": "^6.4",
+        "thiagoalessio/tesseract_ocr": "^2.13"
+
+
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

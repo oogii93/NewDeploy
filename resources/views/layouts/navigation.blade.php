@@ -934,6 +934,21 @@
 
 
                 </li>
+                <li class="relative group">
+                    <a href="{{ route('namecards.index') }}"
+                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100"
+                        target="_blank" rel="noopener noreferrer">
+
+
+
+                        <img src="{{ asset('meta.png') }}" alt="meta"
+                            class="h-[30px] w-[30px] transition-transform duration-300 transform group-hover:-translate-y-1">
+
+                        <span class="mt-1 text-gray-800 text-[11px] font-medium">namecard</span>
+                    </a>
+
+
+                </li>
                 {{-- <a href="{{ route('suggestion.index') }}" class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">投書箱</a> --}}
 
 
@@ -1104,6 +1119,12 @@
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
                     申請履歴</button>
+            </li>
+            <li class="w-full">
+                <button onclick="window.location.href='{{ route('namecards.index') }}'"
+                    class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
+
+                    namecard</button>
             </li>
 
 

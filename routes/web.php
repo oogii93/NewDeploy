@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Post;
+use App\Http\Controllers\TesseractOcrController;
 use App\Http\Controllers\Calendar;
 use App\Http\Controllers\Calculation;
 use Illuminate\Support\Facades\Route;
@@ -21,13 +22,14 @@ use App\Http\Controllers\FilterController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\ProfileController;
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\KintaiHRController;
+use App\Http\Controllers\NameCardController;
 use App\Http\Controllers\TableShowController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\WebSocketController;
@@ -988,6 +990,19 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     ->name('applications2.show');
 
     Route::post('/applications2/{application2}/check', [Application2Controller::class, 'check'])->name('applications2.check');
+
+
+                //python name card
+
+
+                Route::resource('namecards', NameCardController::class);
+
+
+
+
+
+
+
 
 
 

@@ -2,6 +2,7 @@
 
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Facade;
+use Intervention\Image\ImageServiceProvider;
 
 return [
 
@@ -192,7 +193,7 @@ return [
         /*
          * Package Service Providers...
          */
-        // Intervention\Image\ImageServiceProvider::class,
+        // ImageServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -222,6 +223,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'PDF' => 'Barryvdh\DomPDF\Facade'::class,
+        'Image' => Intervention\Image\Facades\Image::class,
 
 
     ])->toArray(),
