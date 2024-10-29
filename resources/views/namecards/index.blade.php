@@ -106,15 +106,15 @@
                                         画像</th>
                                         <th
                                         class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm hide-on-mobile">
-                                        商品名</th>
+                                        名前</th>
                                     <th
                                         class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm hide-on-mobile">
-                                        種類</th>
+                                        住所</th>
                                     <th class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm">
-                                        メーカー</th>
+                                        電話</th>
                                     <th
                                         class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm hide-on-mobile">
-                                        数量</th>
+                                        メール</th>
 
 
                                     <th class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm">

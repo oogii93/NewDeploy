@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class NameCardController extends Controller
 {
+
+
+
+
+
     public function create()
     {
         return view('namecards.create');
@@ -24,7 +29,6 @@ class NameCardController extends Controller
         try {
             // Check if this is an OCR request or final form submission
             $isOcrRequest = $request->has('ocr_only');
-
             // Process the base64 image
             $image_data = $request->input('image_data');
             $image_data = preg_replace('#^data:image/\w+;base64,#i', '', $image_data);
@@ -45,9 +49,9 @@ class NameCardController extends Controller
 
             // Perform OCR
             $tesseract = new TesseractOCR($file_path);
-            $tesseract->lang('eng')
-                     ->psm(3)
-                     ->oem(1);
+            $tesseract->lang('jpn', 'eng')  // Support both Japanese and English
+            ->psm(3)
+            ->oem(1);
 
             $extracted_text = $tesseract->run();
             $extracted_data = $this->extractFields($extracted_text);
@@ -133,3 +137,4 @@ class NameCardController extends Controller
         return $extracted;
     }
 }
+

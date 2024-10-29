@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
+use App\Models\Corp;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
@@ -19,6 +20,9 @@ class PostController extends Controller
     {
         $categories = Category::all();
 
+        $userCorpId=Auth::user()->corp_id;
+
+
         // Search query
         $searchQuery = $request->input('search');
 
@@ -28,6 +32,12 @@ class PostController extends Controller
         } else {
             $posts = Post::query();
         }
+
+        $posts->where(function ($query) use ($userCorpId){
+            $query->whereHas('corps', function ($q) use ($userCorpId){
+                $q->where('corps.id', $userCorpId);
+            }) ->orWhereDoesntHave('corps');
+        });
 
         // Apply search query
         if ($searchQuery) {
@@ -52,7 +62,14 @@ class PostController extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
-        return view('posts.create', compact('categories','tags'));
+
+        $corps=Corp::all();
+        // dd([
+        //     'category'=>$categories,
+        //     'tags'=>$tags,
+        //     'corps'=>$corps,
+        // ]);
+        return view('posts.create', compact('categories','tags', 'corps'));
     }
 
 
@@ -68,7 +85,13 @@ class PostController extends Controller
                 'tags' => 'nullable|array',
                 'content' => 'required',
              'attachments.*' => 'nullable|file|max:50240',
+
+             'corps' => 'required|array', // Add this validation
+             'corps.*' => 'exists:corps,id', // Add this validation
+             'notify_all_corps' => 'nullable|boolean', // Add this for the "notify all" option
             ]);
+
+            // dd($request->all());
 
             Log::info('Validation passed', ['validatedData' => $validatedData]);
 
@@ -80,13 +103,50 @@ class PostController extends Controller
             $post->save();
 
 
-            // Send notification to all users
 
-            User::all()->each(function ($user) use ($post) {
+if($request->has('notify_all_corps') && $request->notify_all_corps =='1'){
+
+            Log::info('Notifying all corps');
+
+    User::chunk(100, function ($users) use ($post){
+            foreach($users as $user) {
                 $user->notify(new NewPostNotification($post));
+            }
+
+    });
+
+
+            }else{
+
+                Log::info('Notifying specific corps', ['corps' => $request->corps]);
+
+                if ($request->has('corps')) {
+                    $post->corps()->attach($request->corps);
+                }
+
+
+
+                       // Notify users from selected corps
+            User::whereIn('corp_id', $request->corps)
+            ->chunk(100, function ($users) use ($post) {
+                foreach ($users as $user) {
+                    $user->notify(new NewPostNotification($post));
+                }
             });
 
-            Log::info('Post created', ['post' => $post]);
+                //
+
+
+            }
+
+
+            // Send notification to all users
+
+            // User::all()->each(function ($user) use ($post) {
+            //     $user->notify(new NewPostNotification($post));
+            // });
+
+            // Log::info('Post created', ['post' => $post]);
 
             if($request->hasFile('attachments')){
                 Log::info('Attachments found', ['count' => count($request->file('attachments'))]);
@@ -122,6 +182,8 @@ class PostController extends Controller
                 Log::info('No attachments found');
             }
 
+
+
             if (isset($validatedData['tags'])) {
                 $post->tags()->attach($validatedData['tags']);
                 Log::info('Tags attached', ['tags' => $validatedData['tags']]);
@@ -130,6 +192,8 @@ class PostController extends Controller
             Log::info('Store method completed successfully');
 
             return redirect()->route('posts.index')->with('success', 'Post created successfully!');
+
+
         } catch (\Exception $e) {
             Log::error('Error in store method', [
                 'message' => $e->getMessage(),
@@ -177,7 +241,17 @@ public function download($id)
 
     public function show($id)
     {
-        $post = Post::findOrFail($id);
+
+
+        $userCorpId=Auth::user()->corp_id;
+
+      $post = Post::where(function($query) use ($userCorpId) {
+        $query->whereHas('corps', function($q) use ($userCorpId) {
+            $q->where('corps.id', $userCorpId);
+        })
+        ->orWhereDoesntHave('corps'); // Posts with no corps specified are visible to all
+    })->findOrFail($id);
+
         return view('posts.show', compact('post'));
     }
 

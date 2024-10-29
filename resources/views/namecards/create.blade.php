@@ -1,9 +1,15 @@
-<div class="container px-5">
-    <div id="camera-container ">
+
+
+<x-app-layout>
+    <div class="mt-10 mb-5">
+<div class="container px-5 content-center rounded-lg">
+    <div id="camera-container px-5 mt-5 flex justify-center ">
         <video id="video" width="640" height="480" autoplay></video>
         <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-        <div class="controls">
-            <button type="button" id="snap" class="btn btn-primary">Capture Image</button>
+
+
+        <div class="controls mt-5">
+            <x-button type="button" id="snap" purpose="search">Capture Image</x-button>
             <button type="button" id="retake" class="btn btn-secondary" style="display: none;">Retake</button>
         </div>
         <div id="preview" style="display: none;">
@@ -17,31 +23,31 @@
 
         <div class="form-group">
             <label for="name">Name:</label>
-            <input type="text" name="name" id="name" class="form-control" required>
+            <input type="text" name="name" id="name" class="form-control">
             <small class="text-muted">OCR Detected: <span id="detected-name"></span></small>
         </div>
 
         <div class="form-group">
             <label for="company">Company:</label>
-            <input type="text" name="company" id="company" class="form-control" required>
+            <input type="text" name="company" id="company" class="form-control">
             <small class="text-muted">OCR Detected: <span id="detected-company"></span></small>
         </div>
 
         <div class="form-group">
             <label for="address">Address:</label>
-            <input type="text" name="address" id="address" class="form-control" required>
+            <input type="text" name="address" id="address" class="form-control">
             <small class="text-muted">OCR Detected: <span id="detected-address"></span></small>
         </div>
 
         <div class="form-group">
             <label for="phone">Phone:</label>
-            <input type="text" name="phone" id="phone" class="form-control" required>
+            <input type="text" name="phone" id="phone" class="form-control">
             <small class="text-muted">OCR Detected: <span id="detected-phone"></span></small>
         </div>
 
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" name="email" id="email" class="form-control" required>
+            <input type="email" name="email" id="email" class="form-control">
             <small class="text-muted">OCR Detected: <span id="detected-email"></span></small>
         </div>
 
@@ -52,6 +58,8 @@
         <h4>Full OCR Text:</h4>
         <pre id="full-ocr-text" style="white-space: pre-wrap;"></pre>
     </div>
+</div>
+</div>
 </div>
 
 <script>
@@ -187,3 +195,6 @@
     }
 });
 </script>
+
+</x-app-layout>
+

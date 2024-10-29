@@ -31,6 +31,10 @@
             </div>
             <div class="grid grid-cols-1 gap-4">
                 @foreach ($posts as $post)
+
+
+
+
                 <div class="bg-white shadow-md rounded-lg p-4">
                     <p class="text-sm text-gray-500">{{ $post->user->name }} <br> {{ $post->created_at->translatedFormat('Y年n月j日') }}</p>
                     <a href="{{ route('posts.show', $post->id) }}" class="text-xl font-bold mb-2 hover:underline">{{ $post->title }}</a>
@@ -51,7 +55,22 @@
                     </div>
                     @endif
                     @endauth
-                    <div class="mt-4"></div>
+                    <div class="mt-4">
+
+                        @if($post->corps->count() > 0)
+                        <div class="corps-list">
+                            <small class="text-blue-500 font-md">閲覧可能:
+                                @foreach($post->corps as $corp)
+                                    <span class="badge badge-info text-black">{{ $corp->corp_name }}</span>
+                                @endforeach
+                            </small>
+                        </div>
+                    @else
+                        <div class="corps-list">
+                            <small><span class="badge badge-secondary">Visible to all corps</span></small>
+                        </div>
+                    @endif
+                    </div>
                 </div>
                 @endforeach
             </div>

@@ -52,6 +52,8 @@ class NewPostNotification extends Notification
         return [
             'post_id' => $this->post->id,
             'title' => $this->post->title,
+            'created_by' => $this->post->user->name,
+            'corps' => $this->post->corps->pluck('name'),
 
         ];
     }

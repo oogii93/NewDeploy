@@ -401,7 +401,18 @@ class TableShowController extends Controller
 
     public function home()
     {
-        $posts = Post::latest()->paginate(10);
+
+        $userCorpId=Auth::user()->corp_id;
+
+        $posts = Post::where(function($query) use ($userCorpId) {
+            $query->doesntHave('corps') // Posts visible to all
+                  ->orWhereHas('corps', function($q) use ($userCorpId) {
+                      $q->where('corps.id', $userCorpId);
+                  });
+        })
+        ->latest()
+        ->paginate(10);
+
         return view('home', compact('posts'));
     }
 

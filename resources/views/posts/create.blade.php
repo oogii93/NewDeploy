@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Create New Post') }}
+           新規投稿
         </h2>
     </x-slot>
 
@@ -11,6 +11,26 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+
+
+                        <div class="form-group">
+
+
+
+                            <div id="corps_selection">
+                                <label class="text-lg font-semibold px-2 py-5 mb-2">会社選択</label>
+                                <select name="corps[]" id="corps_select" class="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:text-gray-300" multiple>
+                                    @foreach($corps as $corp)
+                                        <option value="{{ $corp->id }}">{{ $corp->corp_name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="invalid-feedback mt-5 mb-5 text-blue-600 px-2 font-semibold text-lg container bg-yellow-100">
+                                   !! 複数の会社を選択するには、キーボードのコントロールをクリックして会社をクリックしてください。
+                                </div>
+                            </div>
+                        </div>
+
+
                         <div class="mb-4">
                             <label for="category" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Category</label>
                             <select name="category_id" id="category" class="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 dark:bg-gray-700 dark:text-gray-300">
@@ -61,6 +81,35 @@
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
     <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    const notifyAllCorps = document.getElementById('notify_all_corps');
+    const corpsSelection = document.getElementById('corps_selection');
+    const corpsSelect = document.getElementById('corps_select');
+
+    function toggleCorpsSelection() {
+        if (notifyAllCorps.checked) {
+            corpsSelection.style.display = 'none';
+            // Clear the selection when switching to "all corps"
+            if (corpsSelect.select2) {
+                corpsSelect.select2('val', '');
+            } else {
+                corpsSelect.value = '';
+            }
+        } else {
+            corpsSelection.style.display = 'block';
+        }
+    }
+
+    // Initial state
+    toggleCorpsSelection();
+
+    // Handle changes
+    notifyAllCorps.addEventListener('change', toggleCorpsSelection);
+});
+
+
+
         $(document).ready(function() {
             $('#summernote').summernote({
                 height: 300,

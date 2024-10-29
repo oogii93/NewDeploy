@@ -42,6 +42,11 @@ class Post extends Model
     return $this->hasMany(PostAttachment::class);
 }
 
+public function corps()
+{
+    return $this->belongsToMany(Corp::class);
+}
+
 
 
 
