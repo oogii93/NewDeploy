@@ -12,7 +12,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         @foreach($calendar as $month => $monthCalendar)
             <div class="bg-white shadow rounded p-4">
-                <h3 class="text-lg font-semibold mb-2 text-center">{{ Carbon::create(null, $month, null)->translatedFormat('F') }}</h3>
+                <h3 class="text-2xl text-yellow-500 font-semibold mb-2 text-center">{{ $month }}</h3>
                 <div class="grid grid-cols-7 gap-1 text-center font-semibold">
                     @php
                         $daysOfWeek = ['日', '月', '火', '水', '木', '金', '土'];

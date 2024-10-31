@@ -1,5 +1,18 @@
 <!-- Loop through each day of the previous month -->
 
+
+
+@php
+    // At the start of your blade template
+    $holidayDates = $holidays->pluck('vacation_date')
+        ->map(function($date) {
+            return $date->format('Y-m-d');
+        })
+        ->toArray();
+    // dump($holidayDates); // Should now show ["2024-11-06"]
+@endphp
+
+
 <style>
     .custom-select {
         background-image: none;
@@ -42,7 +55,8 @@
 
         $startOfDay = $day->startOfDay()->format('Y-m-d H:i:s');
         $endOfDay = $day->endOfDay()->format('Y-m-d H:i:s');
-        $isHoliday = $holidays->contains('vacation_date', $day->format('Y-m-d'));
+        $isHoliday = in_array($day->format('Y-m-d'), $holidayDates);
+        // dd($isHoliday);
     @endphp
 
 
@@ -108,7 +122,10 @@
                     申請
                 </button>
             @endif
+
+
         </td>
+
 
 
 

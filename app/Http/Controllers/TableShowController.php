@@ -44,12 +44,21 @@ class TableShowController extends Controller
         $startDate = $previousMonthStart->copy()->startOfDay();
         $endDate = $currentMonthStart->copy()->subDay()->endOfDay();
 
+        // $holidays = VacationCalendar::getHolidaysForRange(
+        // $startDate->format('Y-m-d'),
+        // $endDate->format('Y-m-d'),
+        // $officeId
         $holidays = VacationCalendar::getHolidaysForRange(
-        $startDate->format('Y-m-d'),
-        $endDate->format('Y-m-d'),
-        $officeId
+            $startDate->format('Y-m-d'),
+            $endDate->format('Y-m-d'),
+            $officeId
+        );
 
-    );
+        // dd($holidays);
+
+
+
+    // dd($holidays);
     $attendanceTypeRecords = AttendanceTypeRecord::all();
      // Fetch bosses who belong to the same office as the authenticated user
      $bosses = User::where('is_boss', true)
@@ -139,7 +148,7 @@ class TableShowController extends Controller
         'breaks' => $breaks,
     ])->render();
     // return ["break"=>$breaks, "start" => $startDate, "end" => $endDate];
-
+// dd($holidays);
 
     return view('dashboard', compact('tbody'));
 
