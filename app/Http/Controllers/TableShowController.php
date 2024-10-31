@@ -155,6 +155,8 @@ class TableShowController extends Controller
 
     }
 
+
+
     // public function omnoh($year, $month)
     // {
     //     $year = (int)$year;

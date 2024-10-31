@@ -220,6 +220,8 @@
                     // dd($arrivalSecond,$departureSecondTime, $arrivalSecondTime);
                 @endphp
             </td>
+
+
             <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
                 @if ($arrivalSecond && $arrivalSecond->arrivalDepartureRecords->count() > 0)
                     @if ($arrivalSecond->arrivalDepartureRecords->first()->second_recorded_at != null)
@@ -230,7 +232,12 @@
         @endif
 
 
-        <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+
+<!--real time calculation-->
+        {{-- <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+
+
+
             @php
                 // Define constants for the workday, break, and lunch times
                 $regularStartTime = strtotime('08:30');
@@ -280,30 +287,138 @@
                     $totalWorkedMinutes -= $actualBreakMinutes;
 
                     // Ensure total worked minutes doesn't go negative
-    $totalWorkedMinutes = max(0, $totalWorkedMinutes);
+                    $totalWorkedMinutes = max(0, $totalWorkedMinutes);
 
-    if (
-        auth()->user()->office &&
-        auth()->user()->office->corp &&
-        auth()->user()->office->corp->corp_name === 'ユメヤ'
-    ) {
-        if ($arrivalSecondTime && $departureSecondTime) {
-            $workedSecondStartTime = strtotime($arrivalSecondTime->format('H:i'));
-            $workedSecondEndTime = strtotime($departureSecondTime->format('H:i'));
-            if ($workedSecondEndTime - $workedSecondStartTime > 0) {
-                $secondTotalWorkedMinutes = ($workedSecondEndTime - $workedSecondStartTime) / 60;
-                $totalWorkedMinutes += $secondTotalWorkedMinutes;
+                    if (
+                        auth()->user()->office &&
+                        auth()->user()->office->corp &&
+                        auth()->user()->office->corp->corp_name === 'ユメヤ'
+                    ) {
+                        if ($arrivalSecondTime && $departureSecondTime) {
+                            $workedSecondStartTime = strtotime($arrivalSecondTime->format('H:i'));
+                            $workedSecondEndTime = strtotime($departureSecondTime->format('H:i'));
+                            if ($workedSecondEndTime - $workedSecondStartTime > 0) {
+                                $secondTotalWorkedMinutes = ($workedSecondEndTime - $workedSecondStartTime) / 60;
+                                $totalWorkedMinutes += $secondTotalWorkedMinutes;
+                            }
+                        }
+                    }
+
+                                // Print formatted total worked time for the day
+                                echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
+                            } else {
+                                echo '';
+                                            }
+                            @endphp
+        </td> --}}
+
+<!--new time calculation-->
+
+
+<td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+    @php
+        // Check if user is from Yumeya
+        $isYumeya = auth()->user()->office &&
+                    auth()->user()->office->corp &&
+                    auth()->user()->office->corp->corp_name === 'ユメヤ';
+
+        $totalWorkedMinutes = 0;
+
+        if ($isYumeya) {
+            // Yumeya specific times
+            $regularStartTime = strtotime('09:00');  // Different start time for Yumeya
+            $breakStartTime1 = strtotime('00:00');   // Different break times
+            $breakEndTime1 = strtotime('00:00');
+            $lunchStartTime = strtotime('12:00');    // Different lunch time
+            $lunchEndTime = strtotime('13:00');
+            $breakStartTime2 = strtotime('00:00');
+            $breakEndTime2 = strtotime('00:00');
+            $regularEndTime = strtotime('18:00');    // Different end time
+
+            if ($arrivalTime && $departureTime) {
+                $workedStartTime = strtotime($arrivalTime->format('H:i'));
+                $workedEndTime = strtotime($departureTime->format('H:i'));
+
+                // Calculate first period with Yumeya's break schedule
+                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
+                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
+
+                if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
+                    $totalWorkedMinutes -= 10;
+                }
+
+                $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
+                $totalWorkedMinutes += $afterLunchWorkedTime / 60;
+
+                if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
+                    $totalWorkedMinutes -= 10;
+                }
+
+                // Add second period calculation for Yumeya
+                if ($arrivalSecondTime && $departureSecondTime) {
+                    $workedSecondStartTime = strtotime($arrivalSecondTime->format('H:i'));
+                    $workedSecondEndTime = strtotime($departureSecondTime->format('H:i'));
+                    if ($workedSecondEndTime - $workedSecondStartTime > 0) {
+                        $secondTotalWorkedMinutes = ($workedSecondEndTime - $workedSecondStartTime) / 60;
+                        $totalWorkedMinutes += $secondTotalWorkedMinutes;
+                    }
+                }
+            }
+        } else {
+            // Original calculation for other companies
+            $regularStartTime = strtotime('08:30');
+            $breakStartTime1 = strtotime('11:00');
+            $breakEndTime1 = strtotime('11:10');
+            $lunchStartTime = strtotime('12:00');
+            $lunchEndTime = strtotime('13:00');
+            $breakStartTime2 = strtotime('13:00');
+            $breakEndTime2 = strtotime('13:10');
+            $breakStartTime3 = strtotime('17:30');
+            $breakEndTime3 = strtotime('17:40');
+            $regularEndTime = strtotime('17:30');
+
+            if ($arrivalTime && $departureTime) {
+                $workedStartTime = strtotime($arrivalTime->format('H:i'));
+                $workedEndTime = strtotime($departureTime->format('H:i'));
+
+                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
+                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
+
+                if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
+                    $totalWorkedMinutes -= 10;
+                }
+
+                $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
+                $totalWorkedMinutes += $afterLunchWorkedTime / 60;
+
+                if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
+                    $totalWorkedMinutes -= 10;
+                }
+
+                if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
+                    $totalWorkedMinutes -= 10;
+                }
             }
         }
-    }
 
-    // Print formatted total worked time for the day
-    echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
-} else {
-    echo '';
-                }
-            @endphp
-        </td>
+        // Common calculations for both
+        if ($arrivalTime && $departureTime) {
+            // Subtract additional recorded breaks
+            $actualBreakMinutes = isset($breaks[$day->format('Y-m-d')]) ? $breaks[$day->format('Y-m-d')] : 0;
+            $totalWorkedMinutes -= $actualBreakMinutes;
+
+            // Ensure total worked minutes doesn't go negative
+            $totalWorkedMinutes = max(0, $totalWorkedMinutes);
+
+            // Print formatted total worked time
+            echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
+        } else {
+            echo '';
+        }
+    @endphp
+</td>
+
+
 
 
 
@@ -336,6 +451,8 @@
                 }
             @endphp
         </td>
+
+
         <td
             class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm hidden md:table-cell">
             <!-- Calculate and display total hours overtime2 for the day -->
