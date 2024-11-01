@@ -437,7 +437,7 @@
                 }
             @endphp
         </td> --}}
-        <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+        {{-- <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
             <!-- Calculate and display total hours overtime1 for the day -->
             @php
                 if ($result) {
@@ -467,7 +467,56 @@
                     echo '';
                 }
             @endphp
+        </td> --}}
+
+        <!-- Overtime 1 TD -->
+
+        <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+            @php
+                $isYumeya = auth()->user()->office &&
+                            auth()->user()->office->corp &&
+                            auth()->user()->office->corp->corp_name === 'ユメヤ';
+
+                if ($arrivalTime && $departureTime) {
+                    if ($isYumeya) {
+                        // Calculate Yumeya time
+                        $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                        $arrayOverTime1 = explode(':', $result2['overTime1']);
+                    } else {
+                        // Calculate regular time
+                        $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                        $arrayOverTime1 = explode(':', $result['overTime1']);
+                    }
+
+                    $totalMinutesForMonth += $arrayOverTime1[0] * 60 + $arrayOverTime1[1];
+                    echo sprintf('%02d:%02d', $arrayOverTime1[0], $arrayOverTime1[1]);
+                } else {
+                    echo '';
+                }
+            @endphp
         </td>
+
+        <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm hidden md:table-cell">
+            @php
+                if ($arrivalTime && $departureTime) {
+                    if ($isYumeya) {
+                        // Calculate Yumeya time
+                        $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                        $arrayOverTime2 = explode(':', $result2['overTime2']);
+                    } else {
+                        // Calculate regular time
+                        $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                        $arrayOverTime2 = explode(':', $result['overTime2']);
+                    }
+
+                    $totalMinutesForMonth += $arrayOverTime2[0] * 60 + $arrayOverTime2[1];
+                    echo sprintf('%02d:%02d', $arrayOverTime2[0], $arrayOverTime2[1]);
+                } else {
+                    echo '';
+                }
+            @endphp
+        </td>
+
         <!--nemeh-->
     </tr>
 
