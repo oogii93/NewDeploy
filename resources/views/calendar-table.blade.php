@@ -325,21 +325,26 @@
 
                     <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
                         @php
+                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
+                                // Initialize times
+                                $arrivalTime = \Carbon\Carbon::parse($arrivalRecord->recorded_at);
+                                $departureTime = \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at);
 
+                                // Only proceed if both times are valid
+                                if ($arrivalTime && $departureTime) {
+                                    if ($corpName === 'ユメヤ') {
+                                        // Calculate Yumeya time
+                                        $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                                        $arrayOverTime1 = explode(':', $result2['overTime1']);
+                                    } else {
+                                        // Calculate regular time
+                                        $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                                        $arrayOverTime1 = explode(':', $result['overTime1']);
+                                    }
 
-                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords) {
-                                if ($corpName === 'ユメヤ') {
-                                    // Calculate Yumeya time
-                                    $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
-                                    $arrayOverTime1 = explode(':', $result2['overTime1']);
-                                } else {
-                                    // Calculate regular time
-                                    $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
-                                    $arrayOverTime1 = explode(':', $result['overTime1']);
+                                    $totalMinutesForMonth += $arrayOverTime1[0] * 60 + $arrayOverTime1[1];
+                                    echo sprintf('%02d:%02d', $arrayOverTime1[0], $arrayOverTime1[1]);
                                 }
-
-                                $totalMinutesForMonth += $arrayOverTime1[0] * 60 + $arrayOverTime1[1];
-                                echo sprintf('%02d:%02d', $arrayOverTime1[0], $arrayOverTime1[1]);
                             } else {
                                 echo '';
                             }
@@ -348,19 +353,24 @@
 
                     <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
                         @php
-                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords) {
-                                if ($corpName === 'ユメヤ') {
-                                    // Calculate Yumeya time
-                                    $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
-                                    $arrayOverTime2 = explode(':', $result2['overTime2']);
-                                } else {
-                                    // Calculate regular time
-                                    $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
-                                    $arrayOverTime2 = explode(':', $result['overTime2']);
-                                }
+                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
+                                // Initialize times
+                                $arrivalTime = \Carbon\Carbon::parse($arrivalRecord->recorded_at);
+                                $departureTime = \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at);
 
-                                $totalMinutesForMonth += $arrayOverTime2[0] * 60 + $arrayOverTime2[1];
-                                echo sprintf('%02d:%02d', $arrayOverTime2[0], $arrayOverTime2[1]);
+                                // Only proceed if both times are valid
+                                if ($arrivalTime && $departureTime) {
+                                    if ($corpName === 'ユメヤ') {
+                                        $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                                        $arrayOverTime2 = explode(':', $result2['overTime2']);
+                                    } else {
+                                        $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                                        $arrayOverTime2 = explode(':', $result['overTime2']);
+                                    }
+
+                                    $totalMinutesForMonth += $arrayOverTime2[0] * 60 + $arrayOverTime2[1];
+                                    echo sprintf('%02d:%02d', $arrayOverTime2[0], $arrayOverTime2[1]);
+                                }
                             } else {
                                 echo '';
                             }
