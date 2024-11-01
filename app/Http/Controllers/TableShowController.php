@@ -82,6 +82,7 @@ class TableShowController extends Controller
         //                     });
         //                 });
         $totalMinutes=0;
+
         $breaks = Breaks::where('user_id', $user->id)
         ->whereBetween('start_time', [$startDate, $endDate])
         ->get()

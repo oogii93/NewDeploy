@@ -50,6 +50,15 @@ class UserFilterController extends Controller
 
 
 
+        // Retrieve corp name based on corp ID
+$corp = Corp::find($corpId);
+$corpName = $corp ? $corp->corp_name : null;
+
+
+
+
+
+
 
         $users = User::query();
 
@@ -81,18 +90,21 @@ class UserFilterController extends Controller
             $users->where('id', $userId);
         }
 
+        // $holidays = VacationCalendar::getHolidaysForRange(
+        //     $startDate->format('Y-m-d'),
+        //     $endDate->format('Y-m-d'),
+        //     $officeId
+        // );
+
         // If neither corpId, officeId, nor userId is provided, fetch all users
         if (!$corpId && !$officeId && !$userId) {
             $users = User::with('office');
         }
 
 
-        // Fetch attendance records for the selected year and month
-        // $startDate = Carbon::createFromDate($selectedYear, $selectedMonth, 1);
-        // $endDate = $startDate->copy()->endOfMonth();
-
         $startDate=Carbon::create($selectedYear, $selectedMonth, 16)->subMonth();
         $endDate=Carbon::create($selectedYear,$selectedMonth,15);
+
 
 
 
@@ -106,14 +118,31 @@ class UserFilterController extends Controller
             'timeOffRequestRecords' => function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('date', [$startDate, $endDate]);
             }
+
         ]);
 
         $users = $users->paginate(4);
-        // dd($startDate, $endDate);
-        // dd($selectedYear, $selectedMonth, $startDate, $endDate);
 
 
-        return view('user', compact('users', 'selectedYear', 'selectedMonth','startDate','endDate'));
+        // Calculate breaks for each user in the result set
+        $breakData = [];
+        foreach ($users as $user) {
+            $breakData[$user->id] = calculateTotalBreakMinutes($user->id, $startDate, $endDate);
+        }
+        // dd($breakData);
+
+        $holidays=VacationCalendar::getHolidaysForRange($startDate->format('Y-m-d'), $endDate->format('Y-m-d'), $officeId);
+
+
+
+        // dd($holidays->first());
+// dd(
+
+//     [
+//         'dasfasdf'=>$holidays
+//     ]);
+
+        return view('user', compact('users', 'selectedYear', 'selectedMonth','startDate','endDate', 'holidays','corpName','breakData'));
     }
 
 }

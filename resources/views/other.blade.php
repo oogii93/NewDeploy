@@ -1,13 +1,13 @@
 <x-app-layout>
     <div class="py-10 bg-gray-100 shadow-sm min-h-screen">
         <div class="bg-white p-4 rounded-lg shadow-lg w-full max-w-sm mx-auto">
-            <h2 class="text-xl font-semibold mb-4 text-center">社員フィルター</h2>
+            <h2 class="text-xl font-semibold mb-4 text-center mt-2">社員フィルター</h2>
 
 
             <form action="{{ route('filter') }}" method="GET">
                 @csrf
                 <div>
-                    <label for="corps_id" class="block mb-2">会社を選択してください</label>
+                    <label for="corps_id" class="block mb-2 font px-2">会社を選択してください</label>
                     <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                         <option value="">会社</option>
                         @foreach($corps as $corp)
@@ -16,14 +16,14 @@
                     </select>
                 </div>
                 <div class="mt-4">
-                    <label for="office_id" class="block mb-2">所属を選択してください</label>
+                    <label for="office_id" class="block mb-2 px-2">所属を選択してください</label>
                     <select name="office_id" id="office_id" class="block w-full px-4 py-2 border border-gray-500  focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                         <option value="">所属</option>
                     </select>
                 </div>
                 <div class="mt-4">
 
-                    <label for="user_id" class="block mb-2">ユーザーを選択してください</label>
+                    <label for="user_id" class="block mb-2 px-2">ユーザーを選択してください</label>
                     <select name="user_id" id="user_id" class="block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                         <option value="">ユーザー</option>
                         <option value="all">全員</option>
@@ -34,15 +34,18 @@
                 </div>
 
                 <div class="mt-4">
-                    <label for="year" class="block mb-2">年を選択してください</label>
+                    <label for="year" class="block mb-2 px-2">年を選択してください</label>
                     <select name="year" id="year" class="block w-full px-4 py-2 border border-gray-500  focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
-                        @for ($i = date('Y'); $i >= 2023; $i--)
-                            <option value="{{ $i }}" @if ($selectedYear == $i) selected @endif>{{ $i }}</option>
-                        @endfor
+
+
+                        @for ($i = date('Y'); $i <= date('Y') +5; $i++)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                       @endfor
+
                     </select>
                 </div>
                 <div class="mt-4">
-                    <label for="month" class="block mb-2">月を選択してください</label>
+                    <label for="month" class="block mb-2 px-2">月を選択してください</label>
                     <select name="month" id="month" class="block w-full px-4 py-2 border border-gray-500  focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                         @for ($i = 1; $i <= 12; $i++)
                             @php

@@ -3,6 +3,7 @@
 <?php
 
 use Carbon\Carbon;
+use App\Models\Breaks;
 
 function workTimeCalcYumeya($startTime = '', $endTime = '')
 {
@@ -78,3 +79,63 @@ function workTimeCalcYumeya($startTime = '', $endTime = '')
 
     return $result2;
 }
+
+
+
+function calculateValidMinutes($start, $end, $skipStart, $skipEnd)
+{
+    $duration = $start->diffInMinutes($end);
+
+    if ($start < $skipEnd && $end > $skipStart) {
+        $overlapStart = max($start, $skipStart);
+        $overlapEnd = min($end, $skipEnd);
+        $duration -= $overlapStart->diffInMinutes($overlapEnd);
+    }
+
+    return max(0, $duration); // Ensure no negative values
+}
+
+function calculateTotalBreakMinutes($userId, $startDate, $endDate)
+{
+    $totalMinutes = 0;
+
+    $breaks = Breaks::where('user_id', $userId)
+        ->whereBetween('start_time', [$startDate, $endDate])
+        ->get()
+        ->groupBy(function ($break) {
+            return Carbon::parse($break->start_time)->format('Y-m-d');
+        })
+        ->map(function ($dayBreaks) {
+            return $dayBreaks->sum(function ($break) {
+                $totalMinutes = 0;
+                $firstBreakDate = Carbon::parse($break->start_time);
+                $skipStart = Carbon::createFromFormat('Y-m-d H:i', $firstBreakDate->format('Y-m-d') . ' 12:00');
+                $skipEnd = Carbon::createFromFormat('Y-m-d H:i', $firstBreakDate->format('Y-m-d') . ' 13:00');
+
+                $firstStart = Carbon::parse($break->start_time);
+                $firstEnd = Carbon::parse($break->end_time);
+                $totalMinutes += calculateValidMinutes($firstStart, $firstEnd, $skipStart, $skipEnd);
+
+                if (isset($break->start_time2) && isset($break->end_time2)) {
+                    $secondStart = Carbon::parse($break->start_time2);
+                    $secondEnd = Carbon::parse($break->end_time2);
+                    $skipStart = Carbon::createFromFormat('Y-m-d H:i', $secondStart->format('Y-m-d') . ' 12:00');
+                    $skipEnd = Carbon::createFromFormat('Y-m-d H:i', $secondStart->format('Y-m-d') . ' 13:00');
+                    $totalMinutes += calculateValidMinutes($secondStart, $secondEnd, $skipStart, $skipEnd);
+                }
+
+                if (isset($break->start_time3) && isset($break->end_time3)) {
+                    $thirdStart = Carbon::parse($break->start_time3);
+                    $thirdEnd = Carbon::parse($break->end_time3);
+                    $skipStart = Carbon::createFromFormat('Y-m-d H:i', $thirdStart->format('Y-m-d') . ' 12:00');
+                    $skipEnd = Carbon::createFromFormat('Y-m-d H:i', $thirdStart->format('Y-m-d') . ' 13:00');
+                    $totalMinutes += calculateValidMinutes($thirdStart, $thirdEnd, $skipStart, $skipEnd);
+                }
+
+                return $totalMinutes;
+            });
+        });
+
+    return $breaks;
+}
+

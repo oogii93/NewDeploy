@@ -13,13 +13,16 @@
         @endphp
     @endwhile
 
-    <div class="flex flex-wrap">
+    <div class="flex flex-wrap py-10">
         @foreach ($users as $user)
-            <div class="p-3">
+            <div class="p-5">
                 @include('calendar-table', [
                     'user' => $user,
                     'startDate' => $startDate,
                     'endDate' => $endDate,
+                    'holiday' => $holidays,// Pass holidays to the included template
+                    'corpName'=>$corpName,
+                    'breakData'=>$breakData,
 
                 ])
             </div>
@@ -27,7 +30,7 @@
         @endforeach
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 mb-4 flex justify-start">
         {{ $users->appends(request()->except('page'))->links() }}
     </div>
 
