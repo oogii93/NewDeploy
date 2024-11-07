@@ -26,7 +26,7 @@
 
             <button class="bg-gradient-to-b from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 font-medium p-5 text-white uppercase w-full rounded text-medium">ログイン</button>
 
-
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
             <div class="flex items-center justify-end mt-6">
                 @if (Route::has('password.request'))
                     <a class="underline text-medium text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">

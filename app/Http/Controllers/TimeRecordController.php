@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use Log;
 use Auth;
 use Carbon\Carbon;
@@ -420,6 +421,37 @@ private function checkIfSecondArrivalExists($user, $date)
     }
 
     return response()->json(['count' => $count]);
+}
+
+
+public function destroy($id)
+{
+    try{
+        $arrivalRecord=ArrivalRecord::findOrFail($id);
+        //
+        if(auth()->user()->id !==$arrivalRecord->user_id){
+            return redirect()->back()->with('error', '権限がありません。');
+        }
+           // Begin transaction to ensure all related records are deleted properly
+           \DB::beginTransaction();
+
+        if($arrivalRecord->arrivalDepartureRecords){
+            $arrivalRecord->arrivalDepartureRecords()->delete();
+        }
+
+        $arrivalRecord->delete();
+
+        \DB::commit();
+
+        return redirect()->back()->with('status', '記録が削除されました。');
+
+
+
+    }catch(\Exception $e){
+        DB::rollBack();
+
+        return redirect()->back()->with('error','記録の削除に失敗しました。');
+    }
 }
 
 }

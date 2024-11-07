@@ -581,6 +581,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/dashboard', [TimeRecordController::class, 'record'])
         ->name('time.record');
 
+    //delete Route
+
+    Route::delete('/timerecord/{id}', [TimeRecordController::class , 'destroy'])
+        ->name('timerecord.destroy');
+
     // Route::put('/dashboard', [TimeRecordController::class, 'record_manual'])
     //     ->name('time.record.manual');
 

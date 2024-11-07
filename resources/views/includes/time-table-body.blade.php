@@ -147,7 +147,7 @@
 
 
 
-        <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+        {{-- <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
             <!-- Display arrival time for the day -->
             @php
                 $arrival = $user
@@ -176,6 +176,53 @@
                 // {{ $departureTime ? $departureTime->format('H:i') : '' }};
                 // dd($arrival,$departureTime, $arrivalTime);
             @endphp
+
+
+
+        </td> --}}
+
+        <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
+            @php
+                $arrival = $user
+                    ->userArrivalRecords()
+                    ->whereBetween('recorded_at', [$startOfDay, $endOfDay])
+                    ->first();
+
+                $arrivalTime = $arrival
+                    ? Carbon\Carbon::parse($arrival->recorded_at)->setTimezone(config('app.timezone'))
+                    : null;
+                $departureTime =
+                    $arrival && $arrival->arrivalDepartureRecords->count()
+                        ? Carbon\Carbon::parse($arrival->arrivalDepartureRecords->first()->recorded_at)->setTimezone(
+                            config('app.timezone'),
+                        )
+                        : null;
+
+                if ($arrivalTime && $departureTime) {
+                    $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
+                } else {
+                    $result = null;
+                }
+            @endphp
+
+
+            {{ $arrivalTime ? $arrivalTime->format('H:i') : '' }}
+
+
+
+            @if($arrival)
+                <form action="{{ route('timerecord.destroy', $arrival->id) }}"
+                      method="POST"
+                      class="inline-block mt-1"
+                      onsubmit="return confirm('この記録を削除してもよろしいですか？\n関連する退社記録も削除されます。');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit"
+                            class="bg-red-400 px-1 py-1 rounded-lg hover:bg-red-500 transition-colors text-white font-semibold">
+                        削除
+                    </button>
+                </form>
+            @endif
         </td>
 
 
