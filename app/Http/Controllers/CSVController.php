@@ -982,13 +982,13 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
 
         $headers = [
             'Content-Type' => 'text/csv; charset=Shift-JIS',
-            'Content-Disposition' => 'attachment; filename="' . $month . '.csv"',
+    'Content-Disposition' => sprintf('attachment; filename="%s.csv"', $month),
         ];
 
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
-        $csv->setOutputBOM(Writer::BOM_UTF8);
+        // $csv->setOutputBOM(Writer::BOM_UTF8);
 
-        $csv->insertOne([
+        $japaneseHeaders = [
             '社員番号(必須)',
             '社員氏名(ﾃﾝﾌﾟﾚｰﾄ項目)',
             '平日出勤',
@@ -1006,10 +1006,24 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
             '時間外手当時間Ｂ',
             '時間外手当時間Ｃ',
             '時間外手当時間Ｄ',
-        ]);
+        ];
+
+        $encodedHeaders = array_map(function($header) {
+            return mb_convert_encoding($header, 'SJIS-win', 'UTF-8');
+        }, $japaneseHeaders);
+
+        $csv->insertOne($encodedHeaders);
+
 
         foreach ($row as $values) {
-            $csv->insertOne([
+
+
+            $encodedValues = array_map(function($value) {
+                return mb_convert_encoding($value, 'SJIS-win', 'UTF-8');
+            },[
+
+
+
                 $values['staff_number'],
                 $values['name'],
             sprintf('%01.1f', (float)$values['workedDay']),
@@ -1028,6 +1042,7 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
                 $values['overWorkedTimeC'],
                 $values['overWorkedTimeD'],
             ]);
+            $csv->insertOne($encodedValues);
         }
 
         return FileResponse::make($csv, 200, $headers);
