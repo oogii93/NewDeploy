@@ -110,7 +110,7 @@
                         <div class="flex justify-center mt-10 mb-10">
                             <div class="table-responsive">
                                 <table class="w-full bg-white shadow-lg rounded-lg overflow-hidden border border-slate-400">
-                                    <thead class="bg-blue-200 text-gray-700">
+                                    <thead class="bg-blue-200 text-gray-700 h-40">
                                     <tr>
                                         <th class="min-w-[90px] border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">
                                             社員番号
