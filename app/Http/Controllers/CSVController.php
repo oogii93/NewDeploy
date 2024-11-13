@@ -23,6 +23,62 @@ use Illuminate\Support\Facades\Response as FileResponse;
 class CSVController extends Controller
 {
 
+    //pisda
+    // Add these functions to your existing controller/class:
+
+private function parseExtendedTime($timeString)
+{
+    if (empty($timeString)) {
+        return Carbon::createFromTime(0, 0, 0);
+    }
+
+    list($hours, $minutes, $seconds) = array_pad(explode(':', $timeString), 3, '0');
+    $totalSeconds = ($hours * 3600) + ($minutes * 60) + $seconds;
+
+    return Carbon::createFromTime(0, 0, 0)->addSeconds($totalSeconds);
+}
+
+private function getTimeDifferenceInSeconds($time1, $time2)
+{
+    $seconds1 = $this->convertToSeconds($time1);
+    $seconds2 = $this->convertToSeconds($time2);
+
+    return abs($seconds1 - $seconds2);
+}
+
+private function convertToSeconds($timeString)
+{
+    if (empty($timeString)) {
+        return 0;
+    }
+
+    list($hours, $minutes, $seconds) = array_pad(explode(':', $timeString), 3, '0');
+    return ($hours * 3600) + ($minutes * 60) + $seconds;
+}
+
+// You already have this function
+private function isValidTimeString($timeString)
+{
+    if (empty($timeString)) {
+        return false;
+    }
+
+    return preg_match('/^\d{1,}:[0-5][0-9]:[0-5][0-9]$/', $timeString);
+}
+
+
+
+    public function formatSeconds3($seconds)
+    {
+        $hours=floor($seconds / 3600);
+        $minutes=floor(($seconds % 3600) /60);
+        $remainingSeconds=$seconds % 60;
+
+        return sprintf('%02d:%02d:%02d', $hours, $minutes, $remainingSeconds);
+    }
+
+
+
 
     private function formatSeconds2($seconds)
     {
@@ -64,15 +120,15 @@ class CSVController extends Controller
 
 
 
-    private function isValidTimeString($timeString)
-    {
-        try {
-            Carbon::parse($timeString);
-            return true;
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
+    // private function isValidTimeString($timeString)
+    // {
+    //     try {
+    //         Carbon::parse($timeString);
+    //         return true;
+    //     } catch (\Exception $e) {
+    //         return false;
+    //     }
+    // }
     private function formatSeconds($seconds)
     {
         if (!is_numeric($seconds)) {
@@ -198,14 +254,18 @@ class CSVController extends Controller
             '育休' => 0,
         ];
 
+        $halfDayCount=0;
+
         $halfDayDates = [];
 
-        foreach ($vacationRecords as $record) {
-            if ($record->attendanceTypeRecord->name === '半休') {
-                $halfDayDates[] = $record->date;
-            }
-        }
-        // dd($halfDayDates);
+        // foreach ($vacationRecords as $record) {
+        //     if ($record->attendanceTypeRecord->name === '半休') {
+        //         $halfDayDates[] = $record->date;
+        //     }
+        // }
+
+
+
         //shineer zarlah gej vzej bna
 
         $pregnantVacation=[];
@@ -247,17 +307,32 @@ class CSVController extends Controller
 
             $type = $record->attendanceTypeRecord->name;
 
+            if ($type === '半休') {
+                $halfDayCount += 0.5; // Count half day as 0.5
+            }
+
+
             if (array_key_exists($type, $vacationRecordsCounts)) {
+
+                if($type==='半休'){
+                    $vacationRecordsCounts[$type]+=0.5;
+                }else{
                 $vacationRecordsCounts[$type]++;
+
+
+                }
+
 
                 if ($type === '有休') {
                     $vacationRecordsCounts['有休+半休']++;
-                    $vacationRecordsCounts['有休日数'] = number_format($vacationRecordsCounts['有休日数'] + 1.0, 2);
+                    $vacationRecordsCounts['有休日数'] = number_format($vacationRecordsCounts['有休日数'] + 1.0, 1);
                 } elseif ($type === '半休') {
-                    $vacationRecordsCounts['有休+半休']++;
-                    $vacationRecordsCounts['有休日数'] = number_format($vacationRecordsCounts['有休日数'] + 0.5, 2);
+                    $vacationRecordsCounts['有休+半休']+=0.5;
+                    $vacationRecordsCounts['有休日数'] = number_format($vacationRecordsCounts['有休日数'] + 0.5, 1);
                 }
-            } else {
+            }
+
+            else {
                 if ($type === '有休') {
                     $vacationRecordsCounts['有休+半休']++;
                     $vacationRecordsCounts['有休日数'] = number_format($vacationRecordsCounts['有休日数'] + 1.0, 2);
@@ -269,6 +344,8 @@ class CSVController extends Controller
                 }
             }
         }
+
+        // dd($halfDayCount,$vacationRecordsCounts);
 
 
 
@@ -285,7 +362,7 @@ class CSVController extends Controller
 
 
         $holiday = $vacationRecordsCounts['公休'];
-        $allPaidHoliday = $vacationRecordsCounts['有休+半休'] + $vacationRecordsCounts['特休'] + $vacationRecordsCounts['振休'];
+        $allPaidHoliday = $vacationRecordsCounts['有休日数'] + $vacationRecordsCounts['特休'] + $vacationRecordsCounts['振休'];
         $totalHolidayWorked = $totalWorkedHoliday;
 
 
@@ -295,6 +372,8 @@ class CSVController extends Controller
 
         $realTotalWorkedDay = (float) $this->calculate($daysOfMonth, $holiday, $allPaidHoliday, $totalHolidayWorked);
         $subtractedWorkedDay = number_format($realTotalWorkedDay - $totalWorkedHoliday, 2 );
+
+        // dd($subtractedWorkedDay);
 
 
         if(!empty($pregnantVacation)){
@@ -555,14 +634,26 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
                     // dd($overtimeSecondsC);
                     //5700
 
-                    if ($startTimeCarbon > Carbon::parse($workStartTimeConfig) && !in_array($date, $halfDayDates)) {
+                    if ($startTimeCarbon > Carbon::parse($workStartTimeConfig) && !in_array($date, $halfDayDates)
+                    && !Carbon::parse($date)->isWeekend()
+                    ) {
                         $lateArrivalSeconds += $startTimeCarbon->diffInSeconds(Carbon::parse($workStartTimeConfig));
                         $countLate++;
                     }
 
-                    if ($endTimeCarbon < Carbon::parse($workEndDay) && !in_array($date, $halfDayDates)) {
-                        $earlyLeave++;
-                    }
+                    // if ($endTimeCarbon < Carbon::parse($workEndDay) && !in_array($date, $halfDayDates)) {
+                    //     $earlyLeave++;
+                    // }
+
+                    if($endTimeCarbon < Carbon::parse($workEndDay) && !in_array($date, $halfDayDates)
+                    && !Carbon::parse($date)->isWeekend()){
+                $earlyLeave++;
+            }
+            // dd([
+            //     'ert ywsan pisda'=>$earlyLeave,
+
+            //     'hotsorson'=>$countLate,
+            // ]);
 
                     if ($startTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true) || $endTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true)) {
                         $workedTimeInSeconds = $this->calculateWorkedTime($startTime, $endTime,$calculations,  $breakTimeInMinutes * 60);
@@ -722,11 +813,27 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
         //     'sda'=>$subtractedOverWorkedTimeB
         // ]);
 
-
-                //   $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
         if ($this->isValidTimeString($overWorkedTimeB) && $this->isValidTimeString($overWorkedTimeD)) {
-            $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
+            $diffInSeconds = $this->getTimeDifferenceInSeconds($overWorkedTimeB, $overWorkedTimeD);
+            $subtractedOverWorkedTimeB = $this->formatSeconds3($diffInSeconds);
         }
+
+
+        //           $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
+        // if ($this->isValidTimeString($overWorkedTimeB) && $this->isValidTimeString($overWorkedTimeD)) {
+        //     $subtractedOverWorkedTimeB = $this->formatSeconds3(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
+        // }
+
+        // if($this->isValidTimeString($overWorkedTimeB) && $this->isValidTimeString($overWorkedTimeD)){
+        //     $diffInSeconds=max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD)));
+
+        //     $subtractedOverWorkedTimeB=$this->formatSeconds3($diffInSeconds);
+        // }
+
+        // dd([
+        //     'lalarchinbaa'=>$subtractedOverWorkedTimeB,
+        //     'lalarDanaa'=>$overWorkedTimeD,
+        //   ]);
 
 
 
@@ -734,13 +841,11 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
         $formattedLateSeconds = $this->formatSeconds($lateArrivalSeconds);
 
 
-        // dump([
-        //     'lalarchinbaa'=>$subtractedOverWorkedTimeB,
-        //     'lalarDanaa'=>$overWorkedTimeD,
-        //   ]);
+
 // dump([
 //     'lalar Chinbaa'=>$subtractedOverWorkedTimeB
 // ]);
+// dd($subtractedWorkedDay);
 
         return [
             'staff_number' => $user->id,
@@ -984,10 +1089,8 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
             'Content-Type' => 'text/csv; charset=Shift-JIS',
     'Content-Disposition' => sprintf('attachment; filename="%s.csv"', $month),
         ];
-
+  // $csv->setOutputBOM(Writer::BOM_UTF8);
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
-        // $csv->setOutputBOM(Writer::BOM_UTF8);
-
         $japaneseHeaders = [
             '社員番号(必須)',
             '社員氏名(ﾃﾝﾌﾟﾚｰﾄ項目)',
@@ -1024,9 +1127,13 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
 
 
 
+
                 $values['staff_number'],
                 $values['name'],
-            sprintf('%01.1f', (float)$values['workedDay']),
+            // sprintf('%01.1f', (float)$values['workedDay']),
+            $values['workedDay'] = (string)number_format((float)$values['workedDay'], 1, '.', ''),
+
+
                 $values['workedHoliday'],
                 $values['workedTime'],
                 $values['countLate'],
@@ -1042,6 +1149,10 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
                 $values['overWorkedTimeC'],
                 $values['overWorkedTimeD'],
             ]);
+            // dd([
+            //     'type' => gettype($values['overWorkedTimeB']),
+
+            // ]);
             $csv->insertOne($encodedValues);
         }
 
