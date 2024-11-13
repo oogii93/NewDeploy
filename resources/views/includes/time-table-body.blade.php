@@ -598,8 +598,8 @@
                 <select name="reason_select" id="reason_select"
                     class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                     <option value="">選択</option>
-                    <option value="私用の為">私用為</option>
-                    <option value="通院の為">通院為</option>
+                    <option value="私用の為">私用の為</option>
+                    <option value="通院の為">通院の為</option>
                     <option value="計画有給休暇消化の為">計画有給休暇消化の為</option>
                     <option value="体調不良の為">体調不良の為</option>
 
