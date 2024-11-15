@@ -17,7 +17,7 @@ class Application2Controller extends Controller
 
     public function index()
     {
-        $application2 = Application2::get();
+        $application2 = Application2::latest()->paginate(10);
 
         // Using relationships
         $users = User::whereHas('corp', function($query) {
@@ -27,7 +27,9 @@ class Application2Controller extends Controller
                         $query->where('office_name', '本社');
                     })
                     ->get();
+
                     // dump($users);
+
 
         return view('applications2.index', compact('application2', 'users'));
     }

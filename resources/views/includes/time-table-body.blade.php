@@ -144,43 +144,6 @@
         </td>
 
 
-
-
-
-        {{-- <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
-            <!-- Display arrival time for the day -->
-            @php
-                $arrival = $user
-                    ->userArrivalRecords()
-                    ->whereBetween('recorded_at', [$startOfDay, $endOfDay])
-                    ->first();
-
-                $arrivalTime = $arrival
-                    ? Carbon\Carbon::parse($arrival->recorded_at)->setTimezone(config('app.timezone'))
-                    : null;
-                $departureTime =
-                    $arrival && $arrival->arrivalDepartureRecords->count()
-                        ? Carbon\Carbon::parse($arrival->arrivalDepartureRecords->first()->recorded_at)->setTimezone(
-                            config('app.timezone'),
-                        )
-                        : null;
-
-                if ($arrivalTime && $departureTime) {
-                    $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
-                } else {
-                    $result = null;
-                }
-                // dd($arrival);
-
-                echo $arrivalTime ? $arrivalTime->format('H:i') : '';
-                // {{ $departureTime ? $departureTime->format('H:i') : '' }};
-                // dd($arrival,$departureTime, $arrivalTime);
-            @endphp
-
-
-
-        </td> --}}
-
         <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
             @php
                 $arrival = $user

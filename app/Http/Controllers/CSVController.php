@@ -237,6 +237,9 @@ private function isValidTimeString($timeString)
         //     ->get();
 
 
+
+
+
         $vacationRecords=$user->timeOffRequestRecords()
             ->where('status', 'approved')
             ->whereDate('date', '>=', $startDate)
@@ -264,6 +267,15 @@ private function isValidTimeString($timeString)
         //     }
         // }
 
+
+//end array zarlaad halfdate tooloh um shig bna
+        $halfDayVacationDates=[];
+
+        foreach($vacationRecords as $record){
+            if($record->attendanceTypeRecord->name ==='半休'){
+                $halfDayVacationDates[]=Carbon::parse($record->date)->format('Y-m-d');
+            }
+        }
 
 
         //shineer zarlah gej vzej bna
@@ -293,8 +305,18 @@ private function isValidTimeString($timeString)
         // Тооцоололд нэмэх
         $vacationRecordsCounts['公休'] += $addedHolidays->count();
 
+        // dd($vacationRecordsCounts);
+
         // Calculate the total number of days in the month
-        $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+
+        //AAAAAAAAAAAAA
+        // $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+$startDate1=Carbon::createFromDate($year, $month -1, 16);
+$endDate1=Carbon::createFromDate($year, $month, 15);
+$daysOfMonth=$endDate1->diffInDays($startDate1)+1;
+
+
+        // dd($daysOfMonth);
 
         // Subtract the number of full-day vacations
         $daysOfMonth -= $vacationRecordsCounts['有休日数'];
@@ -368,10 +390,25 @@ private function isValidTimeString($timeString)
 
         //  $realTotalWorkedDay = $this->calculate($daysOfMonth, $holiday, $allPaidHoliday, $totalHolidayWorked);
         //  $subtractedWorkedDay = $realTotalWorkedDay - $totalWorkedHoliday;
-
-
+//
+// if ($user->id == 74) {
+// dd(
+//     [
+//         'sariin udruud'=>$daysOfMonth,
+//         'amralt udruud'=>$holiday,
+//         'paid amralt udruud'=>$allPaidHoliday,
+//         'amralt udruud ajilsan'=>$totalHolidayWorked,
+//     ]
+// );
+// }
         $realTotalWorkedDay = (float) $this->calculate($daysOfMonth, $holiday, $allPaidHoliday, $totalHolidayWorked);
         $subtractedWorkedDay = number_format($realTotalWorkedDay - $totalWorkedHoliday, 2 );
+
+        // dd([
+        //                 'ajilsan udur'=>$realTotalWorkedDay,
+        //                 'hassan udur'=>$subtractedWorkedDay
+        //             ]);
+
 
         // dd($subtractedWorkedDay);
 
@@ -634,19 +671,26 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
                     // dd($overtimeSecondsC);
                     //5700
 
-                    if ($startTimeCarbon > Carbon::parse($workStartTimeConfig) && !in_array($date, $halfDayDates)
+                    if ($startTimeCarbon > Carbon::parse($workStartTimeConfig)
+                    && !in_array($date, $halfDayDates)
                     && !Carbon::parse($date)->isWeekend()
+                    && !in_array($date, $halfDayVacationDates)
                     ) {
                         $lateArrivalSeconds += $startTimeCarbon->diffInSeconds(Carbon::parse($workStartTimeConfig));
                         $countLate++;
                     }
 
+
                     // if ($endTimeCarbon < Carbon::parse($workEndDay) && !in_array($date, $halfDayDates)) {
                     //     $earlyLeave++;
                     // }
 
-                    if($endTimeCarbon < Carbon::parse($workEndDay) && !in_array($date, $halfDayDates)
-                    && !Carbon::parse($date)->isWeekend()){
+                    if($endTimeCarbon < Carbon::parse($workEndDay)
+                    && !in_array($date, $halfDayDates)
+                    && !Carbon::parse($date)->isWeekend()
+                    && !in_array($date,$halfDayVacationDates)
+
+                    ){
                 $earlyLeave++;
             }
             // dd([
@@ -721,13 +765,22 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
             //saraa hedneed hedniig hvrtelheer ni dawtaj baina
 
             $startDate = Carbon::createFromDate($year, $month, 16);
-            $endDate = Carbon::createFromDate($year, $month, 16)->addMonths(1)->subDay();
+            // $endDate = Carbon::createFromDate($year, $month, 16)->addMonths(1)->subDay();
+            $endDate = Carbon::createFromDate($year, $month, 16)->addMonths(1);
             $daysInMonth = $endDate->diffInDays($startDate) + 1;
+
+            // dd([
+            //     'udur'=>$daysInMonth
+            // ]);
 
 
             // Subtract the number of holidays from the total days
 
             $daysInMonth -= $vacationRecordsCounts['公休'];
+
+            //     dd([
+            //     'udur'=>$daysInMonth
+            // ]);
 
 
             //subsract break time from daily worked time
@@ -846,6 +899,12 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
 //     'lalar Chinbaa'=>$subtractedOverWorkedTimeB
 // ]);
 // dd($subtractedWorkedDay);
+// if ($user->id == 74) {
+//     dd([
+//         'ajilsan udur' => $subtractedWorkedDay,
+//         'user_id' => $user->id
+//     ]);
+// }
 
         return [
             'staff_number' => $user->id,

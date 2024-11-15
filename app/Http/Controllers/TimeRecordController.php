@@ -424,34 +424,117 @@ private function checkIfSecondArrivalExists($user, $date)
 }
 
 
+// public function destroy($id)
+// {
+//     try{
+//         $arrivalRecord=ArrivalRecord::findOrFail($id);
+//         //
+//         if(auth()->user()->id !==$arrivalRecord->user_id){
+//             return redirect()->back()->with('error', '権限がありません。');
+//         }
+//            // Begin transaction to ensure all related records are deleted properly
+//            \DB::beginTransaction();
+
+//         if($arrivalRecord->arrivalDepartureRecords){
+//             $arrivalRecord->arrivalDepartureRecords()->delete();
+//         }
+
+//         $arrivalRecord->delete();
+
+//         \DB::commit();
+
+//         return redirect()->back()->with('status', '記録が削除されました。');
+
+
+
+//     }catch(\Exception $e){
+//         DB::rollBack();
+
+//         return redirect()->back()->with('error','記録の削除に失敗しました。');
+//     }
+// }
+
 public function destroy($id)
 {
-    try{
-        $arrivalRecord=ArrivalRecord::findOrFail($id);
-        //
-        if(auth()->user()->id !==$arrivalRecord->user_id){
+    try {
+        $arrivalRecord = ArrivalRecord::findOrFail($id);
+
+        // Check authorization
+        if (auth()->user()->id !== $arrivalRecord->user_id) {
             return redirect()->back()->with('error', '権限がありません。');
         }
-           // Begin transaction to ensure all related records are deleted properly
-           \DB::beginTransaction();
 
-        if($arrivalRecord->arrivalDepartureRecords){
-            $arrivalRecord->arrivalDepartureRecords()->delete();
-        }
+        $recordDate = $arrivalRecord->arrival_time
+    ? \Carbon\Carbon::parse($arrivalRecord->arrival_time)->format('Y-m-d')
+    : \Carbon\Carbon::parse($arrivalRecord->created_at)->format('Y-m-d');
 
+// dd([
+//     'arrival_record' => [
+//         'id' => $arrivalRecord->id,
+//         'arrival_time' => $arrivalRecord->arrival_time,
+//         'created_at' => $arrivalRecord->created_at,
+//         'user_id' => $arrivalRecord->user_id
+//     ],
+//     'record_date' => $recordDate,
+//     'breaks' => Breaks::where('user_id', $arrivalRecord->user_id)
+//         ->where(function($query) use ($recordDate) {
+//             $query->whereDate('start_time', $recordDate)
+//                   ->orWhereDate('created_at', $recordDate);
+//         })
+//         ->get()
+//         ->map(function($break) {
+//             return [
+//                 'id' => $break->id,
+//                 'start_time' => $break->start_time,
+//                 'created_at' => $break->created_at
+//             ];
+//         })
+// ]);
+
+        // Begin transaction
+        \DB::beginTransaction();
+
+        // Get the date - use created_at if arrival_time is null
+        $recordDate = $arrivalRecord->arrival_time
+            ? \Carbon\Carbon::parse($arrivalRecord->arrival_time)->format('Y-m-d')
+            : \Carbon\Carbon::parse($arrivalRecord->created_at)->format('Y-m-d');
+
+        // Delete breaks matching either start_time date or created_at date
+        $breaks = Breaks::where('user_id', $arrivalRecord->user_id)
+            ->where(function($query) use ($recordDate) {
+                $query->whereDate('start_time', $recordDate)
+                      ->orWhereDate('created_at', $recordDate);
+            })
+            ->delete();
+
+        // Log what's being deleted
+        \Log::info('Deleting records:', [
+            'user_id' => $arrivalRecord->user_id,
+            'date' => $recordDate,
+            'arrival_id' => $id,
+            'breaks_deleted' => $breaks
+        ]);
+
+        // Delete arrival departure records
+        $arrivalRecord->arrivalDepartureRecords()->delete();
+
+        // Delete the arrival record
         $arrivalRecord->delete();
 
         \DB::commit();
 
-        return redirect()->back()->with('status', '記録が削除されました。');
+        return redirect()->back()->with('status', '記録と関連する記録が削除されました。');
 
-
-
-    }catch(\Exception $e){
-        DB::rollBack();
-
-        return redirect()->back()->with('error','記録の削除に失敗しました。');
+    } catch (\Exception $e) {
+        \DB::rollBack();
+        \Log::error('Delete error:', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+        return redirect()->back()->with('error', '記録の削除に失敗しました。');
     }
 }
+
+
 
 }

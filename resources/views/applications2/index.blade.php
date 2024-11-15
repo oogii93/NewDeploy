@@ -159,10 +159,11 @@
                         </tr>
                      @endforeach
                     </tbody>
-                    {{-- <div class="mt-4">
-                        {{ $records->appends(request()->query())->links() }}
-                    </div> --}}
+
                 </table>
+                <div class="mt-4">
+                    {{ $application2->links() }}
+                </div>
             </div>
         </div>
 

@@ -684,9 +684,14 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     ->name('applications.search');
 
     // HR
+    // Route::get('/hr', [HrController::class, 'index'])
+    //     ->name('hr.hr.dashboard')
+    //     ->middleware(['auth', 'check.hr']);
+
     Route::get('/hr', [HrController::class, 'index'])
         ->name('hr.hr.dashboard')
-        ->middleware(['auth', 'check.hr']);
+        ->middleware(['auth', 'taisei']);
+
     Route::post('/applications/{application}/check', [ApplicationController::class, 'checkApplication'])
     ->name('applications.check');
 

@@ -75,5 +75,6 @@ class Kernel extends HttpKernel
         'check.hr' => \App\Http\Middleware\CheckHrDivision::class,
         'check.ac' => \App\Http\Middleware\CheckAcDivision::class,
         'is_boss'=>\App\Http\Middleware\CheckIsBoss::class,
+        'taisei'=>\App\Http\Middleware\CheckTaiseiCorp::class,
     ];
 }

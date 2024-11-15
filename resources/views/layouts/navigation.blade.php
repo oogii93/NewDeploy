@@ -758,7 +758,7 @@
                 <!--HR-->
 
                 @auth
-                    @if (auth()->user()->division && auth()->user()->division->name === '人事課')
+                    @if (auth()->user()->division && auth()->user()->corp->corp_name === '太成HD')
                         <li class="relative group">
                             <a href=""
                                 class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
@@ -824,7 +824,7 @@
                                             fill="#333336"></path>
                                     </g>
                                 </svg>
-                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">申請管理</span>
+                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">Holdings管理</span>
                             </a>
 
 
