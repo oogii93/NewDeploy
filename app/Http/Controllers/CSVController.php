@@ -589,24 +589,54 @@ $totalWorkedTime = 0;
                     //     $dailyOvertimeSecondsB+=$overTimeSeconds;
                     // }
 
+
+
+                    //A-g shalgah
+
+                    $hasHalfDayOff=$vacationRecords->contains(function($record) use ($date){
+                        return $record->attendanceTypeRecord->name ==='半休'
+                        && Carbon::parse($record->date)->format('Y-m-d')===$date;
+                    });
+
 // Formula 1 - For overtimeSecondsA
-if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
-    // Calculate the time difference
-    $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
 
-    // Check if timeDiff1 exceeds overTimeSeconds
-    if ($timeDiff1 > $overTimeSeconds) {
-        $dailyOvertimeSecondsA += $overTimeSeconds;
-    } else {
-        // Set dailyOvertimeSecondsA based on timeDiff1
-        $dailyOvertimeSecondsA += $timeDiff1;
+if(!empty($breakTimeInSeconds) || $lateArrivalSeconds >0){
+    $timeDiff1=$breakTimeInSeconds+($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
 
-        // Ensure dailyOvertimeSecondsA is not negative
-        // if ($dailyOvertimeSecondsA < 0) {
-        //     $dailyOvertimeSecondsA = 0;
-        // }
+    if($timeDiff1 > $overTimeSeconds){
+        $overtimeValue=$overTimeSeconds;
+    }else{
+        $overtimeValue=$timeDiff1;
+    }
+
+    if($hasHalfDayOff){
+        $dailyOvertimeSecondsB+=$overtimeValue;
+    }else{
+        $dailyOvertimeSecondsA+=$overtimeValue;
     }
 }
+
+// if(!$hasHalfDayOff){
+//     if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+//         // Calculate the time difference
+//         $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+
+//         // Check if timeDiff1 exceeds overTimeSeconds
+//         if ($timeDiff1 > $overTimeSeconds) {
+//             $dailyOvertimeSecondsA += $overTimeSeconds;
+//         } else {
+//             // Set dailyOvertimeSecondsA based on timeDiff1
+//             $dailyOvertimeSecondsA += $timeDiff1;
+
+//             // Ensure dailyOvertimeSecondsA is not negative
+//             // if ($dailyOvertimeSecondsA < 0) {
+//             //     $dailyOvertimeSecondsA = 0;
+//             // }
+//         }
+//     }
+
+
+// }
 
 // Formula 2 - For overtimeSecondsB
 if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
