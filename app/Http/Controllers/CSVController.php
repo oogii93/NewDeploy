@@ -189,6 +189,8 @@ private function isValidTimeString($timeString)
 
 
     //tsagnii bodoltuud ehelne
+
+
     protected function userTimeReportCollect($user, $startDate, $endDate, $workDayMinutes, $totalWorkDay, $totalWeekend, $month, $year,$corp_id, $calculations)
     {
 
@@ -226,6 +228,16 @@ private function isValidTimeString($timeString)
         $totalOverWorkedTimeC = '00:00:00';
         $totalOverWorkedTimeD = '00:00:00';
         //
+
+        $countLateTime = 0;
+
+        $lateArrivalSeconds = 0;
+        $earlyLeaveHours=0;
+
+        $breakTimeInSeconds=0;
+        $allBreakTime=0;
+
+
 
 
 
@@ -311,9 +323,10 @@ private function isValidTimeString($timeString)
 
         //AAAAAAAAAAAAA
         // $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-$startDate1=Carbon::createFromDate($year, $month -1, 16);
-$endDate1=Carbon::createFromDate($year, $month, 15);
-$daysOfMonth=$endDate1->diffInDays($startDate1)+1;
+
+            $startDate1=Carbon::createFromDate($year, $month -1, 16);
+            $endDate1=Carbon::createFromDate($year, $month, 15);
+            $daysOfMonth=$endDate1->diffInDays($startDate1)+1;
 
 
         // dd($daysOfMonth);
@@ -483,7 +496,7 @@ $totalWorkedTime = 0;
 
             $dailyWorkedSeconds = 0;
 
-            $lateArrivalSeconds = 0;
+            // $lateArrivalSeconds = 0;
             $overTimeSeconds = 0;
 
 
@@ -504,11 +517,14 @@ $totalWorkedTime = 0;
 
                 $workStartTimeCarbon = Carbon::parse($workStartTimeConfig); // 8:30
 
-                if ($startTime > $workStartTimeConfig && !in_array($date, $halfDayDates)) {
-                    $lateArrivalSeconds += Carbon::parse($startTime)->diffInSeconds(Carbon::parse($workStartTimeConfig));
-                    // dd($lateArrivalSeconds,$workStartTime,$startTime);
 
-                }
+                //FIrst LateArrivalSeconds
+
+                // if ($startTime > $workStartTimeConfig && !in_array($date, $halfDayDates)) {
+                //     $lateArrivalSeconds += Carbon::parse($startTime)->diffInSeconds(Carbon::parse($workStartTimeConfig));
+                //     // dd($lateArrivalSeconds,$workStartTime,$startTime);
+
+                // }
                 $endTime = '';
                 $departureRecords = $arrivalRecord->arrivalDepartureRecords;
 
@@ -526,6 +542,7 @@ $totalWorkedTime = 0;
 
                     //adding new
                     $overtimeSecondsA += $lateArrivalSeconds;
+
                 //  dump([
                 //     'late'=>$overtimeSecondsA
                 //  ]);
@@ -570,6 +587,12 @@ $totalWorkedTime = 0;
 
                         $overTimeSeconds = $overlapEnd->diffInSeconds($overlapStart, true);
 
+                        // dd([
+                        //     'overB'=>$overtimeSecondsB,
+                        //     'LAP'=>$overlapEnd,
+                        //     'overSe'=>$overTimeSeconds
+
+                        // ]);
                     }
 
                     //   // Formula 1 - For overtimeSecondsA
@@ -600,61 +623,83 @@ $totalWorkedTime = 0;
 
 // Formula 1 - For overtimeSecondsA
 
-if(!empty($breakTimeInSeconds) || $lateArrivalSeconds >0){
-    $timeDiff1=$breakTimeInSeconds+($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+// if(!empty($breakTimeInSeconds) || $lateArrivalSeconds >0){
+//     $timeDiff1=$breakTimeInSeconds+($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
 
-    if($timeDiff1 > $overTimeSeconds){
-        $overtimeValue=$overTimeSeconds;
-    }else{
-        $overtimeValue=$timeDiff1;
-    }
-
-    if($hasHalfDayOff){
-        $dailyOvertimeSecondsB+=$overtimeValue;
-    }else{
-        $dailyOvertimeSecondsA+=$overtimeValue;
-    }
-}
-
-// if(!$hasHalfDayOff){
-//     if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
-//         // Calculate the time difference
-//         $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
-
-//         // Check if timeDiff1 exceeds overTimeSeconds
-//         if ($timeDiff1 > $overTimeSeconds) {
-//             $dailyOvertimeSecondsA += $overTimeSeconds;
-//         } else {
-//             // Set dailyOvertimeSecondsA based on timeDiff1
-//             $dailyOvertimeSecondsA += $timeDiff1;
-
-//             // Ensure dailyOvertimeSecondsA is not negative
-//             // if ($dailyOvertimeSecondsA < 0) {
-//             //     $dailyOvertimeSecondsA = 0;
-//             // }
-//         }
+//     if($timeDiff1 > $overTimeSeconds){
+//         $overtimeValue=$overTimeSeconds;
+//     }else{
+//         $overtimeValue=$timeDiff1;
 //     }
+
+//     if($hasHalfDayOff){
+//         $dailyOvertimeSecondsB+=$overtimeValue;
+//     }else{
+//         $dailyOvertimeSecondsA+=$overtimeValue;
+//     }
+// }
+
+// dd($lateArrivalSeconds);
+
+// if(!empty($breakTimeInSeconds) || $lateArrivalSeconds >0){
+//     $timeDiff1=($breakTimeInSeconds ?? 0)+
+//                 $lateArrivalSeconds +
+//                 ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+
+//                 if($timeDiff1 > $overTimeSeconds)
+//                 {
+//                     $overtimeValue=$overTimeSeconds;
+//                 }else{
+//                     $overtimeValue=$timeDiff1;
+//                 }
+
+//                 if($hasHalfDayOff){
+//                     $dailyOvertimeSecondsB +=$overtimeValue;
+//                 }else{
+//                     $dailyOvertimeSecondsA +=$overtimeValue;
+//                 }
 
 
 // }
+// // if(!$hasHalfDayOff){
+// //     if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+// //         // Calculate the time difference
+// //         $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
 
-// Formula 2 - For overtimeSecondsB
-if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
-    // Calculate the same time difference as before
-    $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+// //         // Check if timeDiff1 exceeds overTimeSeconds
+// //         if ($timeDiff1 > $overTimeSeconds) {
+// //             $dailyOvertimeSecondsA += $overTimeSeconds;
+// //         } else {
+// //             // Set dailyOvertimeSecondsA based on timeDiff1
+// //             $dailyOvertimeSecondsA += $timeDiff1;
 
-    // Check if timeDiff1 exceeds overTimeSeconds
-    if ($timeDiff1 > $overTimeSeconds) {
-        $dailyOvertimeSecondsB += 0; // Reset overtimeSecondsB to 0 in this case
-    } else {
-        // Set dailyOvertimeSecondsB based on overTimeSeconds and timeDiff1
-        $dailyOvertimeSecondsB += max(0, $overTimeSeconds - $timeDiff1);
-    }
-} else {
-    // If no break or late arrival, set full overtime to dailyOvertimeSecondsB
-    $dailyOvertimeSecondsB += $overTimeSeconds;
+// //             // Ensure dailyOvertimeSecondsA is not negative
+// //             // if ($dailyOvertimeSecondsA < 0) {
+// //             //     $dailyOvertimeSecondsA = 0;
+// //             // }
+// //         }
+// //     }
 
-}
+
+// // }
+
+// // Formula 2 - For overtimeSecondsB
+// if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+//     // Calculate the same time difference as before
+//     $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+
+//     // Check if timeDiff1 exceeds overTimeSeconds
+//     if ($timeDiff1 > $overTimeSeconds) {
+//         $dailyOvertimeSecondsB += 0; // Reset overtimeSecondsB to 0 in this case
+//     } else {
+//         // Set dailyOvertimeSecondsB based on overTimeSeconds and timeDiff1
+//         $dailyOvertimeSecondsB += max(0, $overTimeSeconds - $timeDiff1);
+//     }
+// } else {
+//     // If no break or late arrival, set full overtime to dailyOvertimeSecondsB
+//     $dailyOvertimeSecondsB += $overTimeSeconds;
+
+// }
 
 
 
@@ -708,7 +753,11 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
                     ) {
                         $lateArrivalSeconds += $startTimeCarbon->diffInSeconds(Carbon::parse($workStartTimeConfig));
                         $countLate++;
+
+
                     }
+
+                    // dd($lateArrivalSeconds);
 
 
                     // if ($endTimeCarbon < Carbon::parse($workEndDay) && !in_array($date, $halfDayDates)) {
@@ -722,11 +771,84 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
 
                     ){
                 $earlyLeave++;
+
+
+                $earlyLeaveHours +=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
             }
+
+
+            if(!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+                // Only use breakTime and lateTime, remove the timestamp difference
+                $timeDiff1 = ($breakTimeInSeconds ?? 0) + $lateArrivalSeconds;
+
+                if($timeDiff1 > $overTimeSeconds) {
+                    $overtimeValue = $overTimeSeconds;
+                } else {
+                    $overtimeValue = $timeDiff1;
+                }
+
+                if($hasHalfDayOff) {
+                    $dailyOvertimeSecondsB += $overtimeValue;
+                } else {
+                    $dailyOvertimeSecondsA += $overtimeValue;
+                }
+            }
+
+
+
+
+
+
+            // Formula 2 - For overtimeSecondsB
+            // if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+            //     // Calculate the same time difference as before
+            //     $timeDiff1 = $breakTimeInSeconds + ($startTimeCarbon->timestamp - $workStartTimeCarbon->timestamp);
+
+            //     // Check if timeDiff1 exceeds overTimeSeconds
+            //     if ($timeDiff1 > $overTimeSeconds) {
+            //         $dailyOvertimeSecondsB += 0; // Reset overtimeSecondsB to 0 in this case
+            //     } else {
+            //         // Set dailyOvertimeSecondsB based on overTimeSeconds and timeDiff1
+            //         $dailyOvertimeSecondsB += max(0, $overTimeSeconds - $timeDiff1);
+            //     }
+            // } else {
+            //     // If no break or late arrival, set full overtime to dailyOvertimeSecondsB
+            //     $dailyOvertimeSecondsB += $overTimeSeconds;
+
+            // }
+
+            if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
+                // Include both break time and late arrival
+                $timeDiff1 = ($breakTimeInSeconds ?? 0) + $lateArrivalSeconds;
+
+                // Debug to verify the calculations
+                // dd([
+                //     'breakTime' => ($breakTimeInSeconds ?? 0),
+                //     'lateTime' => $lateArrivalSeconds,
+                //     'timeDiff1' => $timeDiff1,
+                //     'overTimeSeconds' => $overTimeSeconds,
+                //     'remaining overtime' => max(0, $overTimeSeconds - $timeDiff1)
+                // ]);
+
+                if ($timeDiff1 > $overTimeSeconds) {
+                    $dailyOvertimeSecondsB = 0;
+                } else {
+                    $dailyOvertimeSecondsB += max(0, $overTimeSeconds - $timeDiff1);
+                }
+            } else {
+                $dailyOvertimeSecondsB += $overTimeSeconds;
+            }
+
+            // dd($dailyOvertimeSecondsB);
+
+
+
+
+
             // dd([
             //     'ert ywsan pisda'=>$earlyLeave,
+            //     'sadfdsasfd'=>$earlyLeaveHours
 
-            //     'hotsorson'=>$countLate,
             // ]);
 
                     if ($startTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true) || $endTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true)) {
@@ -780,7 +902,9 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
 
         // dump([
 
-        //     'B'=>$totalOvertimeSecondsB
+        //     'total'=>$totalOvertimeSecondsB,
+        //     'odorbvriin'=>$dailyOvertimeSecondsB,
+        //     'ogloonii ilvv tsag'=>$morningOverTimeSeconds
         // ]);
         // dump([
         //     'Final A' => $totalOvertimeSecondsA,
@@ -852,7 +976,20 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
 
 // ]);
 
+// $countLateTime+=$lateArrivalSeconds;
+
+// dd([
+//     'lalarchinbaaDana'=>$countLateTime
+// ]);
+// $totalLateTime=$this->formatSeconds($countLateTime);
+
+// dd($totalLateTime);
+
+
+
+
         }
+
 
        // Debug dump after the loop
 
@@ -863,10 +1000,39 @@ if (!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
 // ]);
 
   // Final calculations
+
+
 $totalOverWorkedTimeA = $this->formatSeconds($totalOvertimeSecondsA);
+
+// dd([
+//     'a'=>$totalOverWorkedTimeA,
+//     'seconds'=>$totalOvertimeSecondsA,
+// ]);
 $totalOverWorkedTimeC = $this->formatSeconds($overtimeSecondsC);
 $overWorkedTimeB = $this->formatSeconds($totalOvertimeSecondsB);
 $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
+
+
+
+$countLateTime+=$lateArrivalSeconds;
+
+$totalLateTime=$this->formatSeconds($countLateTime);
+
+$totalEarlyLeaveTime=$this->formatSeconds($earlyLeaveHours);
+
+$allBreakTime+=$breakTimeInSeconds;
+
+// dd([
+//     'all'=>$allBreakTime,
+//     'seconds'=>$breakTimeInSeconds,
+// ]);
+
+
+$totalBreakTime=$this->formatSeconds($allBreakTime);
+// dd($earlyLeaveHours);
+
+
+
 
 
 
@@ -900,6 +1066,14 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
             $diffInSeconds = $this->getTimeDifferenceInSeconds($overWorkedTimeB, $overWorkedTimeD);
             $subtractedOverWorkedTimeB = $this->formatSeconds3($diffInSeconds);
         }
+
+        // dd([
+
+        //     'overWorkedTimeA'=>$totalOvertimeSecondsA,
+        //     'overWorkedTimeB'=>$subtractedOverWorkedTimeB,
+
+
+        // ]);
 
 
         //           $subtractedOverWorkedTimeB = $this->formatSeconds(max(0, Carbon::parse($overWorkedTimeB)->diffInSeconds(Carbon::parse($overWorkedTimeD))));
@@ -936,6 +1110,11 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
 //     ]);
 // }
 
+// dd($countLate);
+
+
+
+
         return [
             'staff_number' => $user->id,
             'name' => $user->name,
@@ -949,8 +1128,16 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
             'overWorkedTimeB' => $subtractedOverWorkedTimeB,
             'overWorkedTimeC' => $totalOverWorkedTimeC,
             'overWorkedTimeD' => $overWorkedTimeD,
+
+            'totalLateTime'=>$totalLateTime,
+            'totalEarlyLeaveTime'=>$totalEarlyLeaveTime,
+            'totalBreakTime'=>$totalBreakTime,
         ];
+
+
     }
+
+
 
     private function calculateValidMinutes($start, $end, $skipStart, $skipEnd)
     {
@@ -1074,7 +1261,9 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
         } catch (Exception $e) {
             $time5 = 0;
         }
-
+        // dd([
+        //     'fdasdf'=>$breakTimeInSeconds,
+        // ]);
         // Formula 7
         $totalWorkedTime = ($time1 + $time5) * 60;
 
@@ -1084,7 +1273,12 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
         $totalWorkedTime=max(0, $totalWorkedTime- $breakTimeInSeconds);
 
         return $totalWorkedTime;
+
+
+
+
     }
+
 
     private function timeToMinutes($time)
 
@@ -1198,6 +1392,10 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
             '時間外手当時間Ｂ',
             '時間外手当時間Ｃ',
             '時間外手当時間Ｄ',
+
+            '遅刻時間',
+            '早退時間',
+            '休憩時間',
         ];
 
         $encodedHeaders = array_map(function($header) {
@@ -1237,6 +1435,10 @@ $overWorkedTimeD = $this->formatSeconds($weekendOvertimeSeconds);
                 $values['overWorkedTimeB'],
                 $values['overWorkedTimeC'],
                 $values['overWorkedTimeD'],
+                $values['totalLateTime'],
+                $values['totalEarlyLeaveTime'],
+                $values['totalBreakTime'],
+
             ]);
             // dd([
             //     'type' => gettype($values['overWorkedTimeB']),

@@ -21,6 +21,7 @@ class TimeOffRequestRecord extends Model
         'checked_by',
         'checked_at',
         'division_id',
+        'date2',
         'is_first_approval'
     ];
 

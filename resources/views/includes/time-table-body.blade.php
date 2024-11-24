@@ -3,6 +3,8 @@
 
 
 @php
+
+use App\Models\AttendanceTypeRecord;
     // At the start of your blade template
     $holidayDates = $holidays->pluck('vacation_date')
         ->map(function($date) {
@@ -87,10 +89,11 @@
             Responsive iin ynzlah
             -->
 
-        <td
+        {{-- <td
             class="px-1 sm:px-2 md:px-4 py-2 sm:py-3 border-r border-gray-300 shadow-sm text-xs sm:text-sm font-semibold">
             @php
                 $timeOffRecordForDay = $user->timeOffRequestRecords->where('date', $day->format('Y-m-d'))->first();
+
             @endphp
 
             @if ($timeOffRecordForDay)
@@ -116,6 +119,11 @@
             @elseif ($isHoliday)
                 <span
                     class="bg-yellow-100 text-yellow-700 px-1 sm:px-2 py-1 text-xs font-semibold rounded-full block text-center">公休</span>
+
+                    <button onclick="openModal2('{{ $day->format('Y-m-d') }}')"
+                        class=" bg-green-400 hover:bg-green-600 rounded-full text-white hover:underline text-xs font-semibold block w-full text-center  mt-2 px-2 py-1">
+                        休日出勤
+                    </button>
             @else
                 <button onclick="openModal('{{ $day->format('Y-m-d') }}')"
                     class="text-blue-500 hover:underline text-m block w-full text-center font-semibold">
@@ -124,6 +132,62 @@
             @endif
 
 
+        </td> --}}
+
+        <td class="px-1 sm:px-2 md:px-4 py-2 sm:py-3 border-r border-gray-300 shadow-sm text-xs sm:text-sm font-semibold">
+            @php
+                $timeOffRecordForDay = $user->timeOffRequestRecords->where('date', $day->format('Y-m-d'))->first();
+                $compensatoryRestDay = $user->timeOffRequestRecords
+                    ->where('attendance_type_records_id', AttendanceTypeRecord::where('name', '休日出勤')->first()->id)
+                    ->where('status', 'approved')
+                    ->where('date2', $day->format('Y-m-d'))
+                    ->first();
+            @endphp
+
+            @if ($timeOffRecordForDay)
+                @php
+                    $bgColor = $statusColors[$timeOffRecordForDay->status] ?? '';
+                @endphp
+                <div class="rounded-full py-1 px-1 sm:px-2 {{ $bgColor }} text-center">
+                    <div class="truncate">
+                        {{ $timeOffRecordForDay->attendanceTypeRecord->name }}
+                    </div>
+                    <div class="truncate text-xs font-semibold">
+                        {{ $statusTranslations[$timeOffRecordForDay->status] ?? $timeOffRecordForDay->status }}
+                    </div>
+                </div>
+
+                @if (!in_array($timeOffRecordForDay->status, ['approved', 'denied']))
+                    <button
+                        onclick="openEditModal('{{ $timeOffRecordForDay->id }}', '{{ $day->format('Y-m-d') }}', '{{ $timeOffRecordForDay->attendance_type_records_id }}', '{{ $timeOffRecordForDay->reason_select }}', '{{ $timeOffRecordForDay->reason }}', '{{ $timeOffRecordForDay->boss_id }}')"
+                        class="text-blue-500 hover:underline text-m font-semibold mt-1 block w-full text-center">
+                        編集
+                    </button>
+                @endif
+            @elseif ($compensatoryRestDay)
+                <div class="rounded-full py-1 px-1 sm:px-2 bg-yellow-100 text-center">
+                    <div class="truncate text-yellow-700">
+                        振替休日
+                    </div>
+                    <div class="truncate text-xs font-semibold text-yellow-700">
+                        承認済
+                    </div>
+                </div>
+            @elseif ($isHoliday)
+                <span class="bg-yellow-100 text-yellow-700 px-1 sm:px-2 py-1 text-xs font-semibold rounded-full block text-center">
+                    公休
+                </span>
+
+                <button onclick="openModal2('{{ $day->format('Y-m-d') }}')"
+                    class="bg-blue-400 hover:bg--600 rounded-full text-white text-xs hover:text-md font-semibold block w-full text-center mt-2 px-2 py-1">
+                    休日出勤
+                </button>
+            @else
+                <button onclick="openModal('{{ $day->format('Y-m-d') }}')"
+                    class="text-blue-500 hover:underline text-m block w-full text-center font-semibold">
+                    申請
+                </button>
+            @endif
         </td>
 
 
@@ -550,7 +614,11 @@
                     class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                     <option value="">選択</option>
                     @foreach ($attendanceTypeRecords as $record)
-                        <option value="{{ $record->id }}">{{ $record->name }}</option>
+
+                    @if ($record->name !=='休日出勤')
+                    <option value="{{ $record->id }}">{{ $record->name }}</option>
+
+                    @endif
                     @endforeach
                 </select>
             </div>
@@ -577,11 +645,11 @@
             </div>
 
             <div class="space-y-2">
-                <label for="boss_id" class="block text-sm font-medium text-gray-700">Select Boss</label>
+                <label for="boss_id" class="block text-sm font-medium text-gray-700">上司を選択</label>
                 <select name="boss_id" id="boss_id"
                     class="block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                     required>
-                    <option value="">Select a boss</option>
+                    <option value="">選択してください。</option>
                     @foreach ($bosses as $boss)
                         <option value="{{ $boss->id }}">{{ $boss->name }}</option>
                     @endforeach
@@ -680,12 +748,93 @@
 </div>
 
 
+<!-- Modal Holiday Work-->
+<div id="holidayModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
+    <div class="bg-white rounded-lg w-1/2 p-4">
+        <h2 class="text-lg font-bold mb-4 text-center">休日出勤申請書</h2>
+<!-- Change this line in your second modal -->
+<form id="holidayForm" action="{{ route('admin.time_off.store2') }}" method="POST">
+            @csrf
+            <input type="hidden" name="user_id" value="{{ $user->id }}">
+            <input type="hidden" name="date" id="modalDate2" value="">
 
 
-<script>
+
+            <div class="mt-4">
+                <select name="attendance_type_records_id" id="attendance_type_records_id"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    @foreach ($attendanceTypeRecords as $record)
+                        @if ($record->name === '休日出勤')
+                            <option value="{{ $record->id }}" selected>{{ $record->name }}</option>
+                        @endif
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="mt-4">
+
+                <label for="reason" class="block mb-2">理由</label>
+                <input type="text" name="reason" id="reason"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    placeholder="理由については入力して下さい">
+
+
+            </div>
+
+            <div class="mt-4">
+
+                <label for="date2" class="block mb-2">変わりに休む日</label>
+                <input type="date" name="date2" id="date2"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    placeholder="理由については入力して下さい">
+
+
+            </div>
+
+
+
+            <div class="space-y-2">
+                <label for="boss_id" class="block text-sm font-medium text-gray-700 mt-2">申請するために上司を選択してください。</label>
+                <select name="boss_id" id="boss_id"
+                    class="block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                    required>
+                    <option value="">上司を選択</option>
+                    @foreach ($bosses as $boss)
+                        <option value="{{ $boss->id }}">{{ $boss->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+
+
+            <div
+                class="flex flex-col md:flex-row justify-between mt-5 items-center space-y-3 md:space-y-0 md:space-x-4 ">
+                <x-button purpose="default" onclick="closeModal2()">
+                    キャンセル
+                </x-button>
+
+                <x-button purpose="search" type="submit">
+                    保存
+                </x-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+{{-- <script>
     function openModal(date) {
         document.getElementById('modalDate').value = date;
         document.getElementById('attendanceModal').classList.remove('hidden');
+
+        //2
+
     }
 
     function closeModal() {
@@ -790,4 +939,101 @@
                 });
         }
     }
+
+
+
+
+    function openModal2(date) {
+        document.getElementById('modalDate').value = date;
+        document.getElementById('holidayModal').classList.remove('hidden');
+
+        //2
+
+    }
+
+    function closeModal2() {
+        document.getElementById('holidayModal').classList.add('hidden');
+    }
+</script> --}}
+
+
+<script>
+ document.addEventListener('DOMContentLoaded', function() {
+    // First modal form submission
+    const attendanceForm = document.getElementById('attendanceForm');
+    if (attendanceForm) {
+        attendanceForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitForm(this);
+        });
+    }
+
+    // Second modal form submission
+    const holidayForm = document.getElementById('holidayForm');
+    if (holidayForm) {
+        holidayForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitForm(this);
+        });
+    }
+
+    function submitForm(form) {
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(Object.values(err.errors).flat().join('\n'));
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                if (form.id === 'attendanceForm') {
+                    closeModal();
+                } else {
+                    closeModal2();
+                }
+                window.location.reload();
+            } else {
+                alert(data.message || 'エラーが発生しました。もう一度お試しください。');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message || 'エラーが発生しました。もう一度お試しください。');
+        });
+    }
+});
+
+function openModal(date) {
+    document.getElementById('modalDate').value = date;
+    document.getElementById('attendanceModal').classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('attendanceModal').classList.add('hidden');
+}
+
+function openModal2(date) {
+    document.getElementById('modalDate2').value = date;  // Updated to use modalDate2
+    document.getElementById('holidayModal').classList.remove('hidden');
+}
+
+function closeModal2() {
+    document.getElementById('holidayModal').classList.add('hidden');
+}
 </script>
+

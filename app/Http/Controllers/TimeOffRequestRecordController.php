@@ -75,6 +75,15 @@ class TimeOffRequestRecordController extends Controller
         if ($validatedData['status'] === 'approved') {
             $timeOffRequest->division_id = $validatedData['division_id'];
 
+
+
+            if($timeOffRequest->attendanceTypeRecord->name==='休日出勤')
+            {
+              $timeOffRequest->is_checked=true;
+              $timeOffRequest->checked_by=auth()->id();
+            //   $timeOffRequest->checked_at();
+            }
+
             //Notify HR users if approved
             if($validatedData['division_id'] ==6){
                 $hrUsers=User::where('division_id', 6)->get();
@@ -153,6 +162,49 @@ class TimeOffRequestRecordController extends Controller
         // dd($request->all());
 
         return redirect()->back()->with('success', '勤怠届が正常に登録されました。');
+    }
+
+    public function store2(Request $request)
+    {
+        $validationRules=[
+            'user_id' => 'required|exists:users,id',
+            'date' => 'required|date',
+            'attendance_type_records_id' => 'required|exists:attendance_type_records,id',
+            'reason' => 'nullable|string|max:255',
+            'date2' => 'required|date',
+            'boss_id' => 'nullable|exists:users,id',
+        ];
+
+        $validatedData = $request->validate($validationRules);
+
+        // Set default values
+        $validatedData['status'] = 'pending';
+        $validatedData['is_checked'] = false;
+        $validatedData['is_first_approval'] = false;
+
+        // Create and save the TimeOffRequestRecord
+        $timeOffRequest = TimeOffRequestRecord::create($validatedData);
+
+
+           // Notify the boss
+    if ($timeOffRequest->boss_id) {
+        $boss = User::find($timeOffRequest->boss_id);
+        $boss->notify(new TimeOffRequestCreatedNotification($timeOffRequest));
+    }
+
+
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => '勤怠届が正常に登録されました。'
+            ]);
+        }
+        // dd($request->all());
+
+        return redirect()->back()->with('success', '勤怠届が正常に登録されました。');
+
+
     }
 
 

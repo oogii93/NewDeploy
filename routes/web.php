@@ -914,6 +914,20 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     Route::get('/admin/time_off/{attendanceTypeRecord}/edit', [TimeOffRequestRecordController::class, 'edit'])
         ->name('admin.time_off.edit');
 
+
+
+
+
+//route for holiday work
+
+Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, 'store2'])
+    ->name('admin.time_off.store2');
+
+
+
+
+
+
     // Route::put('/admin/time_off/{attendanceTypeRecord}', [TimeOffRequestRecordController::class, 'update'])
     // ->name('admin.time_off.update');
 
