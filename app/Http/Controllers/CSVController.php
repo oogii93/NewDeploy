@@ -483,6 +483,8 @@ private function isValidTimeString($timeString)
         $weekendOvertimeSeconds = 0;
         $morningOverTimeSeconds=0;
 
+        // dd($weekendOvertimeSeconds);
+
 
         // Initialize variables outside the loop
 $totalOvertimeSecondsA = 0;
@@ -996,7 +998,7 @@ $totalWorkedTime = 0;
 
 // dump([
 //     'D'=>$weekendOvertimeSeconds,
-//     'sda danaa'=>$totalWeekendOvertimeSeconds
+//     // 'sda danaa'=>$totalWeekendOvertimeSeconds
 // ]);
 
   // Final calculations
@@ -1299,11 +1301,30 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
     public function download(Request $request)
 
     {
-        $workDayMinutes = 7 * 60 + 40;
+//         // $workDayMinutes = 7 * 60 + 40;
+//         $corp = Corp::find($request->corp_id);
+//   // Add safety check
+//   if ($corp && $corp->corp_name === 'ユメヤ') {
+//     $workDayMinutes = 8 * 60;
+//     dd($workDayMinutes);
+// } else {
+//     $workDayMinutes = 7 * 60 + 40;
+//     dd($workDayMinutes);
+
+// }
+
+
+
+
         $month = $request->month;
         $selectedCorpId = $request->input('corps_id');
         $selectedYear = $request->input('year', date('Y'));
         $selectedOfficeId = $request->input('office_id');
+
+        $corp = Corp::find($selectedCorpId);
+
+    // Set work minutes based on company name
+    $workDayMinutes = ($corp && $corp->corp_name === 'ユメヤ') ? (8 * 60) : (7 * 60 + 40);
 
         // $startDate = Carbon::parse(date("Y-$month-16"));
         // $endDate = Carbon::parse($startDate->copy()->addMonth()->format('Y-m-15'));

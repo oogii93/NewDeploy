@@ -109,13 +109,7 @@ use App\Models\AttendanceTypeRecord;
                     </div>
                 </div>
 
-                @if (!in_array($timeOffRecordForDay->status, ['approved', 'denied']))
-                    <button
-                        onclick="openEditModal('{{ $timeOffRecordForDay->id }}', '{{ $day->format('Y-m-d') }}', '{{ $timeOffRecordForDay->attendance_type_records_id }}', '{{ $timeOffRecordForDay->reason_select }}', '{{ $timeOffRecordForDay->reason }}', '{{ $timeOffRecordForDay->boss_id }}')"
-                        class="text-blue-500 hover:underline text-m font-semibold mt-1 block w-full text-center">
-                        編集
-                    </button>
-                @endif
+
             @elseif ($isHoliday)
                 <span
                     class="bg-yellow-100 text-yellow-700 px-1 sm:px-2 py-1 text-xs font-semibold rounded-full block text-center">公休</span>
@@ -163,7 +157,9 @@ use App\Models\AttendanceTypeRecord;
                         class="text-blue-500 hover:underline text-m font-semibold mt-1 block w-full text-center">
                         編集
                     </button>
+
                 @endif
+
             @elseif ($compensatoryRestDay)
                 <div class="rounded-full py-1 px-1 sm:px-2 bg-yellow-100 text-center">
                     <div class="truncate text-yellow-700">
@@ -194,15 +190,25 @@ use App\Models\AttendanceTypeRecord;
 
 
         <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm text-yellow-600">
-
             @if (isset($breaks[$day->format('Y-m-d')]))
                 @php
+                    $breakMinutes = $breaks[$day->format('Y-m-d')];
+                    $breakRecord = \App\Models\Breaks::where('user_id', $user->id)
+                        ->whereDate('start_time', $day)
+                        ->first();
 
-                    $breakMinutes = $breaks[$day->format('Y-m-d')]; // Total minutes for the day
-                    $hours = floor($breakMinutes / 60); // Convert to hours
-                    $minutes = $breakMinutes % 60; // Remaining minutes
-
-                    echo sprintf('%02d:%02d', $hours, $minutes); // Display as HH:MM format
+                    // Only show time if we have both start and end time
+                    if ($breakRecord && $breakRecord->start_time && $breakRecord->end_time) {
+                        $hours = floor($breakMinutes / 60);
+                        $minutes = $breakMinutes % 60;
+                        echo sprintf('%02d:%02d', $hours, $minutes);
+                    } else if ($breakRecord && $breakRecord->start_time) {
+                        echo '休憩中';
+                        echo '<br>';
+                        echo '<span class="text-xs text-red-500">';
+                        echo Carbon\Carbon::parse($breakRecord->start_time)->format('H:i');
+                        echo '</span>';
+                    }
                 @endphp
             @endif
         </td>
@@ -691,8 +697,16 @@ use App\Models\AttendanceTypeRecord;
                 <select name="attendance_type_records_id" id="edit_attendance_type_records_id"
                     class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
                     <option value="">選択</option>
+
+
+
                     @foreach ($attendanceTypeRecords as $record)
+                        @if ($record->name !=='休日出勤')
                         <option value="{{ $record->id }}">{{ $record->name }}</option>
+                        @elseif ($record->name ==='休日出勤')
+                        <option value="{{ $record->id }}">{{ $record->name }}</option>
+
+                        @endif
                     @endforeach
                 </select>
             </div>
@@ -815,6 +829,85 @@ use App\Models\AttendanceTypeRecord;
 
                 <x-button purpose="search" type="submit">
                     保存
+                </x-button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="editHolidayModal"
+    class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
+    <div class="bg-white rounded-lg w-1/2 p-4">
+        <h2 class="text-lg font-bold mb-4 text-center">編集休日出勤申請書</h2>
+
+        <form id="editAttendanceForm" action="{{ route('admin.time_off.update', '') }}" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="user_id" value="{{ $user->id }}">
+            <input type="hidden" name="date" id="editModalDate" value="">
+            <input type="hidden" name="id" id="editModalId" value="">
+
+            <div class="mt-4">
+                <label for="edit_attendance_type_records_id" class="block mb-2">区分選択</label>
+                <select name="attendance_type_records_id" id="edit_attendance_type_records_id"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    <option value="">選択</option>
+                    @foreach ($attendanceTypeRecords as $record)
+                        @if ($record->name ==='休日出勤')
+                        <option selected value="{{ $record->id }}">{{ $record->name }}</option>
+
+                        @endif
+                    @endforeach
+
+
+
+                </select>
+            </div>
+
+            <div class="mt-4">
+                <label for="edit_reason_select" class="block mb-2">理由選択</label>
+                <select name="reason_select" id="edit_reason_select"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    <option value="">選択</option>
+                    <option value="私用の為">私用為</option>
+                    <option value="通院の為">通院為</option>
+                    <option value="計画有給休暇消化の為">計画有給休暇消化の為</option>
+                    <option value="体調不良の為">体調不良の為</option>
+                </select>
+            </div>
+
+
+
+            <div class="mt-4">
+                <label for="edit_reason" class="block mb-2">理由</label>
+                <input type="text" name="reason" id="edit_reason"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    placeholder="理由を入力してください">
+            </div>
+
+            <div class="mt-4">
+                <label for="edit_boss_id" class="block mb-2">上司選択</label>
+                <select name="boss_id" id="edit_boss_id"
+                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+                    <option value="">選択</option>
+                    @foreach ($bosses as $boss)
+                        <option value="{{ $boss->id }}">{{ $boss->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div
+                class="flex flex-col md:flex-row justify-between mt-5 items-center space-y-3 md:space-y-0 md:space-x-4 ">
+                <x-button purpose="default" onclick="closeEditModal()">
+                    キャンセル
+                </x-button>
+
+                <x-button purpose="delete" type="button" onclick="deleteTimeOff()">
+                    削除
+                </x-button>
+
+                <x-button purpose="search" type="submit">
+                    更新
                 </x-button>
             </div>
         </form>
@@ -1035,5 +1128,186 @@ function openModal2(date) {
 function closeModal2() {
     document.getElementById('holidayModal').classList.add('hidden');
 }
+
+function openEditModal(id, date, attendanceTypeId, reasonSelect, reason, bossId) {
+        document.getElementById('editModalId').value = id;
+        document.getElementById('editModalDate').value = date;
+        document.getElementById('edit_attendance_type_records_id').value = attendanceTypeId;
+        document.getElementById('edit_boss_id').value = bossId;
+
+        // Set the selected value for reason_select
+        const reasonSelectElement = document.getElementById('edit_reason_select');
+        if (reasonSelectElement) {
+            reasonSelectElement.value = reasonSelect || '';
+        }
+
+        // Set the value for reason input
+        const reasonInput = document.getElementById('edit_reason');
+        if (reasonInput) {
+            reasonInput.value = reason || '';
+        }
+
+        document.getElementById('editAttendanceModal').classList.remove('hidden');
+
+        // Update the form action URL
+        const form = document.getElementById('editAttendanceForm');
+        form.action = "{{ route('admin.time_off.update', '') }}/" + id;
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Edit form submission
+        const editForm = document.getElementById('editAttendanceForm');
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitForm(this, 'POST'); // Using POST for Laravel's form method spoofing
+        });
+
+        function submitForm(form, method) {
+            const formData = new FormData(form);
+            formData.append('_method', 'PUT');
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        closeEditModal();
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'エラーが発生しました。もう一度お試しください。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました。もう一度お試しください。');
+                });
+        }
+    });
+
+    function closeEditModal() {
+        document.getElementById('editAttendanceModal').classList.add('hidden');
+    }
+
+
+    function deleteTimeOff() {
+        if (confirm('本当に削除しますか？')) {
+            const id = document.getElementById('editModalId').value;
+            const deleteUrl = "{{ route('admin.time_off.destroy', '') }}/" + id;
+
+            fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        closeEditModal();
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'エラーが発生しました。もう一度お試しください。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました。もう一度お試しください。');
+                });
+        }
+    }
+
+
+
+    //ssasdsf
+
+
+function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
+        document.getElementById('editModalId').value = id;
+        document.getElementById('editModalDate').value = date;
+        document.getElementById('edit_attendance_type_records_id').value = attendanceTypeId;
+        document.getElementById('edit_boss_id').value = bossId;
+
+        // Set the selected value for reason_select
+        const reasonSelectElement = document.getElementById('edit_reason_select');
+        if (reasonSelectElement) {
+            reasonSelectElement.value = reasonSelect || '';
+        }
+
+        // Set the value for reason input
+        const reasonInput = document.getElementById('edit_reason');
+        if (reasonInput) {
+            reasonInput.value = reason || '';
+        }
+
+        document.getElementById('editAttendanceModal').classList.remove('hidden');
+
+        // Update the form action URL
+        const form = document.getElementById('editAttendanceForm');
+        form.action = "{{ route('admin.time_off.update', '') }}/" + id;
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Edit form submission
+        const editForm = document.getElementById('editAttendanceForm');
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitForm(this, 'POST'); // Using POST for Laravel's form method spoofing
+        });
+
+        function submitForm(form, method) {
+            const formData = new FormData(form);
+            formData.append('_method', 'PUT');
+
+            fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                            'content')
+                    },
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        closeEditModal();
+                        window.location.reload();
+                    } else {
+                        alert(data.message || 'エラーが発生しました。もう一度お試しください。');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('エラーが発生しました。もう一度お試しください。');
+                });
+        }
+    });
+
+    function closeEditModal() {
+        document.getElementById('editAttendanceModal').classList.add('hidden');
+    }
+
+
+
 </script>
 
