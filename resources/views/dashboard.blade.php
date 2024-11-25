@@ -273,6 +273,7 @@
                             <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
                                 <span class="block text-xs md:text-sm">退社時間</span>
                             </th>
+
                             @if (auth()->user()->office && auth()->user()->office->corp && auth()->user()->office->corp->corp_name === 'ユメヤ')
                                 <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
                                     <span class="block text-xs md:text-sm">二回出席</span>
@@ -281,6 +282,7 @@
                                     <span class="block text-xs md:text-sm">二回退勤</span>
                                 </th>
                             @endif
+
                             <th class="border border-slate-400 p-2 md:p-3 font-semibold whitespace-normal min-w-[90px] md:min-w-[110px]">
                                 <span class="block text-xs md:text-sm">労働時間</span>
                             </th>

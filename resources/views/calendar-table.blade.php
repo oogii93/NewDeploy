@@ -1,28 +1,64 @@
-<!-- calendar-table.blade.php -->
-<div class="table-container sm:inline-block sm:mr-3 mb-4">
-    <table class="border-collapse sm:min-w-max">
-        <thead>
-            <tr class=" border border-gray-400">
-                <th colspan="2" class="bg-sky-200 font-bold py-2 px-4"> {{ $user->corp->corp_name }}</th>
-                <th colspan="2" class="bg-sky-200 font-bold py-2 px-4"> {{ $user->office->office_name }}</th>
-                <th colspan="2" class="bg-sky-200 font-bold py-2 px-4">社員氏名: {{ $user->name }}</th>
-                <th colspan="2" class="bg-sky-200 font-bold py-2 px-4">社員番号: {{ $user->employer_id }}</th>
-            </tr>
+<div class="w-full overflow-x-auto shadow-lg rounded-lg">
+    <table class="w-full table-auto divide-y divide-gray-200 bg-sky-300">
+        <!-- Company Info Header -->
+        <thead class="">
+                <th colspan="2" class="px-4 py-3 text-left border-r ">
+                    <div class="flex flex-col">
+                        <span class="text-gray-700 font-semibold text-sm md:text-base">{{ $user->corp->corp_name }}</span>
+                        <span class="text-gray-600 text-xs md:text-sm">{{ $user->office->office_name }}</span>
+                    </div>
+                </th>
+                <th colspan="2" class="px-4 py-3 text-left ">
+                    <div class="flex flex-col">
+                        <span class="text-gray-700 font-semibold text-sm md:text-base">
+                            社員氏名: {{ $user->name }}
+                        </span>
+                        <span class="text-gray-600 text-xs md:text-sm">
+                            社員番号: {{ $user->employer_id }}
+                        </span>
+                    </div>
+                </th>
 
-            <tr>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">日付け</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">勤怠区分</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">外出</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">始業時刻</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">終業時刻</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">労働時間</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">残業時間1</th>
-                <th class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">残業時間2</th>
+            <!-- Column Headers -->
+            <tr class="bg-gray-50 border-t border-b border-gray-200">
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">日付け</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">勤怠区分</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">外出</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">始業時刻</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">終業時刻</span>
+                </th>
+
+                @if ($corpName === 'ユメヤ')
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                        <span class="block">二回出席</span>
+                    </th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                        <span class="block">二回退勤</span>
+                    </th>
+                @endif
+
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">労働時間</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">残業時間1</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">残業時間2</span>
+                </th>
             </tr>
         </thead>
 
 
-        <tbody>
 
             @php
 
@@ -50,36 +86,43 @@
           // Determine the day color based on the day of the week or if it's a holiday
           $dayColor = '';
             if ($dayOfWeek == 0) {
-                $dayColor = 'bg-red-100';
+                $dayColor = 'bg-red-200';
             } elseif ($dayOfWeek == 6) {
-                $dayColor = 'bg-blue-100';
+                $dayColor = 'bg-sky-200';
             } elseif ($isHoliday) {
                 $dayColor = 'bg-pink-100'; // Optional: different color for holidays if needed
             }
         @endphp
 
-                <tr class="transition-colors duration-300 ease-in-out {{ $dayColor }}">
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
-                        {{ $currentDate->format('m/d') }} ({{ $currentDate->isoFormat('dd') }})
+<tbody class="bg-white divide-y divide-gray-200">
+    <tr class="transition-colors duration-300 ease-in-out {{ $dayColor }} hover:bg-gray-50">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
+                        <div class="flex items-center">
+                            <span class="font-medium">{{ $currentDate->format('m/d') }}</span>
+                            <span class="ml-1 text-gray-500">({{ $currentDate->isoFormat('dd') }})</span>
+                        </div>
                     </td>
 
 
 
 
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs text-blue-800">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             $timeOffRecordForDay = $user->timeOffRequestRecords->where('date', $currentDate->format('Y-m-d'))->first();
                         @endphp
 
                         @if ($timeOffRecordForDay)
+                        <span class="bg-sky-500 rounded-lg text-white px-2 py-1">
                             {{ $timeOffRecordForDay->attendanceTypeRecord->name }}
+
+                        </span>
                         @elseif ($isHoliday)
-                        <span class="text-pink-500">公休</span>
+                        <span class="text-white bg-emerald-600 px-2 py-1 rounded-lg">公休</span>
                         @endif
                     </td>
 
 
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs text-red-500">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             $breakMinutes = $breakData[$user->id][$currentDate->format('Y-m-d')] ?? null;
                         @endphp
@@ -102,7 +145,7 @@
 
 
 
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             $arrivalRecord = $user->userArrivalRecords()
                                 ->where('recorded_at', '>=', $currentDate->copy()->startOfDay())
@@ -116,13 +159,37 @@
                         @endphp
                     </td>
 
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
                                 echo \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at)->format('H:i');
                             }
                         @endphp
                     </td>
+                    @if ($corpName === 'ユメヤ')
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
+                        @php
+                            $arrivalSecond = $user->userArrivalRecords()
+                                ->where('second_recorded_at', '>=', $currentDate->copy()->startOfDay())
+                                ->where('second_recorded_at', '<=', $currentDate->copy()->endOfDay())
+                                ->first();
+
+                            if ($arrivalSecond && $arrivalSecond->second_recorded_at) {
+                                echo \Carbon\Carbon::parse($arrivalSecond->second_recorded_at)->format('H:i');
+                            }
+                        @endphp
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
+                        @php
+                            if ($arrivalSecond && $arrivalSecond->arrivalDepartureRecords->count() > 0) {
+                                $departureSecond = $arrivalSecond->arrivalDepartureRecords->first()->second_recorded_at;
+                                if ($departureSecond) {
+                                    echo \Carbon\Carbon::parse($departureSecond)->format('H:i');
+                                }
+                            }
+                        @endphp
+                    </td>
+                @endif
 
                     {{-- <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
                         @php
@@ -246,7 +313,7 @@
                             }
                         @endphp
                     </td> --}}
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             // Define general constants for the workday, break, and lunch times
                             if ($corpName === 'ユメヤ') {
@@ -322,8 +389,7 @@
 
 
 
-
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
                                 // Initialize times
@@ -351,7 +417,7 @@
                         @endphp
                     </td>
 
-                    <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
+                    <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
                                 // Initialize times
