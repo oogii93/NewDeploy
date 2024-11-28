@@ -140,6 +140,7 @@
 
                       <a href="{{ route('tags.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">タグ</a>
                       <a href="{{ route('categories.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">カテゴリー</a>
+                      <a href="{{ route('admin.past-examples.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">過去実例</a>
 
 
                     </div>

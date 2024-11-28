@@ -6,6 +6,8 @@ use App\Models\Application2;
 use Illuminate\Http\Request;
 use App\Models\Application2Type01A;
 use App\Models\Application2Type03A;
+use App\Models\ComputerFormType01Z;
+use App\Models\PastExample;
 use Illuminate\Foundation\Auth\User;
 
 class Form2Controller extends Controller
@@ -45,6 +47,54 @@ class Form2Controller extends Controller
     //     return view('forms2.index', compact('formGroups','filteredGroups', 'search', 'relevantInstructions'));
 
     //     }
+
+
+    public function openQuickAssist()
+    {
+        $command='start ms-quick-assist:';
+
+        exec($command);
+
+        return response()->json(['status'=>'クイックアシスト開始']);
+    }
+
+
+
+
+
+    public function index2(Request $request)
+    {
+
+        //search oruulah
+
+        $searchQuery=$request->input('search');
+
+        $pastExamplesData = PastExample::where(function($query) use ($searchQuery) {
+            $query->where('title', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('description', 'like', '%' . $searchQuery . '%');
+        })->paginate(8); //
+
+
+        //search duusah
+        $formComputer=[
+            '01Z'=>['title'=>'001.名刺作成依頼', 'type'=>'Type01Z']
+        ];
+
+        return view('ComputerForm.index', [
+            'formComputer' => $formComputer,
+            'pastExamples' => $pastExamplesData // Note the different variable name
+        ]);
+    }
+
+    public function show2($type)
+    {
+
+
+        return view("ComputerForm.type{$type}", compact( 'type'));
+
+
+
+    }
 
     public function index(Request $request)
 {
@@ -187,6 +237,8 @@ class Form2Controller extends Controller
 
         $searchContent=$searchContents[$type] ?? '';
         return view("forms2.type{$type}", compact('bosses', 'type', 'searchContent'));
+
+
     }
 
     // public function store(Request $request, $type)
@@ -292,6 +344,133 @@ class Form2Controller extends Controller
     return redirect('forms2')->with('success', 'フォームが正常に送信されました。');
 }
 
+// public function store2(Request $request, $type)
+// {
+//     $validationRules = [
+//         '01Z' => [
+//             'corp' => 'nullable|string|max:255',
+//             'office' => 'nullable|string|max:255',
+//             'name' => 'nullable|string|max:255',
+//             'occured_date' => 'required|date',
+//             'description' => 'required|string|max:5000',
+//             'answer' => 'required|in:優先度,緊急度',
+//             'screen_copy.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:100120', // Validation for array of images
+//             'self_attempt' => 'nullable|string|max:5000',
+//         ],
+//     ];
+
+//     $validatedData = $request->validate($validationRules[$type]);
+
+//     // Handle file uploads
+//     $filePaths = [];
+//     if ($request->hasFile('screen_copy')) {
+//         foreach ($request->file('screen_copy') as $file) {
+//             $path = $file->store('screen_copies', 'public');
+//             $filePaths[] = $path;
+//         }
+//     }
+
+//     // Store file paths as JSON
+//     $validatedData['screen_copy'] = json_encode($filePaths);
+
+
+
+
+//  // Save the model
+//             $model = $this->getModelForType($type);
+//             if (!$model) {
+//                 return redirect()->back()->with('error', 'Invalid form type.');
+//             }
+
+
+//     $model->fill($validatedData);
+
+
+//         $model->save();
+
+//         // Create associated application
+//         $application2 = new Application2([
+//             'user_id' => auth()->id(),
+//             'status' => 'pending',
+//         ]);
+//         $model->applicationable2()->save($application2);
+
+//         return redirect()->route('ComputerForm.index')->with('success', '申請は送信しました。');
+
+
+// }
+
+//test  store 2
+public function store2(Request $request, $type)
+{
+    $validationRules=[
+        '01Z' => [
+                        'corp' => 'nullable|string|max:255',
+                        'office' => 'nullable|string|max:255',
+                        'name' => 'nullable|string|max:255',
+                        'occured_date' => 'required|date',
+                        'description' => 'required|string|max:5000',
+                        'answer' => 'required|in:優先度,緊急度',
+                        'screen_copy.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // Validation for array of images
+                        'self_attempt' => 'nullable|string|max:5000',
+                    ],
+    ];
+
+    $validatedData=$request->validate($validationRules[$type]);
+
+    $filePaths=[];
+
+    if($request->hasFile('screen_copy')){
+        foreach($request->file('screen_copy') as $file)
+        {
+            $path=$file->store('screen_copies','public');
+            $filePaths[]=$path;
+        }
+    }
+
+    $validatedData['screen_copy'] = !empty($filePaths) ? json_encode($filePaths) : null;
+
+    //  // Save the model
+            $model = $this->getModelForType($type);
+            if (!$model) {
+                return redirect()->back()->with('error', 'Invalid form type.');
+            }
+
+
+    $model->fill($validatedData);
+
+
+        $model->save();
+
+        // Create associated application
+        $application2 = new Application2([
+            'user_id' => auth()->id(),
+            'status' => 'pending',
+        ]);
+        $model->applicationable2()->save($application2);
+
+        return redirect()->route('ComputerForm.index')->with('success', '申請は送信しました。');
+
+
+}
+
+
+
+//      protected function getModelForType($type)
+// {
+//     switch ($type) {
+//         case '01Z':
+//             return new ComputerFormType01Z(); // Replace with the actual model for this type
+//         // Add other cases as needed
+//         default:
+//             return null;
+//     }
+// }
+
+
+
+
+
 private function getModelForType($type)
 {
     switch ($type) {
@@ -300,6 +479,9 @@ private function getModelForType($type)
         // Add cases for other form types here
         case '03A':  // Add this case for 03A
             return new Application2Type03A();
+
+            case '01Z':
+                return new ComputerFormType01Z();
 
 
         default:

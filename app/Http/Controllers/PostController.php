@@ -72,6 +72,15 @@ class PostController extends Controller
         return view('posts.create', compact('categories','tags', 'corps'));
     }
 
+    public function uploadImage(Request $request)
+{
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('summernote', 'public');
+        return response()->json(['url' => Storage::url($path)]);
+    }
+    return response()->json(['error' => 'No image uploaded'], 400);
+}
+
 
     public function store(Request $request)
     {

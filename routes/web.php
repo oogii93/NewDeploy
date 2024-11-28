@@ -56,7 +56,9 @@ use App\Http\Controllers\CompanyScheduleController;
 use App\Http\Controllers\DepartureRecordController;
 use App\Http\Controllers\TestNotificationController;
 use App\Http\Controllers\AttendanceTypeRecordController;
+use App\Http\Controllers\PastExampleController;
 use App\Http\Controllers\TimeOffRequestRecordController;
+use App\Models\PastExample;
 
 //Admin Group Route
 Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
@@ -70,6 +72,32 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
 
 
 
+
+
+
+
+    // Past Examples
+    Route::get('/admin/past-examples', [PastExampleController::class, 'index'])
+        ->name('admin.past-examples.index');
+
+    Route::get('/admin/past-examples/create', [PastExampleController::class, 'create'])
+        ->name('admin.past-examples.create');
+
+    Route::post('/admin/past-examples', [PastExampleController::class, 'store'])
+        ->name('admin.past-examples.store');
+
+
+
+    Route::get('/admin/past-examples/{pastExample}/edit', [PastExampleController::class, 'edit'])
+        ->name('admin.past-examples.edit');
+
+        Route::put('/admin/past-examples/{pastExample}', [PastExampleController::class, 'update'])
+        ->name('admin.past-examples.update');
+
+    Route::delete('/admin/past-examples/{pastExample}', [PastExampleController::class, 'destroy'])
+        ->name('admin.past-examples.destroy');
+        Route::post('admin/past-examples/upload-image', [PastExampleController::class, 'uploadImage'])
+        ->name('admin.past-examples.upload-image');
 
 
 
@@ -991,6 +1019,15 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
     //Form and application routes
 
+    Route::get('/ComputerForm', [Form2Controller::class, 'index2'])
+    ->name('ComputerForm.index');
+
+
+    Route::get('/ComputerForm/{type}', [Form2Controller::class, 'show2'])
+    ->name('ComputerForm');
+
+
+
     Route::get('/forms2', [Form2Controller::class, 'index'])
     ->name('forms2.index');
 
@@ -1000,14 +1037,19 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
     Route::post('/forms2/store/{type}', [Form2Controller::class, 'store'])
     ->name('forms2.store');
 
+    Route::post('/ComputerForm/{type}', [Form2Controller::class, 'store2'])
+    ->name('forms2');
+
     // Route::match(['post', 'put'], '/forms/{type}/{id?}', [FormController::class, 'update'])
     // ->name('forms.update');
 
 
 
 
-    Route::get('/applications2', [Application2Controller::class, 'index'])
+    Route::get('/applications2/index', [Application2Controller::class, 'index'])
     ->name('applications2.index');
+
+
 
 
     Route::get('/applications2/{id}', [Application2Controller::class, 'show'])
@@ -1015,11 +1057,26 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
     Route::post('/applications2/{application2}/check', [Application2Controller::class, 'check'])->name('applications2.check');
 
+    //Computer Q and A route
+
+    Route::get('/applications2', [Application2Controller::class, 'computer'])
+    ->name('applications2.computer');
+
 
                 //python name card
 
 
                 Route::resource('namecards', NameCardController::class);
+
+                Route::get('/namecards/{namecard}', [NameCardController::class, 'show'])->name('namecards.show');
+
+
+                Route::get('/admin/past-examples/{pastExample}', [PastExampleController::class, 'show'])
+                ->name('admin.past-examples.show');
+
+                Route::get('/ocr-test', [NameCardController::class, 'testOCR']);
+
+                Route::get('/ocr-diagnostics', [NameCardController::class, 'diagnostics']);
 
 
 

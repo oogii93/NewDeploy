@@ -762,7 +762,7 @@
                         <li class="relative group">
                             <a href=""
                                 class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                                <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                                {{-- <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
                                     height="30px" width="30px" viewBox="0 0 1024 1024" class="icon" version="1.1"
                                     xmlns="http://www.w3.org/2000/svg" fill="#000000">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -823,8 +823,14 @@
                                             d="M778.6 421.7c-3.3 0-6-2.7-6-6V194.9c0-3.3 2.7-6 6-6s6 2.7 6 6v220.8c0 3.3-2.7 6-6 6z"
                                             fill="#333336"></path>
                                     </g>
-                                </svg>
+                                </svg> --}}
+                                <img src="{{ asset('logo22.png') }}"
+                                alt=""
+                                class="w-8 h-8 transition-transform duration-300 transform group-hover:-translate-y-1 mt-1"
+                                >
+
                                 <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">Holdings管理</span>
+
                             </a>
 
 
@@ -834,8 +840,12 @@
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a>
                                 <a href="{{ route('Kintaihr') }}"
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
+
                                 <a href="{{ route('applications2.index') }}"
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文</a>
+
+                                <a href="{{ route('applications2.computer') }}"
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">パソコン問い合わせ</a>
                             </div>
 
                         </li>
@@ -937,7 +947,7 @@
                 <li class="relative group">
                     <a href="{{ route('namecards.index') }}"
                         class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100"
-                        target="_blank" rel="noopener noreferrer">
+                    >
 
 
 

@@ -183,7 +183,9 @@
            <span class="text-lg sm:text-xl lg:text-2xl">社内注文</span>
          </div>
 
-            <div class="col-span-1 h-24 sm:h-28 lg:h-32 flex items-center justify-center text-white font-bold text-center rounded-lg cursor-pointer bg-purple-500 hover:bg-purple-600 transition-all">
+            <div class="col-span-1 h-24 sm:h-28 lg:h-32 flex items-center justify-center text-white font-bold text-center rounded-lg cursor-pointer bg-purple-500 hover:bg-purple-600 transition-all
+            " onclick="window.location.href='{{ route('ComputerForm.index') }}'">
+
                 <svg viewBox="0 0 24 24" height="40px" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#ffffff" stroke="#ffffff"
                 class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 transition-transform duration-300 transform group-hover:-translate-y-1 mr-3">
 

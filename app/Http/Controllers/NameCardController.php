@@ -1,140 +1,193 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use thiagoalessio\TesseractOCR\TesseractOCR;
 use App\Models\NameCard;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use thiagoalessio\TesseractOCR\TesseractOCR;
 
 class NameCardController extends Controller
 {
 
 
 
+    public function diagnostics()
+{
+    $checks = [
+        'php_version' => PHP_VERSION,
+        'tesseract_version' => shell_exec('tesseract --version 2>&1'),
+        'tesseract_path' => shell_exec('where tesseract'),
+        'php_extensions' => get_loaded_extensions(),
+        'tessdata_dir' => glob('C:\Program Files\Tesseract-OCR\tessdata\*')
+    ];
 
+    return response()->json($checks);
+}
+
+
+
+
+
+public function testOCR()
+{
+    try {
+        // Explicitly set Tesseract path for XAMPP
+        $tesseractPath = 'C:\Program Files\Tesseract-OCR\tesseract.exe';
+
+        // Create a test image for OCR (create a simple text image)
+        $testImagePath = storage_path('app/test_ocr.png');
+
+        // Create a simple image with text (you might want to create this separately)
+        $im = imagecreate(200, 50);
+        $background = imagecolorallocate($im, 255, 255, 255);
+        $textColor = imagecolorallocate($im, 0, 0, 0);
+        imagestring($im, 5, 10, 10, "Test OCR Text", $textColor);
+        imagepng($im, $testImagePath);
+        imagedestroy($im);
+
+        // Perform OCR
+        $tesseract = new \thiagoalessio\TesseractOCR\TesseractOCR($testImagePath);
+
+        // Explicitly set the executable path
+        $tesseract->executable($tesseractPath);
+
+        // Run OCR
+        $text = $tesseract->run();
+
+        // Delete test image
+        unlink($testImagePath);
+
+        // Return or log the extracted text
+        \Log::info('OCR Test Result: ' . $text);
+        return "OCR Test Successful. Extracted Text: " . $text;
+    } catch (\Exception $e) {
+        // Log the full error
+        \Log::error('OCR Test Error: ' . $e->getMessage());
+        return "OCR Test Failed: " . $e->getMessage();
+    }
+}
+    public function index()
+    {
+
+        $namecards = NameCard::all();
+
+        return view('namecards.index', compact('namecards'));
+    }
 
     public function create()
     {
         return view('namecards.create');
     }
-
-    public function index()
-    {
-        $namecards = NameCard::latest()->get();
-        return view('namecards.index', compact('namecards'));
-    }
-
     public function store(Request $request)
     {
         try {
-            // Check if this is an OCR request or final form submission
-            $isOcrRequest = $request->has('ocr_only');
-            // Process the base64 image
-            $image_data = $request->input('image_data');
-            $image_data = preg_replace('#^data:image/\w+;base64,#i', '', $image_data);
-            $image_data = base64_decode($image_data);
-
-            // Generate unique filename
-            $filename = 'namecard_' . time() . '_' . uniqid() . '.png';
-            $uploads_dir = public_path('uploads');
-
-            // Create directory if it doesn't exist
-            if (!file_exists($uploads_dir)) {
-                mkdir($uploads_dir, 0777, true);
-            }
-
-            // Save the image
-            $file_path = $uploads_dir . '/' . $filename;
-            file_put_contents($file_path, $image_data);
-
-            // Perform OCR
-            $tesseract = new TesseractOCR($file_path);
-            $tesseract->lang('jpn', 'eng')  // Support both Japanese and English
-            ->psm(3)
-            ->oem(1);
-
-            $extracted_text = $tesseract->run();
-            $extracted_data = $this->extractFields($extracted_text);
-
-            // If this is just an OCR request, return the extracted data
-            if ($isOcrRequest) {
-                return response()->json([
-                    'success' => true,
-                    'extracted_data' => $extracted_data,
-                    'full_text' => $extracted_text
-                ]);
-            }
-
-            // For final form submission, validate the request
-            $request->validate([
-                'name' => 'required',
-                'address' => 'required',
-                'company' => 'required',
-                'phone' => 'required',
-                'email' => 'required|email',
+            // Validate the incoming request
+            $validatedData = $request->validate([
+                'image_data' => 'required|string', // Base64 image string
             ]);
 
-            // Create namecard record with form input data
-            NameCard::create([
-                'name' => $request->input('name'),
-                'address' => $request->input('address'),
-                'company' => $request->input('company'),
-                'phone' => $request->input('phone'),
-                'email' => $request->input('email'),
-                'image' => 'uploads/' . $filename,
-                'ocr_text' => $extracted_text
-            ]);
+            // Decode the Base64 image data
+            $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $validatedData['image_data']);
+            $imageData = base64_decode($imageData);
 
+            // Save the image to storage
+            $filename = 'namecard_' . uniqid() . '.png';
+            $path = storage_path('app/public/namecards/' . $filename);
+
+            // Ensure directory exists
+            if (!is_dir(storage_path('app/public/namecards'))) {
+                mkdir(storage_path('app/public/namecards'), 0755, true);
+            }
+
+            file_put_contents($path, $imageData);
+
+            // Perform OCR on the saved image
+            $tesseract = new TesseractOCR($path);
+            $tesseract->lang('eng', 'jpn');
+            $extractedText = $tesseract->run();
+
+            // Parse the extracted text into fields
+            $extractedData = $this->parseNameCardText($extractedText);
+
+            // Create a new NameCard record
+            $nameCard = new NameCard();
+
+            // Map extracted data to model fields
+            $nameCard->name = $extractedData['name'] ?? null;
+            $nameCard->company = $extractedData['company'] ?? null;
+            $nameCard->address = $extractedData['address'] ?? null;
+            $nameCard->phone = $extractedData['phone'] ?? null;
+            $nameCard->email = $extractedData['email'] ?? null;
+
+            // Store the original image filename
+            $nameCard->image_path = $filename;
+
+            // Save the name card to database
+            $nameCard->save();
+
+            // Return the extracted data as JSON
             return response()->json([
                 'success' => true,
-                'message' => 'Name card saved successfully!'
+                'message' => 'Name card processed and saved successfully',
+                'extractedData' => $extractedData,
+                'nameCard' => $nameCard
             ]);
-
         } catch (\Exception $e) {
+            // Handle exceptions and return an error response
+            \Log::error('Error in NameCard OCR and Storage: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Error processing name card: ' . $e->getMessage()
+                'message' => 'Failed to process and store the name card. ' . $e->getMessage(),
             ], 500);
         }
     }
 
-    private function extractFields($text)
+    // Parse text to extract name, company, email, phone, address
+    private function parseNameCardText($text)
     {
+        $data = [];
+
+        // Updated patterns for Japanese name cards
         $patterns = [
             'name' => [
-                '/name[\s:]+([\w\s]+)/i',
-                '/([\w\s]+)\b(?=\s*(?:CEO|Manager|Director|MD|President))/i',
-            ],
-            'email' => [
-                '/[\w\.-]+@[\w\.-]+\.\w+/',
-                '/email[\s:]+([\w\.-]+@[\w\.-]+\.\w+)/i',
-            ],
-            'phone' => [
-                '/(?:phone|tel|mobile)[\s:]*([\+\d\s\-\(\)]{10,})/i',
-                '/(\+?\d{1,3}[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4})/',
-            ],
-            'address' => [
-                '/address[\s:]+([\w\s,.-]+)/i',
-                '/([\w\s,.-]+\b(?:street|road|avenue|lane|boulevard|st|rd|ave|ln|blvd)[\w\s,.-]+)/i',
+                '/([ぁ-んァ-ヶ一-龯]+\s*[ぁ-んァ-ヶ一-龯]+)/u' // Match full names
             ],
             'company' => [
-                '/(?:company|organization)[\s:]+([\w\s,.-]+)/i',
-                '/([\w\s&]+(?:Inc\.|LLC|Ltd\.|Corp\.|Corporation|Company))/i',
+                '/(?:株式会社|有限会社|合同会社|企業)\s*[ぁ-んァ-ヶ一-龯]+/u' // Match company names with common suffixes
             ],
+            'address' => [
+                '/〒\s*[:：]?\s*([\d\-]+)/u' // Match postal code and address
+            ],
+            'phone' => [
+                '/TEL\s*[:：]?\s*([\d\-]+)/u', // Match phone numbers
+                '/携帯\s*[:：]?\s*([\d\-]+)/u' // Match mobile numbers
+            ],
+            'email' => [
+                '/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/u' // Match email addresses
+            ]
         ];
 
-        $extracted = [];
-        foreach ($patterns as $field => $fieldPatterns) {
-            $extracted[$field] = null;
-            foreach ($fieldPatterns as $pattern) {
+        foreach ($patterns as $key => $patternSet) {
+            foreach ($patternSet as $pattern) {
                 if (preg_match($pattern, $text, $matches)) {
-                    $extracted[$field] = trim($matches[1] ?? $matches[0]);
+                    $data[$key] = trim($matches[1]);
                     break;
                 }
             }
         }
 
-        return $extracted;
+        return $data;
     }
-}
 
+
+    public function show(NameCard $namecard)
+    {
+        return view('namecards.show', [
+            'namecard' => $namecard
+        ]);
+    }
+
+
+
+}

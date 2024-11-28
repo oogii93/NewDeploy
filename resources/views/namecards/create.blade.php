@@ -1,200 +1,186 @@
-
-
 <x-app-layout>
-    <div class="mt-10 mb-5">
-<div class="container px-5 content-center rounded-lg">
-    <div id="camera-container px-5 mt-5 flex justify-center ">
-        <video id="video" width="640" height="480" autoplay></video>
-        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <div class="container mx-auto p-6">
+        <h1 class="text-2xl font-bold mb-4">Create Name Card</h1>
 
+        <div class="max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div id="camera-container" class="relative mb-4">
+                <video id="video" class="w-full" autoplay></video>
+                <canvas id="canvas" class="hidden" width="800" height="480"></canvas>
 
-        <div class="controls mt-5">
-            <x-button type="button" id="snap" purpose="search">Capture Image</x-button>
-            <button type="button" id="retake" class="btn btn-secondary" style="display: none;">Retake</button>
-        </div>
-        <div id="preview" style="display: none;">
-            <img id="captured-image" src="" alt="Captured image" style="max-width: 100%;">
+                <!-- Rectangle Guide Overlay -->
+                <div id="guide-overlay" class="absolute top-0 left-0 w-full h-full pointer-events-none">
+                    <div class="absolute border-4 border-green-500 opacity-75" style="top: 20%; left: 10%; width: 80%; height: 60%;"></div>
+                    <div class="absolute top-0 left-0 w-full text-center mt-2 text-white bg-black bg-opacity-50">
+                        Place name card inside the green rectangle
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center space-x-4 mb-4">
+                <button id="capture-btn"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Capture Image
+                </button>
+                <button id="retake-btn"
+                        class="hidden bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Retake
+                </button>
+            </div>
+
+            <div id="image-preview" class="hidden mb-4">
+                <img id="preview-img" class="max-w-full" src="" alt="Captured Image">
+            </div>
+
+            <form id="namecard-form" method="POST" action="{{ route('namecards.store') }}">
+                @csrf
+                <input type="hidden" name="image_data" id="image-data">
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
+                        Name
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                           id="name" name="name" type="text">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="company">
+                        Company
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                           id="company" name="company" type="text">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
+                        Email
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                           id="email" name="email" type="email">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
+                        Phone
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                           id="phone" name="phone" type="text">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="address">
+                        Address
+                    </label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
+                           id="address" name="address" type="text">
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            type="submit">
+                        Save Name Card
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
-    <form id="namecard-form" class="mt-4">
-        @csrf
-        <input type="hidden" name="image_data" id="image_data">
-
-        <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" name="name" id="name" class="form-control">
-            <small class="text-muted">OCR Detected: <span id="detected-name"></span></small>
-        </div>
-
-        <div class="form-group">
-            <label for="company">Company:</label>
-            <input type="text" name="company" id="company" class="form-control">
-            <small class="text-muted">OCR Detected: <span id="detected-company"></span></small>
-        </div>
-
-        <div class="form-group">
-            <label for="address">Address:</label>
-            <input type="text" name="address" id="address" class="form-control">
-            <small class="text-muted">OCR Detected: <span id="detected-address"></span></small>
-        </div>
-
-        <div class="form-group">
-            <label for="phone">Phone:</label>
-            <input type="text" name="phone" id="phone" class="form-control">
-            <small class="text-muted">OCR Detected: <span id="detected-phone"></span></small>
-        </div>
-
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" class="form-control">
-            <small class="text-muted">OCR Detected: <span id="detected-email"></span></small>
-        </div>
-
-        <button type="submit" class="btn btn-success mt-3">Save Name Card</button>
-    </form>
-
-    <div id="ocr-text" class="mt-4">
-        <h4>Full OCR Text:</h4>
-        <pre id="full-ocr-text" style="white-space: pre-wrap;"></pre>
-    </div>
-</div>
-</div>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
-    const snap = document.getElementById('snap');
-    const retake = document.getElementById('retake');
-    const preview = document.getElementById('preview');
-    const capturedImage = document.getElementById('captured-image');
-    const form = document.getElementById('namecard-form');
-    const context = canvas.getContext('2d');
-    const imageDataInput = document.getElementById('image_data');
+    const captureBtn = document.getElementById('capture-btn');
+    const retakeBtn = document.getElementById('retake-btn');
+    const imagePreview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+    const imageDataInput = document.getElementById('image-data');
+    const guideOverlay = document.getElementById('guide-overlay');
 
-    // Access the camera
-    navigator.mediaDevices.getUserMedia({
-        video: {
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-            facingMode: 'environment'
-        }
-    })
-    .then((stream) => {
-        video.srcObject = stream;
-        video.style.display = 'block';
-    })
-    .catch((err) => {
-        console.error("Error accessing camera:", err);
-        alert("Error accessing camera. Please make sure you have granted camera permissions.");
-    });
+    const nameInput = document.getElementById('name');
+    const companyInput = document.getElementById('company');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
 
-    // Capture image and process OCR
-    snap.addEventListener('click', function() {
+    // Access camera
+    navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+            video.srcObject = stream;
+        })
+        .catch((err) => {
+            console.error('Camera access error:', err);
+            alert('Cannot access the camera. Please check your device settings.');
+        });
+
+    // Capture image
+    captureBtn.addEventListener('click', function () {
+        const context = canvas.getContext('2d');
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
         const imageData = canvas.toDataURL('image/png');
+        previewImg.src = imageData;
         imageDataInput.value = imageData;
 
-        capturedImage.src = imageData;
         video.style.display = 'none';
-        preview.style.display = 'block';
-        snap.style.display = 'none';
-        retake.style.display = 'block';
+        imagePreview.classList.remove('hidden');
+        captureBtn.classList.add('hidden');
+        retakeBtn.classList.remove('hidden');
+        guideOverlay.style.display = 'none';
 
-        // Process OCR
-        const formData = new FormData();
-        formData.append('image_data', imageData);
-        formData.append('_token', document.querySelector('input[name="_token"]').value);
-        formData.append('ocr_only', 'true');  // Add this flag
-
+        // Send image to backend for OCR
         fetch('{{ route("namecards.store") }}', {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
-            body: formData
+            body: JSON.stringify({
+                image_data: imageData,
+            }),
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                updateFormWithOCRData(data.extracted_data);
-                document.getElementById('full-ocr-text').textContent = data.full_text;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error processing OCR');
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                if (data.success) {
+                    // Populate fields with extracted data
+                    nameInput.value = data.extractedData.name || '';
+                    companyInput.value = data.extractedData.company || '';
+                    emailInput.value = data.extractedData.email || '';
+                    phoneInput.value = data.extractedData.phone || '';
+                    addressInput.value = data.extractedData.address || '';
+                } else {
+                    alert('Failed to process the image: ' + data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred while processing the image.');
+            });
     });
 
-    // Retake photo
-    retake.addEventListener('click', function() {
+    // Retake image
+    retakeBtn.addEventListener('click', function () {
         video.style.display = 'block';
-        preview.style.display = 'none';
-        snap.style.display = 'block';
-        retake.style.display = 'none';
+        imagePreview.classList.add('hidden');
+        previewImg.src = '';
         imageDataInput.value = '';
-        clearOCRResults();
+        captureBtn.classList.remove('hidden');
+        retakeBtn.classList.add('hidden');
+        guideOverlay.style.display = 'block';
+
+        // Clear input fields
+        nameInput.value = '';
+        companyInput.value = '';
+        emailInput.value = '';
+        phoneInput.value = '';
+        addressInput.value = '';
     });
-
-    // Form submission
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        if (!imageDataInput.value) {
-            alert('Please capture an image first');
-            return;
-        }
-
-        const formData = new FormData(form);
-
-        fetch('{{ route("namecards.store") }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message);
-                // Optional: redirect to index or clear form
-                window.location.href = '{{ route("namecards.index") }}';
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error saving name card');
-        });
-    });
-
-    function updateFormWithOCRData(data) {
-        for (const [field, value] of Object.entries(data)) {
-            if (value) {
-                document.getElementById(`detected-${field}`).textContent = value;
-                document.getElementById(field).value = value;
-            } else {
-                document.getElementById(`detected-${field}`).textContent = 'Not detected';
-            }
-        }
-    }
-
-    function clearOCRResults() {
-        document.querySelectorAll('.text-muted span').forEach(el => {
-            el.textContent = '';
-        });
-        document.querySelectorAll('input[type="text"], input[type="email"]').forEach(el => {
-            el.value = '';
-        });
-        document.getElementById('full-ocr-text').textContent = '';
-    }
 });
-</script>
-
+    </script>
 </x-app-layout>
-
