@@ -10,7 +10,7 @@
 
                 <!-- Rectangle Guide Overlay -->
                 <div id="guide-overlay" class="absolute top-0 left-0 w-full h-full pointer-events-none">
-                    <div class="absolute border-4 border-green-500 opacity-75" style="top: 20%; left: 10%; width: 80%; height: 60%;"></div>
+                    {{-- <div class="absolute border-4 border-green-500 opacity-75" style="top: 20%; left: 10%; width: 80%; height: 60%;"></div> --}}
                     <div class="absolute top-0 left-0 w-full text-center mt-2 text-white bg-black bg-opacity-50">
                         Place name card inside the green rectangle
                     </div>

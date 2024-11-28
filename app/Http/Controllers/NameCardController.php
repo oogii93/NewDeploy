@@ -151,31 +151,48 @@ public function testOCR()
         // Updated patterns for Japanese name cards
         $patterns = [
             'name' => [
-                '/([ぁ-んァ-ヶ一-龯]+\s*[ぁ-んァ-ヶ一-龯]+)/u' // Match full names
+                '/^[ぁ-んァ-ヶ一-龯a-zA-Z\s\.\-]+$/u'
             ],
-            'company' => [
-                '/(?:株式会社|有限会社|合同会社|企業)\s*[ぁ-んァ-ヶ一-龯]+/u' // Match company names with common suffixes
-            ],
-            'address' => [
-                '/〒\s*[:：]?\s*([\d\-]+)/u' // Match postal code and address
-            ],
+        'company' => [
+    '/(?:株式会社|有限会社|合同会社|企業)?\s*[ぁ-んァ-ヶ一-龯\s]+(?:株式会社|有限会社|合同会社|企業)?/u'
+],
+
             'phone' => [
                 '/TEL\s*[:：]?\s*([\d\-]+)/u', // Match phone numbers
                 '/携帯\s*[:：]?\s*([\d\-]+)/u' // Match mobile numbers
             ],
-            'email' => [
-                '/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/u' // Match email addresses
-            ]
+         'email' => [
+   '/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/u'
+         ],
+         'address' => [
+            '/〒\d{3}-\d{4}\s*(?:[ぁ-んァ-ヶ一-龯]+(?:県|都|道|府))?[ぁ-んァ-ヶ一-龯\d\s\-]+/u'
+                ],
         ];
 
+        $lines = preg_split('/\R/', $text);
+
         foreach ($patterns as $key => $patternSet) {
-            foreach ($patternSet as $pattern) {
-                if (preg_match($pattern, $text, $matches)) {
-                    $data[$key] = trim($matches[1]);
-                    break;
+            foreach ($lines as $line) {
+                foreach ($patternSet as $pattern) {
+                    \Log::info("Trying pattern for $key: $pattern on line: $line");
+
+                    if (preg_match($pattern, $line, $matches)) {
+                        // Different handling for email and other fields
+                        $data[$key] = $key === 'email'
+                            ? trim($matches[0])
+                            : ($key === 'phone' && isset($matches[1])
+                                ? trim($matches[1])
+                                : trim($matches[0]));
+
+                        \Log::info("Matched $key: " . $data[$key]);
+                        break 2; // Break out of both inner loops
+                    }
                 }
             }
         }
+
+        // Log final extracted data
+        \Log::info('Final extracted data: ' . print_r($data, true));
 
         return $data;
     }
