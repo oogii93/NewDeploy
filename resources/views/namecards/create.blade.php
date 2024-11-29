@@ -1,5 +1,6 @@
 <x-app-layout>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-bold mb-4">Create Name Card</h1>
 
