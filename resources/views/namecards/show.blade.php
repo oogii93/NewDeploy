@@ -11,7 +11,13 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <img src="{{ asset('storage/namecards/' . $namecard->image_path) }}" alt="Name Card" class="w-full max-h-96 object-contain">
+
+                            {{-- @php
+                                $path = storage_path('app/public/namecards/' . $namecard);
+                                dd($path);
+                            @endphp --}}
+                 <img src="{{ Storage::url($namecard->image_path) }}" alt="Name Card" class="w-full max-h-96 object-contain">
+
                         </div>
                         <div>
                             <h3 class="text-lg font-medium mb-2">{{ $namecard->name }}</h3>
@@ -26,4 +32,6 @@
             </div>
         </div>
     </div>
+
+</div>
 </x-app-layout>

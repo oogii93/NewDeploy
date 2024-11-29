@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Post;
-use App\Http\Controllers\TesseractOcrController;
+use App\Models\PastExample;
 use App\Http\Controllers\Calendar;
 use App\Http\Controllers\Calculation;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +30,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\KintaiHRController;
 use App\Http\Controllers\NameCardController;
+use App\Http\Controllers\WorkCardController;
 use App\Http\Controllers\TableShowController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\WebSocketController;
@@ -42,9 +43,11 @@ use App\Http\Controllers\UserDetailController;
 use App\Http\Controllers\UserFilterController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CalculationController;
+use App\Http\Controllers\PastExampleController;
 use App\Http\Controllers\Application2Controller;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoomScheduleController;
+use App\Http\Controllers\TesseractOcrController;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use App\Http\Controllers\ArrivalRecordController;
 use App\Http\Controllers\SuggestionBoxController;
@@ -56,9 +59,7 @@ use App\Http\Controllers\CompanyScheduleController;
 use App\Http\Controllers\DepartureRecordController;
 use App\Http\Controllers\TestNotificationController;
 use App\Http\Controllers\AttendanceTypeRecordController;
-use App\Http\Controllers\PastExampleController;
 use App\Http\Controllers\TimeOffRequestRecordController;
-use App\Models\PastExample;
 
 //Admin Group Route
 Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
@@ -1077,6 +1078,16 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                 Route::get('/ocr-test', [NameCardController::class, 'testOCR']);
 
                 Route::get('/ocr-diagnostics', [NameCardController::class, 'diagnostics']);
+
+                // Route::post('/namecards/store', [NameCardController::class, 'store'])->name('namecards.store');
+
+
+                Route::post('/namecards/process', [NameCardController::class, 'process'])->name('namecards.process');
+
+// Route for saving the confirmed data
+Route::post('/namecards/storeConfirmedData', [NameCardController::class, 'storeConfirmedData'])->name('namecards.storeConfirmedData');
+
+
 
 
 

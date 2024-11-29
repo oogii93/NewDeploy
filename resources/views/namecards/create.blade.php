@@ -32,7 +32,7 @@
                 <img id="preview-img" class="max-w-full" src="" alt="Captured Image">
             </div>
 
-            <form id="namecard-form" method="POST" action="{{ route('namecards.store') }}">
+            <form id="namecard-form" method="POST" action="{{ route('namecards.storeConfirmedData') }}">
                 @csrf
                 <input type="hidden" name="image_data" id="image-data">
 
@@ -86,6 +86,8 @@
         </div>
     </div>
 
+
+
     <script>
 document.addEventListener('DOMContentLoaded', function () {
     const video = document.getElementById('video');
@@ -103,66 +105,119 @@ document.addEventListener('DOMContentLoaded', function () {
     const phoneInput = document.getElementById('phone');
     const addressInput = document.getElementById('address');
 
+
+        // Prefer back camera (environment facing camera)
+        const constraints = {
+        video: {
+            facingMode: { ideal: 'environment' }, // This targets the back/rear camera
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+        }
+    };
     // Access camera
     navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia(constraints)
         .then((stream) => {
             video.srcObject = stream;
+            video.play(); // Ensure video is playing
+        })
+        .catch((err) => {
+            console.error('Camera access error:', err);
+
+            // Fallback to any available camera if environment camera fails
+            return navigator.mediaDevices.getUserMedia({ video: true });
+        })
+        .then((stream) => {
+            if (!video.srcObject) {
+                video.srcObject = stream;
+                video.play();
+            }
         })
         .catch((err) => {
             console.error('Camera access error:', err);
             alert('Cannot access the camera. Please check your device settings.');
         });
 
-    // Capture image
-    captureBtn.addEventListener('click', function () {
-        const context = canvas.getContext('2d');
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        const imageData = canvas.toDataURL('image/png');
-        previewImg.src = imageData;
-        imageDataInput.value = imageData;
+// Extract text from image
+captureBtn.addEventListener('click', function () {
+    const context = canvas.getContext('2d');
 
-        video.style.display = 'none';
-        imagePreview.classList.remove('hidden');
-        captureBtn.classList.add('hidden');
-        retakeBtn.classList.remove('hidden');
-        guideOverlay.style.display = 'none';
+    context.filter = 'brightness(1.2) contrast(1.4)';
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    context.filter = 'none';
 
-        // Send image to backend for OCR
-        fetch('{{ route("namecards.store") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: JSON.stringify({
-                image_data: imageData,
-            }),
+    const imageData = canvas.toDataURL('image/png');
+    previewImg.src = imageData;
+    imageDataInput.value = imageData;
+
+    video.style.display = 'none';
+    imagePreview.classList.remove('hidden');
+    captureBtn.classList.add('hidden');
+    retakeBtn.classList.remove('hidden');
+    guideOverlay.style.display = 'none';
+
+    fetch('{{ route("namecards.process") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+        body: JSON.stringify({
+            image_data: imageData,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.extractedData) {
+                // Populate fields with extracted data
+                nameInput.value = data.extractedData.name || '';
+                companyInput.value = data.extractedData.company || '';
+                emailInput.value = data.extractedData.email || '';
+                phoneInput.value = data.extractedData.phone || '';
+                addressInput.value = data.extractedData.address || '';
+            } else {
+                alert('Failed to extract data from the image');
+            }
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((data) => {
-                if (data.success) {
-                    // Populate fields with extracted data
-                    nameInput.value = data.extractedData.name || '';
-                    companyInput.value = data.extractedData.company || '';
-                    emailInput.value = data.extractedData.email || '';
-                    phoneInput.value = data.extractedData.phone || '';
-                    addressInput.value = data.extractedData.address || '';
-                } else {
-                    alert('Failed to process the image: ' + data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('An error occurred while processing the image.');
-            });
-    });
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('An error occurred while processing the image.');
+        });
+});
+
+// Save confirmed data
+const saveBtn = document.getElementById('save-btn');
+saveBtn.addEventListener('click', function () {
+    fetch('{{ route("namecards.storeConfirmedData") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+        body: JSON.stringify({
+            name: nameInput.value,
+            company: companyInput.value,
+            email: emailInput.value,
+            phone: phoneInput.value,
+            address: addressInput.value,
+            image_path: imageDataInput.value, // Optional: Save image path if needed
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                alert('Data saved successfully');
+            } else {
+                alert('Failed to save data');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('An error occurred while saving the data.');
+        });
+});
+
 
     // Retake image
     retakeBtn.addEventListener('click', function () {

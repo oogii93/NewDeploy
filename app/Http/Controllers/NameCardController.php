@@ -69,7 +69,7 @@ public function testOCR()
     public function index()
     {
 
-        $namecards = NameCard::all();
+        $namecards = NameCard::get();
 
         return view('namecards.index', compact('namecards'));
     }
@@ -78,70 +78,204 @@ public function testOCR()
     {
         return view('namecards.create');
     }
-    public function store(Request $request)
+    // public function store(Request $request)
+    // {
+    //     try {
+    //         // Validate the incoming request
+    //         $validatedData = $request->validate([
+    //             'image_data' => 'required|string', // Base64 image string
+    //         ]);
+
+    //         // Decode the Base64 image data
+    //         $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $validatedData['image_data']);
+    //         $imageData = base64_decode($imageData);
+
+    //         // Save the image to storage
+    //         $filename = 'namecard_' . uniqid() . '.png';
+    //         $path = storage_path('app/public/namecards/' . $filename);
+
+    //         // Ensure directory exists
+    //         if (!is_dir(storage_path('app/public/namecards'))) {
+    //             mkdir(storage_path('app/public/namecards'), 0755, true);
+    //         }
+
+    //         file_put_contents($path, $imageData);
+
+    //         // Perform OCR on the saved image
+    //         $tesseract = new TesseractOCR($path);
+    //         $tesseract->lang('eng', 'jpn');
+    //         $extractedText = $tesseract->run();
+
+    //         // Parse the extracted text into fields
+    //         $extractedData = $this->parseNameCardText($extractedText);
+
+    //         // Create a new NameCard record
+    //         $nameCard = new NameCard();
+
+    //         // Map extracted data to model fields
+    //         $nameCard->name = $extractedData['name'] ?? null;
+    //         $nameCard->company = $extractedData['company'] ?? null;
+    //         $nameCard->address = $extractedData['address'] ?? null;
+    //         $nameCard->phone = $extractedData['phone'] ?? null;
+    //         $nameCard->email = $extractedData['email'] ?? null;
+
+    //         // Store the original image filename
+    //         $nameCard->image_path = $filename;
+
+    //         // Save the name card to database
+    //         $nameCard->save();
+
+    //         // Return the extracted data as JSON
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Name card processed and saved successfully',
+    //             'extractedData' => $extractedData,
+    //             'nameCard' => $nameCard
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         // Handle exceptions and return an error response
+    //         \Log::error('Error in NameCard OCR and Storage: ' . $e->getMessage());
+
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to process and store the name card. ' . $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+    public function process(Request $request)
     {
         try {
-            // Validate the incoming request
             $validatedData = $request->validate([
                 'image_data' => 'required|string', // Base64 image string
             ]);
 
-            // Decode the Base64 image data
+            // Decode Base64 image data
             $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $validatedData['image_data']);
             $imageData = base64_decode($imageData);
 
-            // Save the image to storage
-            $filename = 'namecard_' . uniqid() . '.png';
-            $path = storage_path('app/public/namecards/' . $filename);
+            // Save image temporarily for OCR processing
+            $tempFilename = 'temp_namecard_' . uniqid() . '.png';
+            $tempPath = storage_path('app/public/namecards/' . $tempFilename);
 
-            // Ensure directory exists
             if (!is_dir(storage_path('app/public/namecards'))) {
                 mkdir(storage_path('app/public/namecards'), 0755, true);
             }
 
-            file_put_contents($path, $imageData);
+            file_put_contents($tempPath, $imageData);
 
-            // Perform OCR on the saved image
-            $tesseract = new TesseractOCR($path);
+            // Perform OCR
+            $tesseract = new TesseractOCR($tempPath);
             $tesseract->lang('eng', 'jpn');
             $extractedText = $tesseract->run();
 
             // Parse the extracted text into fields
             $extractedData = $this->parseNameCardText($extractedText);
 
-            // Create a new NameCard record
-            $nameCard = new NameCard();
 
-            // Map extracted data to model fields
-            $nameCard->name = $extractedData['name'] ?? null;
-            $nameCard->company = $extractedData['company'] ?? null;
-            $nameCard->address = $extractedData['address'] ?? null;
-            $nameCard->phone = $extractedData['phone'] ?? null;
-            $nameCard->email = $extractedData['email'] ?? null;
+            // Remove the temporary file after processing
+            unlink($tempPath);
 
-            // Store the original image filename
-            $nameCard->image_path = $filename;
-
-            // Save the name card to database
-            $nameCard->save();
-
-            // Return the extracted data as JSON
             return response()->json([
                 'success' => true,
-                'message' => 'Name card processed and saved successfully',
+                'message' => 'Data extracted successfully',
                 'extractedData' => $extractedData,
-                'nameCard' => $nameCard
             ]);
         } catch (\Exception $e) {
-            // Handle exceptions and return an error response
-            \Log::error('Error in NameCard OCR and Storage: ' . $e->getMessage());
-
+            \Log::error('Error during OCR: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to process and store the name card. ' . $e->getMessage(),
+                'message' => 'Failed to process the image. ' . $e->getMessage(),
             ], 500);
         }
     }
+
+    public function storeConfirmedData(Request $request)
+{
+    try {
+        $validatedData = $request->validate([
+            'name' => 'nullable|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'image_data' => 'nullable|string' // Changed from imageData
+        ]);
+
+        $nameCard = new NameCard();
+        $nameCard->fill($validatedData);
+
+        // Optional: Save base64 image to storage if needed
+        if (!empty($validatedData['image_data'])) {
+            $imageData = preg_replace('/^data:image\/\w+;base64,/', '', $validatedData['image_data']);
+            $imageFilename = 'namecard_' . uniqid() . '.png';
+            $imagePath = storage_path('app/public/namecards/' . $imageFilename);
+
+            file_put_contents($imagePath, base64_decode($imageData));
+            $nameCard->image_path = 'namecards/' . $imageFilename;
+        }
+
+        $nameCard->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Name card saved successfully'
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Error saving name card: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to save data: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+    // public function storeConfirmedData(Request $request)
+    // {
+
+
+    //     try {
+    //         // Validate the incoming request
+    //         $validatedData = $request->validate([
+    //             'name' => 'nullable|string|max:255',
+    //             'company' => 'nullable|string|max:255',
+    //             'address' => 'nullable|string|max:255',
+    //             'phone' => 'nullable|string|max:20',
+    //             'email' => 'nullable|email|max:255',
+    //             'image_data' => 'nullable|string'
+    //         ]);
+
+    //         // dd($request->all($validatedData));
+
+    //         // Save confirmed data to the database
+    //         $nameCard = new NameCard();
+    //         // $nameCard->name = $validatedData['name'];
+    //         // $nameCard->company = $validatedData['company'];
+    //         // $nameCard->address = $validatedData['address'];
+    //         // $nameCard->phone = $validatedData['phone'];
+    //         // $nameCard->email = $validatedData['email'];
+    //         // $nameCard->imageData = $validatedData['imageData'];
+
+    //         $nameCard->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Data saved successfully',
+
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         \Log::error('Error saving name card: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to save data. ' . $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
+
+
+
+
 
     // Parse text to extract name, company, email, phone, address
     private function parseNameCardText($text)
@@ -150,9 +284,12 @@ public function testOCR()
 
         // Updated patterns for Japanese name cards
         $patterns = [
-            'name' => [
-                '/^[ぁ-んァ-ヶ一-龯a-zA-Z\s\.\-]+$/u'
-            ],
+           'name' => [
+            // More flexible name matching
+            '/[ぁ-んァ-ヶ一-龯a-zA-Z\s\.\-]{2,}/u',
+            // Match names with potential titles or roles
+            '/(?:氏|さん|様)?[ぁ-んァ-ヶ一-龯a-zA-Z\s\.\-]+(?:氏|さん|様)?/u'
+        ],
         'company' => [
     '/(?:株式会社|有限会社|合同会社|企業)?\s*[ぁ-んァ-ヶ一-龯\s]+(?:株式会社|有限会社|合同会社|企業)?/u'
 ],
@@ -165,9 +302,13 @@ public function testOCR()
    '/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/u'
          ],
          'address' => [
-            '/〒\d{3}-\d{4}\s*(?:[ぁ-んァ-ヶ一-龯]+(?:県|都|道|府))?[ぁ-んァ-ヶ一-龯\d\s\-]+/u'
-                ],
+            // More comprehensive address matching
+            '/〒\d{3}-\d{4}\s*(?:[ぁ-んァ-ヶ一-龯]+(?:県|都|道|府))?\s*[ぁ-んァ-ヶ一-龯\d\-]+/u',
+            // Match address with potential labels
+            '/(?:住所[:：]?)\s*〒?\d{3}-?\d{4}\s*[ぁ-んァ-ヶ一-龯\d\-]+/u'
+        ]
         ];
+
 
         $lines = preg_split('/\R/', $text);
 
@@ -204,6 +345,38 @@ public function testOCR()
             'namecard' => $namecard
         ]);
     }
+
+    public function destroy(NameCard $namecard)
+    {
+        $namecard->delete();
+
+        return redirect()->route('namecards.index')->with('success', 'NameCard deleted successfully.');
+    }
+
+    public function edit(NameCard $namecard)
+{
+    return view('namecards.edit', [
+        'namecard' => $namecard
+    ]);
+}
+
+public function update(Request $request, NameCard $namecard)
+{
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'image_path' => 'nullable|image|max:2048',
+        // Add any other validation rules for your NameCard model
+    ]);
+
+    // Update the NameCard model with the validated data
+    $namecard->update($validatedData);
+
+    // Redirect the user to the appropriate page, e.g., the show page for the updated NameCard
+    return redirect()->route('namecards.show', $namecard)->with('success', 'NameCard updated successfully.');
+}
+
+
 
 
 
