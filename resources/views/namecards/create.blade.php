@@ -2,241 +2,297 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <div class="container mx-auto p-6">
-        <h1 class="text-2xl font-bold mb-4">Create Name Card</h1>
 
-        <div class="max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+
+        <div class="max-w-lg mx-auto bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
+
+            <h1 class="text-xl font-semibold mb-4 flex justify-center text-white bg-sky-400 px-2 py-2 ">名刺新規登録</h1>
+
             <div id="camera-container" class="relative mb-4">
                 <video id="video" class="w-full" autoplay></video>
                 <canvas id="canvas" class="hidden" width="800" height="480"></canvas>
 
                 <!-- Rectangle Guide Overlay -->
                 <div id="guide-overlay" class="absolute top-0 left-0 w-full h-full pointer-events-none">
-                    {{-- <div class="absolute border-4 border-green-500 opacity-75" style="top: 20%; left: 10%; width: 80%; height: 60%;"></div> --}}
+                    <div class="absolute border-2 border-dashed border-sky-300 rounded-lg" style="top: 20%; left: 10%; width: 80%; height: 70%;"></div>
+
                     <div class="absolute top-0 left-0 w-full text-center mt-2 text-white bg-black bg-opacity-50">
-                        Place name card inside the green rectangle
+                        青い四角の中に名刺を入れてください
                     </div>
                 </div>
             </div>
 
             <div class="flex justify-center space-x-4 mb-4">
-                <button id="capture-btn"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Capture Image
-                </button>
-                <button id="retake-btn"
-                        class="hidden bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
-                    Retake
-                </button>
+
+                <a id="capture-btn" class="bg-sky-400 hover:bg-sky-600 w-20 h-20 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-semibold">キャプチャ</span>
+                </a>
+                <a id="retake-btn" class="bg-orange-400 hover:bg-orange-600 w-20 h-20 rounded-full flex items-center justify-center">
+                    <span class="text-white text-sm font-semibold">取り直す</span>
+                </a>
+
+
+
+
+
+
             </div>
 
             <div id="image-preview" class="hidden mb-4">
                 <img id="preview-img" class="max-w-full" src="" alt="Captured Image">
             </div>
 
-            <form id="namecard-form" method="POST" action="{{ route('namecards.storeConfirmedData') }}">
-                @csrf
-                <input type="hidden" name="image_data" id="image-data">
+            <form id="namecard-form" method="POST" action="{{ route('namecards.storeConfirmedData') }}"
+           >
+          @csrf
+          <input type="hidden" name="image_data" id="image-data">
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-                        Name
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                           id="name" name="name" type="text">
-                </div>
+          <div class="grid grid-cols-1 gap-1">
+              <div>
+                  <label for="name" class="block text-sm font-semibold text-gray-600 mb-1">
+                      名前
+                  </label>
+                  <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      placeholder=""
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                  >
+              </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="company">
-                        Company
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                           id="company" name="company" type="text">
-                </div>
+              <div>
+                  <label for="company" class="block text-sm font-semibold text-gray-600 mb-1">
+                    会社名
+                  </label>
+                  <input
+                      type="text"
+                      id="company"
+                      name="company"
+                      placeholder=""
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                  >
+              </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
-                        Email
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                           id="email" name="email" type="email">
-                </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="phone">
-                        Phone
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                           id="phone" name="phone" type="text">
-                </div>
+                  <div>
+                      <label for="email" class="block text-sm font-semibold text-gray-600 mb-1">
+                          メールアドレス
+                      </label>
+                      <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          placeholder=""
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                      >
+                  </div>
+                  <div>
+                      <label for="phone" class="block text-sm font-semibold text-gray-600 mb-1">
+                            電話番号
+                      </label>
+                      <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          placeholder=""
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                      >
+                  </div>
+              </div>
 
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="address">
-                        Address
-                    </label>
-                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                           id="address" name="address" type="text">
-                </div>
+                  <div>
+                      <label for="mobile" class="block text-sm font-semibold text-gray-600 mb-1">
+                        携帯電話
+                      </label>
+                      <input
+                          type="tel"
+                          id="mobile"
+                          name="mobile"
+                          placeholder=""
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                      >
+                  </div>
+                  <div>
+                      <label for="fax" class="block text-sm font-semibold text-gray-600 mb-1">
+                       FAX
+                      </label>
+                      <input
+                          type="tel"
+                          id="fax"
+                          name="fax"
+                          placeholder=""
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                      >
+                  </div>
 
-                <div class="flex items-center justify-between">
-                    <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                            type="submit">
-                        Save Name Card
-                    </button>
-                </div>
-            </form>
+              <div>
+                  <label for="address" class="block text-sm font-semibold text-gray-600 mb-1">
+                     住所
+                  </label>
+                  <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      placeholder=""
+                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out placeholder-gray-400"
+                  >
+              </div>
+
+              <div class="pt-4">
+                  <button
+                      type="submit"
+                      class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-3 rounded-lg hover:from-blue-600 hover:to-blue-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
+                   登録保存
+                  </button>
+              </div>
+          </div>
+      </form>
         </div>
     </div>
 
 
 
     <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const captureBtn = document.getElementById('capture-btn');
-    const retakeBtn = document.getElementById('retake-btn');
-    const imagePreview = document.getElementById('image-preview');
-    const previewImg = document.getElementById('preview-img');
-    const imageDataInput = document.getElementById('image-data');
-    const guideOverlay = document.getElementById('guide-overlay');
 
-    const nameInput = document.getElementById('name');
-    const companyInput = document.getElementById('company');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-    const addressInput = document.getElementById('address');
+    document.addEventListener('DOMContentLoaded', function() {
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('capture-btn');
+        const retakeBtn = document.getElementById('retake-btn');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const imageDataInput = document.getElementById('image-data');
+        const guideOverlay = document.getElementById('guide-overlay');
 
+        const nameInput = document.getElementById('name');
+        const companyInput = document.getElementById('company');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const mobileInput = document.getElementById('mobile');
+        const faxInput = document.getElementById('fax');
+
+        const addressInput = document.getElementById('address');
 
         // Prefer back camera (environment facing camera)
         const constraints = {
-        video: {
-            facingMode: { ideal: 'environment' }, // This targets the back/rear camera
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
-        }
-    };
-    // Access camera
-    navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then((stream) => {
-            video.srcObject = stream;
-            video.play(); // Ensure video is playing
-        })
-        .catch((err) => {
-            console.error('Camera access error:', err);
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            }
+        };
 
-            // Fallback to any available camera if environment camera fails
-            return navigator.mediaDevices.getUserMedia({ video: true });
-        })
-        .then((stream) => {
-            if (!video.srcObject) {
+        // Access camera
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then((stream) => {
                 video.srcObject = stream;
                 video.play();
-            }
-        })
-        .catch((err) => {
-            console.error('Camera access error:', err);
-            alert('Cannot access the camera. Please check your device settings.');
+            })
+            .catch((err) => {
+                console.error('Camera access error:', err);
+                // Fallback to any available camera if environment camera fails
+                return navigator.mediaDevices.getUserMedia({ video: true });
+            })
+            .then((stream) => {
+                if (!video.srcObject) {
+                    video.srcObject = stream;
+                    video.play();
+                }
+            })
+            .catch((err) => {
+                console.error('Camera access error:', err);
+                alert('Cannot access the camera. Please check your device settings.');
+            });
+
+        // Extract text from image
+        captureBtn.addEventListener('click', function() {
+            const context = canvas.getContext('2d');
+
+            // Apply image preprocessing
+            context.filter = 'brightness(1.2) contrast(1.4)';
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.filter = 'none';
+
+            // Crop the image
+            const cropX = canvas.width * 0.1;
+            const cropY = canvas.height * 0.1;
+            const cropWidth = canvas.width * 0.8;
+            const cropHeight = canvas.height * 0.8;
+            const croppedImageData = context.getImageData(cropX, cropY, cropWidth, cropHeight);
+            const croppedCanvas = document.createElement('canvas');
+            croppedCanvas.width = cropWidth;
+            croppedCanvas.height = cropHeight;
+            const croppedContext = croppedCanvas.getContext('2d');
+            croppedContext.putImageData(croppedImageData, 0, 0);
+
+            // Convert the cropped canvas to a data URL
+            const imageData = croppedCanvas.toDataURL('image/png');
+            previewImg.src = imageData;
+            imageDataInput.value = imageData;
+
+            video.style.display = 'none';
+            imagePreview.classList.remove('hidden');
+            captureBtn.classList.add('hidden');
+            retakeBtn.classList.remove('hidden');
+            guideOverlay.style.display = 'none';
+
+            // Process the image using the server-side OCR
+            processImageWithOCR(imageData);
         });
 
+        async function processImageWithOCR(imageData) {
+            try {
+                const response = await fetch('{{ route("namecards.process") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({
+                        image_data: imageData,
+                    }),
+                });
 
-// Extract text from image
-captureBtn.addEventListener('click', function () {
-    const context = canvas.getContext('2d');
-
-    context.filter = 'brightness(1.2) contrast(1.4)';
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    context.filter = 'none';
-
-    const imageData = canvas.toDataURL('image/png');
-    previewImg.src = imageData;
-    imageDataInput.value = imageData;
-
-    video.style.display = 'none';
-    imagePreview.classList.remove('hidden');
-    captureBtn.classList.add('hidden');
-    retakeBtn.classList.remove('hidden');
-    guideOverlay.style.display = 'none';
-
-    fetch('{{ route("namecards.process") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
-        body: JSON.stringify({
-            image_data: imageData,
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.extractedData) {
-                // Populate fields with extracted data
-                nameInput.value = data.extractedData.name || '';
-                companyInput.value = data.extractedData.company || '';
-                emailInput.value = data.extractedData.email || '';
-                phoneInput.value = data.extractedData.phone || '';
-                addressInput.value = data.extractedData.address || '';
-            } else {
-                alert('Failed to extract data from the image');
+                const data = await response.json();
+                if (data.extractedData) {
+                    // Populate fields with extracted data
+                    nameInput.value = data.extractedData.name || '';
+                    companyInput.value = data.extractedData.company || '';
+                    emailInput.value = data.extractedData.email || '';
+                    phoneInput.value = data.extractedData.phone || '';
+                    mobileInput.value = data.extractedData.mobile || '';
+                    faxInput.value = data.extractedData.fax || '';
+                    addressInput.value = data.extractedData.address || '';
+                } else {
+                    alert('Failed to extract data from the image');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing the image.');
             }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('An error occurred while processing the image.');
+        }
+
+        // Retake image
+        retakeBtn.addEventListener('click', function() {
+            video.style.display = 'block';
+            imagePreview.classList.add('hidden');
+            previewImg.src = '';
+            imageDataInput.value = '';
+            captureBtn.classList.remove('hidden');
+            retakeBtn.classList.add('hidden');
+            guideOverlay.style.display = 'block';
+
+            // Clear input fields
+            nameInput.value = '';
+            companyInput.value = '';
+            emailInput.value = '';
+            phoneInput.value = '';
+            mobileInput.value = '';
+            faxInput.value = '';
+            addressInput.value = '';
         });
-});
-
-// Save confirmed data
-const saveBtn = document.getElementById('save-btn');
-saveBtn.addEventListener('click', function () {
-    fetch('{{ route("namecards.storeConfirmedData") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
-        body: JSON.stringify({
-            name: nameInput.value,
-            company: companyInput.value,
-            email: emailInput.value,
-            phone: phoneInput.value,
-            address: addressInput.value,
-            image_path: imageDataInput.value, // Optional: Save image path if needed
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.success) {
-                alert('Data saved successfully');
-            } else {
-                alert('Failed to save data');
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('An error occurred while saving the data.');
-        });
-});
-
-
-    // Retake image
-    retakeBtn.addEventListener('click', function () {
-        video.style.display = 'block';
-        imagePreview.classList.add('hidden');
-        previewImg.src = '';
-        imageDataInput.value = '';
-        captureBtn.classList.remove('hidden');
-        retakeBtn.classList.add('hidden');
-        guideOverlay.style.display = 'block';
-
-        // Clear input fields
-        nameInput.value = '';
-        companyInput.value = '';
-        emailInput.value = '';
-        phoneInput.value = '';
-        addressInput.value = '';
     });
-});
     </script>
 </x-app-layout>

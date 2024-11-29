@@ -1,25 +1,19 @@
-
-
 <x-app-layout>
-
-
-
-
-    <div class="flex justify-center mt-1">
+    {{-- Flash Messages --}}
+    <div class="fixed top-4 left-0 right-0 z-50 flex justify-center">
         @if (session('success'))
-            <div id="flash-message" class="bg-sky-200 border border-blue-300 text-blue-800 px-6 py-4 rounded-lg shadow-lg flex items-center max-w-xl w-full">
-                <svg class="w-6 h-6 mr-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-11a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 01-1-1V7zm0 4a1 1 0 011 1v2a1 1 0 102 0v-2a1 1 0 10-2 0H9v-2a1 1 0 00-1-1H8a1 1 0 100 2h1v1z" clip-rule="evenodd" />
-                </svg>
-                <span>{{ session('success') }}</span>
+            <div id="flash-message" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-lg max-w-xl w-full animate-slideIn">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>{{ session('success') }}</span>
+                </div>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="bg-red-200 border border-red-300 text-red-800 px-6 py-4 rounded-lg shadow-lg flex items-center max-w-xl w-full mt-4">
-                <svg class="w-6 h-6 mr-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 8a6 6 0 11-12 0 6 6 0 0112 0zm-1 1a1 1 0 00-2 0v2a1 1 0 002 0V9zm-4 1a1 1 0 00-1-1H7a1 1 0 000 2h6a1 1 0 001-1z" clip-rule="evenodd" />
-                </svg>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-lg max-w-xl w-full animate-slideIn">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -29,163 +23,133 @@
         @endif
     </div>
 
+    {{-- Main Container --}}
+    <div class="container mx-auto px-4 py-8 md:px-6 lg:px-8">
+        {{-- Header Section --}}
+        <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">名刺管理</h1>
 
-
-
-
-    <script>
-        // Wait for the DOM to be ready
-        document.addEventListener("DOMContentLoaded", function() {
-            // Select the flash message
-            var flashMessage = document.getElementById('flash-message');
-
-            // If there's a flash message, set a timer to remove it after 5 seconds
-            if (flashMessage) {
-                setTimeout(function() {
-                    flashMessage.style.transition = "opacity 0.5s ease-out";
-                    flashMessage.style.opacity = "0";
-
-                    setTimeout(function() {
-                        flashMessage.remove();
-                    }, 500); // Ensure the message is removed after the fade-out transition
-                }, 5000); // 5 seconds delay
-            }
-        });
-    </script>
-
-
-<div class="flex flex-col min-h-screen bg-gray-100">
-    <div class="flex-grow overflow-hidden">
-        <div class="container mx-auto px-4 py-8">
-
-            <div class="shadow overflow-hidden rounded border-b border-gray-200 bg-white mt-10 p-4 sm:p-6 lg:p-8">
-
-
-
-                <h1 class="px-2 py-2 text-xl font-medium mb-6 mt-5">
-                  名刺管理
-
-                </h1>
-
-
-
-
-                <div class="flex flex-wrap gap-2 mb-4 px-2">
-                    <x-button purpose="search" href="{{ route('namecards.create') }}">
+                <div class="flex flex-col md:flex-row w-full md:w-auto space-y-2 md:space-y-0 md:space-x-2">
+                    <x-button purpose="search" href="{{ route('namecards.create') }}" class="w-full md:w-auto">
                         新規登録
                     </x-button>
-
-
                 </div>
-
-  <div>
-    <form action="" method="GET" class="mb-4">
-        <input type="hidden" name="office_id" value="">
-        <div class="flex flex-wrap items-center gap-2">
-            <input type="text" name="search" value="" class="border border-gray-300 rounded px-3 py-2 flex-grow" placeholder="商品番号、商品名、種類、メーカーで検索">
-            <x-button purpose="default" type="submit">
-                検索
-            </x-button>
-        </div>
-
-    </form>
-  </div>
-
             </div>
 
-
-                    <div class="table-responsive mt-10">
-                        <table class="border-collapse border border-slate-400 min-w-full bg-white mt-5">
-                            <thead class="bg-gray-200 text-black">
-                                <tr>
-                                    <th
-                                        class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm hide-on-mobile">
-                                        会社名</th>
-
-                                    <th class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm">
-                                        画像</th>
-                                        <th
-                                        class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm hide-on-mobile">
-                                        名刺名</th>
-                                    <th
-                                        class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm hide-on-mobile">
-                                        電話番号</th>
-
-
-
-
-                                    <th class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm">
-                                        メールアドレス</th>
-
-                                    <th class="border border-slate-300 text-left py-3 px-4 uppercase font-semibold text-sm">
-                                        操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($namecards as $namecard)
-                                    <tr class="border-b border-gray-200 hover:bg-sky-50">
-                                        <td class="border border-slate-300 px-4 py-2 hide-on-mobile">
-                                            {{ $namecard->company }}</td>
-
-
-                                      <td class="border border-slate-300 py-3">
-    @if($namecard->image_path)
-        <img src="{{ Storage::url($namecard->image_path) }}" alt="Name Card" class="w-40 h-32 object-cover">
-    @else
-        No image
-    @endif
-</td>
-
-                                        <td class="border border-slate-300 py-3 hide-on-mobile">
-                                            {{ $namecard->name}}
-                                        </td>
-
-                                        <td class="border border-slate-300 py-3 hide-on-mobile">
-                                            {{ $namecard->phone}}
-
-                                        </td>
-                                        <td class="border border-slate-300 px-4 py-2">{{ $namecard->address}}</td>
-                                        <td class="border border-slate-300 px-4 py-2 hide-on-mobile">{{ $namecard->email }}
-                                        </td>
-
-
-
-                                        <td class="border border-slate-300 px-4 py-2" data-label="動作">
-                                            <div class="flex space-x-2"> <!-- Use flex and space-x-2 to align buttons horizontally -->
-                                                <a href="{{ route('namecards.show', $namecard->id) }}" class="p-2 hover:bg-yellow-200 inline-block">
-                                                    <img src="{{ asset('2.svg') }}" alt="編集" class="w-8 h-8">
-                                                </a>
-                                                <form action="{{ route('namecards.destroy', $namecard->id) }}" method="POST" class="inline-block">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="p-2 hover:bg-red-200 inline-block" onclick="return confirm('本当に消去しますか？')">
-                                                        <img src="{{ asset('1.svg') }}" alt="消去" class="w-8 h-8">
-                                                    </button>
-                                                </form>
-
-
-
-                                            </div>
-                                        </td>
-
-
-
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="mt-4">
-
-                    </div>
+            {{-- Search Form --}}
+            <form action="" method="GET" class="mb-4">
+                <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                        placeholder="商品番号、商品名、種類、メーカーで検索"
+                    >
+                    <x-button purpose="default" type="submit" class="w-full md:w-auto">
+                        検索
+                    </x-button>
                 </div>
-</div>
+            </form>
+        </div>
+
+        {{-- Namecard Table --}}
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-sky-200">
+                        <tr>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">会社名</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">画像</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">名刺名</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">電話番号</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">メールアドレス</th>
+                            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($namecards as $namecard)
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-4">
+                                    <div class="text-sm text-gray-900">{{ $namecard->company }}</div>
+                                </td>
 
 
+                                <td class="border border-gray-300 px-4 py-4 hidden md:table-cell ">
+                                    @if($namecard->image_path)
+                                        <img
+                                            src="{{ Storage::url($namecard->image_path) }}"
+                                            alt="Name Card"
+                                            class="w-24 h-20 object-cover rounded-lg "
+                                        >
+                                    @else
+                                        <div class="text-sm text-gray-500">No image</div>
+                                    @endif
+                                </td>
+                                <td class="border border-gray-300 px-4 py-4 hidden md:table-cell">
+                                    <div class="text-sm text-gray-900">{{ $namecard->name }}</div>
+                                </td>
+                                <td class="border border-gray-300 px-4 py-4 hidden md:table-cell">
+                                    <div class="text-sm text-gray-900">{{ $namecard->phone }}</div>
+                                </td>
+                                <td class="border border-gray-300 px-4 py-4">
+                                    <div class="text-sm text-gray-900">{{ $namecard->email }}</div>
+                                </td>
+                                <td class="border border-gray-300 px-4 py-4">
+                                    <div class="flex space-x-2 justify-center">
+                                        <a
+                                            href="{{ route('namecards.show', $namecard->id) }}"
+                                            class="text-yellow-600 hover:text-yellow-900 transition duration-300"
+                                            title="編集"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </a>
+                                        <form
+                                            action="{{ route('namecards.destroy', $namecard->id) }}"
+                                            method="POST"
+                                            class="inline-block"
+                                            onsubmit="return confirm('本当に消去しますか？')"
+                                        >
+                                            @csrf
+                                            @method('DELETE')
+                                            <button
+                                                type="submit"
+                                                class="text-red-600 hover:text-red-900 transition duration-300"
+                                                title="消去"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
+        {{-- Pagination --}}
+        <div class="mt-6">
+            {{-- {{ $namecards->links('vendor.pagination.tailwind') }} --}}
+        </div>
+    </div>
 
-
-
-
+    {{-- Flash Message Script --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.classList.add('animate-fadeOut');
+                    setTimeout(() => flashMessage.remove(), 500);
+                }, 5000);
+            }
+        });
+    script>
 </x-app-layout>
-
