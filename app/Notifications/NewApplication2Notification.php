@@ -51,11 +51,14 @@ class NewApplication2Notification extends Notification
     public function toArray( $notifiable): array
     {
         return [
-            'message' => 'New application request received',
+            'type' => 'application2',
+
             'user_name' => $this->application2->user->name,
+            'message' => 'New application request received',
+
             'application_id' => $this->application2->id,
             'created_at' => $this->application2->created_at,
-            'type' => 'application2',
+
         ];
     }
 }

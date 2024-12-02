@@ -13,12 +13,12 @@ class CheckAcDivision
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
-    {
-        if (!auth()->check() || !auth()->user()->division || auth()->user()->division->name !== '経理課') {
-            abort(403, 'Unauthorized access.');
-        }
+    // public function handle(Request $request, Closure $next): Response
+    // {
+    //     if (!auth()->check() || !auth()->user()->division || auth()->user()->division->name !== '経理課') {
+    //         abort(403, 'Unauthorized access.');
+    //     }
 
-        return $next($request);
-    }
+    //     return $next($request);
+    // }
 }

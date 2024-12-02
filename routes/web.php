@@ -103,27 +103,7 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
 
 
 
-    // CAR Crud
-    Route::get('/admin/car', [CarController::class, 'index'])
-        ->name('admin.car.index');
 
-    Route::get('/admin/car/create', [CarController::class, 'create'])
-        ->name('admin.car.create');
-
-    Route::post('/admin/car', [CarController::class, 'store'])
-        ->name('admin.car.store');
-
-    Route::get('/admin/car/{car}', [CarController::class, 'show'])
-        ->name('admin.car.show');
-
-    Route::get('/admin/car/{car}/edit', [CarController::class, 'edit'])
-        ->name('admin.car.edit');
-
-    Route::put('/admin/car/{car}', [CarController::class, 'update'])
-        ->name('admin.car.update');
-
-    Route::delete('/admin/car/{car}', [CarController::class, 'destroy'])
-        ->name('admin.car.destroy');
 
 
     // Calculation Crud
@@ -713,9 +693,9 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     ->name('applications.search');
 
     // HR
-    // Route::get('/hr', [HrController::class, 'index'])
-    //     ->name('hr.hr.dashboard')
-    //     ->middleware(['auth', 'check.hr']);
+    Route::get('/hr', [HrController::class, 'index'])
+        ->name('hr.hr.dashboard')
+        ->middleware(['auth', 'taisei']);
 
     Route::get('/hr', [HrController::class, 'index'])
         ->name('hr.hr.dashboard')
@@ -727,7 +707,7 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     // Acountant
     Route::get('/ac', [AccountantController::class, 'index'])
         ->name('ac.ac_dashboard')
-        ->middleware(['auth', 'check.ac']);
+        ->middleware(['auth', 'taisei']);
     Route::post('/applications/{application}/check', [ApplicationController::class, 'checkApplication'])->name('applications.check');
 
 
@@ -969,7 +949,7 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
     Route::get('/Kintaihr', [KintaiHRController::class, 'index'])
         ->name('Kintaihr')
-        ->middleware(['auth', 'check.hr']);
+        ->middleware(['auth', 'taisei']);
 
     Route::post('/records/{timeOffRequestRecord}/check', [TimeOffRequestRecordController::class, 'checkApplication'])
         ->name('records.check');
@@ -1084,8 +1064,31 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
                 Route::post('/namecards/process', [NameCardController::class, 'process'])->name('namecards.process');
 
-// Route for saving the confirmed data
-Route::post('/namecards/storeConfirmedData', [NameCardController::class, 'storeConfirmedData'])->name('namecards.storeConfirmedData');
+            // Route for saving the confirmed data
+            Route::post('/namecards/storeConfirmedData', [NameCardController::class, 'storeConfirmedData'])->name('namecards.storeConfirmedData');
+
+
+                // CAR Crud
+                Route::get('/car', [CarController::class, 'index'])
+                ->name('car.index');
+
+                Route::get('/car/create', [CarController::class, 'create'])
+                ->name('car.create');
+
+                Route::post('/car', [CarController::class, 'store'])
+                ->name('car.store');
+
+                Route::get('/car/{car}', [CarController::class, 'show'])
+                ->name('car.show');
+
+                Route::get('/car/{car}/edit', [CarController::class, 'edit'])
+                ->name('car.edit');
+
+                Route::put('/car/{car}', [CarController::class, 'update'])
+                ->name('car.update');
+
+                Route::delete('/car/{car}', [CarController::class, 'destroy'])
+                ->name('car.destroy');
 
 
 

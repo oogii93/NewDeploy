@@ -7,10 +7,29 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+
+
+        $searchQuery=$request->input('search');
+
+        $carData = Car::where(function($query) use ($searchQuery) {
+            $query->where('car_id', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('number_plate', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('car_type', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('car_made_year', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('car_insurance_company', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('car_insurance_start', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('car_insurance_end', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('etc', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('car_detail', 'like', '%' . $searchQuery . '%');
+        })->paginate(20); //
+
+
+
+
         $cars = Car::all();
-        return view('admin.car.index', compact('cars'));
+        return view('car.index', compact('cars','carData'));
     }
 
     /**
@@ -18,7 +37,7 @@ class CarController extends Controller
      */
     public function create()
     {
-        return view('admin.car.create');
+        return view('car.create');
     }
 
     /**
@@ -47,7 +66,7 @@ class CarController extends Controller
 
         Car::create($validatedData);
 
-        return redirect()->route('admin.car.index')->with('success', 'Car created successfully.');
+        return redirect()->route('car.index')->with('success', '車が正常に作成されました.');
     }
 
 
@@ -57,7 +76,7 @@ class CarController extends Controller
     public function show($id)
     {
         $car = Car::findOrFail($id);
-        return view('admin.car.show', compact('car'));
+        return view('car.show', compact('car'));
     }
 
     /**
@@ -66,7 +85,7 @@ class CarController extends Controller
     public function edit($id)
     {
         $car = Car::findOrFail($id);
-        return view('admin.car.edit', compact('car'));
+        return view('car.edit', compact('car'));
     }
 
     /**
@@ -91,7 +110,7 @@ class CarController extends Controller
 
         $car->update($validatedData);
 
-        return redirect()->route('admin.car.index')->with('success', 'Car updated successfully.');
+        return redirect()->route('car.index')->with('success', '車が正常に更新されました.');
     }
 
     /**
@@ -102,6 +121,6 @@ class CarController extends Controller
         $car = Car::findOrFail($id);
         $car->delete();
 
-        return redirect()->route('admin.car.index')->with('success', 'Car deleted successfully.');
+        return redirect()->route('car.index')->with('success', '車が正常に削除されました.');
     }
 }

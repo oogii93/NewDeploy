@@ -79,7 +79,7 @@
                     </div>
                     <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block">
                         <a href="{{ route('admin.role-permission.user.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">社員新規登録</a>
-                        <a href="{{ route('admin.car.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">会社車管理</a>
+
                     </div>
 
                 </li>
@@ -295,9 +295,7 @@
                 <button onclick="window.location.href='{{ route('admin.role-permission.user.index') }}'" class="block text-md font text-white w-full py-2 px-4 hover:bg-gray-500">新規登録</button>
             </li>
 
-            <li class="w-full border-b border-gray-400">
-                <button onclick="window.location.href='{{ route('admin.car.index') }}'" class="block text-md font text-white w-full py-2 px-4 hover:bg-gray-500">新規車</button>
-            </li>
+
             <li class="w-full border-b border-gray-400">
             <button onclick="window.location.href='{{ route('dashboard') }}'" class="block text-md font text-white w-full py-2 px-4 hover:bg-gray-500">勤怠画面</button>
             </li>

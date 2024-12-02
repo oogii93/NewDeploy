@@ -25,9 +25,23 @@ class CheckTaiseiCorp
         // ]);
 
 
-        if (!auth()->check() || auth()->user()->corps->corp_name !== '太成HD') {
+        if (!auth()->check()) {
             abort(403, 'Unauthorized access.');
         }
+        $user=auth()->user();
+
+
+        \Log::info('User Corp Check', [
+            'user_id' => $user->id,
+            'corps' => $user->corps ? $user->corps->toArray() : 'No Corps',
+            'corp_name' => optional($user->corps)->corp_name
+        ]);
+
+
+        if (!$user->corps || $user->corps->corp_name !== '太成HD') {
+            abort(403, 'Unauthorized access.');
+        }
+
 
 
         return $next($request);

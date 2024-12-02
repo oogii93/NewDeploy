@@ -7,9 +7,22 @@ use Illuminate\Http\Request;
 
 class HrController extends Controller
 {
+    // public function __construct()
+    // {
+    //     $this->middleware(['auth', 'check.hr']);
+    // }
     public function __construct()
     {
-        $this->middleware(['auth', 'check.hr']);
+
+
+        \Log::info('HrController Constructor', [
+            'user' => auth()->user() ? auth()->user()->id : 'No User',
+            'corps' => auth()->user() && auth()->user()->corps
+                ? auth()->user()->corps->corp_name
+                : 'No Corps'
+        ]);
+
+        $this->middleware(['auth', 'taisei']);
     }
 
     // public function index()
@@ -18,7 +31,7 @@ class HrController extends Controller
     // }
 
 
-    public function Index(Request $request)
+    public function index(Request $request)
     {
         $hrDivisionId = 1; // Assuming HR division has id 1
 

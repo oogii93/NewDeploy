@@ -106,7 +106,7 @@
                                     </div>
                                     <div>
                                         <p class="text-lg font-semibold text-gray-700">社内注文申請通知</p>
-                                     
+
                                         <p class="text-sm text-gray-500 font-semibold">申請者: {{ $notification->data['user_name'] }}</p>
                                         <p class="text-sm text-gray-500 font-semibold">
                                             申請日時: {{ \Carbon\Carbon::parse($notification->data['created_at'])->setTimezone('Asia/Tokyo')->format('Y-m-d H:i') }}

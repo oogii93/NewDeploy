@@ -9,7 +9,7 @@ class KintaiHRController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'check.hr']);
+        $this->middleware(['auth', 'taisei']);
     }
 
     // public function index()

@@ -844,6 +844,9 @@
                                 <a href="{{ route('applications2.index') }}"
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文</a>
 
+                                <a href="{{ route('car.index') }}"
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">車管理</a>
+
                                 <a href="{{ route('applications2.computer') }}"
                                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">パソコン問い合わせ</a>
                             </div>
