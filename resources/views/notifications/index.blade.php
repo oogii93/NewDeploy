@@ -22,6 +22,13 @@
                     @forelse ($notifications as $notification)
                         <div class="mb-6 p-6 rounded-lg shadow-sm {{ $notification->read_at ? 'bg-stone-200' : 'bg-blue-100' }} transition-all duration-200 ease-in-out">
 
+
+
+                            {{-- Car Insurance Notification --}}
+
+
+
+
                             {{-- Post Notification --}}
                             @if(isset($notification->data['post_id']))
                                 <div class="flex items-center space-x-4">
@@ -118,6 +125,42 @@
                                     </div>
                                 </div>
                             @endif
+
+                         @if(isset($notification->data['number_plate']) && isset($notification->data['insurance_end_date']))
+                         <div class="flex items-center space-x-4">
+                            <div class="bg-orange-100 p-3 rounded-full">
+                                <svg
+                                class="w-6 h-6"
+                                viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>car [#640]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-380.000000, -5359.000000)" fill="#000000"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M342,5214 L341.241,5214 C340.692,5213.39 339.895,5213 339.01,5213 C338.657,5213 338,5213.072 338,5213.184 L338,5212 L342,5212 L342,5214 Z M339.02,5217 C338.468,5217 338.02,5216.551 338.02,5216 C338.02,5215.449 338.468,5215 339.02,5215 C339.571,5215 340.02,5215.449 340.02,5216 C340.02,5216.551 339.571,5217 339.02,5217 L339.02,5217 Z M326,5210 L336,5210 L336,5201 L326,5201 L326,5210 Z M336,5214 L331.241,5214 C330.692,5213.39 329.905,5213 329.02,5213 C328.134,5213 327.347,5213.39 326.798,5214 L326,5214 L326,5212 L336,5212 L336,5214 Z M329.02,5217 C328.468,5217 328.02,5216.551 328.02,5216 C328.02,5215.449 328.468,5215 329.02,5215 C329.571,5215 330.02,5215.449 330.02,5216 C330.02,5216.551 329.571,5217 329.02,5217 L329.02,5217 Z M338,5210 L338,5199 L324,5199 L324,5216 L326.02,5216 C326.02,5217.657 327.363,5219 329.02,5219 C330.676,5219 332.02,5217.657 332.02,5216 L336.02,5216 C336.02,5217.657 337.363,5219 339.02,5219 C340.676,5219 342.02,5217.657 342.02,5216 L344,5216 L344,5210 L338,5210 Z" id="car-[#640]"> </path> </g> </g> </g> </g></svg>
+                            </div>
+                            <div>
+                                <p class="text-lg font-semibold text-gray-700">車両保険期間通知</p>
+
+                                <p class="text-sm text-gray-500 font-semibold">車両番号: {{ $notification->data['number_plate'] }}</p>
+                                <p class="text-sm text-gray-500 font-semibold">保険期限: {{ $notification->data['insurance_end_date'] }}</p>
+
+                                <a href="{{ route('notifications.markAsRead', $notification->id) }}"
+                                class="text-blue-500 hover:text-blue-700">
+                                    詳しくは
+                                </a>
+                            </div>
+
+
+                                {{-- <p class="text-sm text-gray-500">車両番号: {{ $notification->data['number_plate'] }}</p>
+                                <p class="text-sm text-gray-500">保険期限: {{ $notification->data['insurance_end_date'] }}</p>
+
+                                <a href="{{ route('notifications.markAsRead', $notification->id) }}"
+                                    class="text-blue-500 hover:text-blue-700">
+                                        詳しくは
+                                    </a> --}}
+
+                            </div>
+                        @endif
+
+
+
+
+
                         </div>
                     @empty
                         <p class="text-sky-500">通知がありません。</p>

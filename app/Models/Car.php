@@ -19,7 +19,13 @@ class Car extends Model
         'car_insurance_end',
         'etc',
         'image_path',
-        'car_detail'
+        'car_detail',
+        'corp_id'
     ];
     protected $table = 'car'; // Correct table name
+
+    public function corp()
+{
+    return $this->belongsTo(Corp::class,'corp_id', 'id');
+}
 }

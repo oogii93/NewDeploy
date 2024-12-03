@@ -75,13 +75,22 @@ public function testOCR()
         return "OCR Test Failed: " . $e->getMessage();
     }
 }
-    public function index()
-    {
+public function index(Request $request)
+{
+    $searchQuery = $request->input('search');
 
-        $namecards = NameCard::get();
+    $nameCardData = NameCard::when($searchQuery, function ($query, $searchQuery) {
+        $query->where('name', 'like', '%' . $searchQuery . '%')
+              ->orWhere('email', 'like', '%' . $searchQuery . '%')
+              ->orWhere('phone', 'like', '%' . $searchQuery . '%')
+              ->orWhere('mobile', 'like', '%' . $searchQuery . '%')
+              ->orWhere('company', 'like', '%' . $searchQuery . '%')
+              ->orWhere('address', 'like', '%' . $searchQuery . '%');
+    })->paginate(20);
 
-        return view('namecards.index', compact('namecards'));
-    }
+    return view('namecards.index', compact('nameCardData'));
+}
+
 
     public function create()
     {
@@ -293,8 +302,11 @@ public function update(Request $request, NameCard $namecard)
     $namecard->update($validatedData);
 
     // Redirect the user to the appropriate page, e.g., the show page for the updated NameCard
-    return redirect()->route('namecards.show', $namecard)->with('success', 'NameCard updated successfully.');
+    return redirect()->route('namecards.index', $namecard)->with('success', 'NameCard updated successfully.');
 }
+
+
+
 
 
 

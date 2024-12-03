@@ -89,18 +89,19 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
 
 
 
-    Route::get('/admin/past-examples/{pastExample}/edit', [PastExampleController::class, 'edit'])
+    Route::get('/admin/past-examples/{id}/edit', [PastExampleController::class, 'edit'])
         ->name('admin.past-examples.edit');
 
-        Route::put('/admin/past-examples/{pastExample}', [PastExampleController::class, 'update'])
+        Route::put('/admin/past-examples/{id}', [PastExampleController::class, 'update'])
         ->name('admin.past-examples.update');
 
-    Route::delete('/admin/past-examples/{pastExample}', [PastExampleController::class, 'destroy'])
+    Route::delete('/admin/past-examples/{id}', [PastExampleController::class, 'destroy'])
         ->name('admin.past-examples.destroy');
         Route::post('admin/past-examples/upload-image', [PastExampleController::class, 'uploadImage'])
         ->name('admin.past-examples.upload-image');
 
-
+        // Route::get('/test-car-insurance-notification',
+        // [App\Http\Controllers\CarInsuranceTestController::class, 'testNotification']);
 
 
 
@@ -1048,6 +1049,8 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
 
                 Route::resource('namecards', NameCardController::class);
+                Route::get('/namecards', [NameCardController::class, 'index'])->name('namecards.index');
+
 
                 Route::get('/namecards/{namecard}', [NameCardController::class, 'show'])->name('namecards.show');
 

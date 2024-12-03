@@ -109,6 +109,31 @@
                 </div>
 
 
+            <div class="w-full max-w-md mt-10 px-3 mb-5">
+                <form action="{{ route('admin.past-examples.index') }}" method="GET" class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input
+                        type="search"
+                        name="search"
+                        id="search"
+                        value="{{ request('search') }}"
+                        placeholder="キーワードで検索..."
+                        class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out shadow-sm hover:border-blue-400"
+                    >
+                    <button
+                        type="submit"
+                        class="absolute inset-y-0 right-0 flex items-center px-4 text-sm font-medium text-white bg-sky-600 rounded-r-lg hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-blue-300 transition duration-300 ease-in-out"
+                    >
+                        検索
+                    </button>
+                </form>
+            </div>
+
+
 
             </div>
 
@@ -152,7 +177,9 @@
                                             <td class="border border-slate-300 px-4 py-2">
                                                 <div class="action-buttons flex items-center space-x-2">
                                                     <a href="{{route('admin.past-examples.show',$record->id)}}" class="p-2 hover:bg-yellow-200 inline-flex items-center justify-center">
-                                                        <img src="{{ asset('2.svg') }}" alt="show" class="w-10 h-10">
+
+
+                                                            <img src="{{ asset('eye.svg') }}" alt="View PDFs" class="w-10 h-10">
                                                     </a>
                                                     <a href="{{route('admin.past-examples.edit',$record->id)}}" class="p-2 hover:bg-yellow-200 inline-flex items-center justify-center">
                                                         <img src="{{ asset('2.svg') }}" alt="編集" class="w-10 h-10">
@@ -174,6 +201,10 @@
                         </table>
                     </div>
 
+                    <div class="mt-6">
+                        {{ $pastExamples->appends(request()->query())->links() }}
+
+                    </div>
                 </div>
             </div>
 

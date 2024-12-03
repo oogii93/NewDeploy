@@ -45,5 +45,10 @@ public function users()
     return $this->hasMany(User::class);
 }
 
+public function cars()
+{
+    return $this->hasMany(Car::class, 'corp_id', 'id');
+}
+
 
 }

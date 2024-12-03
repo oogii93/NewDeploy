@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Corp;
 use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
     public function index()
+
+
     {
+
+
         $notifications = auth()->user()->notifications()->paginate(10);
         return view('notifications.index', compact('notifications'));
     }
@@ -16,6 +21,10 @@ class NotificationController extends Controller
     {
         $notification = auth()->user()->notifications()->findOrFail($id);
         $notification->markAsRead();
+
+        if (isset($notification->data['number_plate'])) {
+            return redirect()->route('car.index'); // Create this route to show car details
+        }
 
         // Redirect based on the notification type
         if (isset($notification->data['post_id'])) {

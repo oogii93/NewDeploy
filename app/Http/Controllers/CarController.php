@@ -28,6 +28,10 @@ class CarController extends Controller
 
 
 
+
+        // dd($expiringCars);
+
+
         $cars = Car::all();
         return view('car.index', compact('cars','carData'));
     }

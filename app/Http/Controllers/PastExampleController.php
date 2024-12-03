@@ -11,10 +11,24 @@ class PastExampleController extends Controller
     /**
      * Display a listing of the past examples.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pastExamples = PastExample::latest()->paginate(10);
+
+
+        $searchQuery = $request->input('search');
+
+        $pastExamples = PastExample::when($searchQuery, function ($query, $searchQuery) {
+            $query->where('id', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('title', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('description', 'like', '%' . $searchQuery . '%');
+
+        })->paginate(10);
+
         return view('admin.past-examples.index', compact('pastExamples'));
+
+
+        // $pastExamples = PastExample::latest()->paginate(10);
+        // return view('admin.past-examples.index', compact('pastExamples'));
     }
 
     /**
@@ -124,16 +138,20 @@ class PastExampleController extends Controller
     /**
      * Show the form for editing the specified past example.
      */
-    public function edit(PastExample $pastExample)
+    public function edit($id)
     {
-        return view('admin.past-examples.edit', compact('pastExample'));
+        $example = PastExample::findOrFail($id); // Fetch the record by ID
+        return view('admin.past-examples.edit', compact('example'));
     }
 
     /**
      * Update the specified past example in storage.
      */
-    public function update(Request $request, PastExample $pastExample)
+    public function update(Request $request, $id)
     {
+
+
+        $pastExample = PastExample::findOrFail($id);
         // Validate the request
         $validatedData = $request->validate([
             'title' => 'required|max:255',
@@ -171,7 +189,7 @@ class PastExampleController extends Controller
             'images' => array_values($currentImages) // Reset array keys
         ]);
 
-        return redirect()->route('past-examples.index')
+        return redirect()->route('admin.past-examples.index')
             ->with('success', 'Past example updated successfully.');
     }
 
