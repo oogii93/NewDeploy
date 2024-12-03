@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
         // $schedule->call(function () use ($reminderService) {
         //     $reminderService->sendClockOutReminders();
         // })->dailyAt('23:00');
-        $schedule->command('car:check-insurance-expiration')->daily();
+        $schedule->command('car:check-insurance-expiration')->dailyAt('10:30');
     }
 
     /**
