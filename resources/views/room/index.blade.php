@@ -47,10 +47,9 @@
             </div>
         </div>
 
-<div class="max-w-full bg-white mt-5">
+<div class="w-full overflow-x-auto px-2 sm:px-4 bg-white mt-5">
     @if ($selectedOfficeId)
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mt-10 mb-10">
-        <div class="overflow-x-auto">
+    <div class="bg-white rounded-lg shadow-lg min-w-[800px] md:min-w-full">
 
             <table class="w-full border border-collapse">
                 <thead>

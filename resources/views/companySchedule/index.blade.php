@@ -70,11 +70,13 @@
 
         </div>
 
-        <div class="max-w-full bg-white mt-5 px-4 py-6">
+
+
+        <div class="w-full overflow-x-auto px-2 sm:px-4">
             @if ($selectedOfficeId)
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full border border-gray-300 border-collapse">
+            <div class="bg-white rounded-lg shadow-lg min-w-[800px] md:min-w-full">
+
+                <table class="w-full border-collapse">
                         <thead>
                             <tr>
                                 <th class="border-b border-gray-300 p-2 bg-red-50 text-red-600">日</th>

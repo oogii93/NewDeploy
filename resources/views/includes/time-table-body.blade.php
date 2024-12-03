@@ -602,7 +602,7 @@ use App\Models\AttendanceTypeRecord;
 
 @endfor
 <!-- Modal -->
-<div id="attendanceModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
+{{-- <div id="attendanceModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
     <div class="bg-white rounded-lg w-1/2 p-4">
         <h2 class="text-lg font-bold mb-4 text-center">申請</h2>
 
@@ -676,7 +676,78 @@ use App\Models\AttendanceTypeRecord;
             </div>
         </form>
     </div>
-</div>
+</div> --}}
+<div id="attendanceModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
+    <div class="bg-white rounded-lg w-4/5 md:w-1/2 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <svg
+        class="w-16 h-16"
+        version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#14b8a6"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css">  .st0{fill:#14b8a6;}  </style> <g> <path class="st0" d="M208.971,443.563c2.203-2.219,3.281-5.109,3.234-8l8.047-8.031l65.25-14 c6.672-1.203,12.266-5.719,14.859-11.984c0,0,12.375-27.641,19.891-40.172l-20.781-20.781l-3.234-3.25l-20.797-20.797 c-12.531,7.516-40.188,19.891-40.188,19.891c-6.266,2.594-10.766,8.188-11.969,14.844l-14.016,65.266l-8.016,8.031 c-2.906-0.016-5.813,1.047-8.016,3.25c-4.344,4.359-4.344,11.391,0,15.734S204.627,447.906,208.971,443.563z M256.564,363.063 c4.734-4.75,12.422-4.75,17.188,0c4.734,4.734,4.734,12.438,0,17.172c-4.766,4.734-12.453,4.734-17.188,0 C251.814,375.5,251.814,367.797,256.564,363.063z"></path> <path class="st0" d="M362.346,318.766l-44.313-44.328c0,0-15.531,15.531-20.531,20.531c-5.016,5-11.531,3.5-11.531,3.5l-6,6.031 l21.031,21.031l5.016,5l26.297,26.297l6-6.016c0,0-1.5-6.5,3.5-11.516C346.83,334.281,362.346,318.766,362.346,318.766z"></path> <path class="st0" d="M497.83,138.969c-20.5-20.484-42.844-18.625-66.141,4.656c-23.266,23.281-90.219,106.625-106,122.406 l45.078,45.063c15.766-15.766,99.109-82.719,122.391-106S518.314,159.453,497.83,138.969z M477.486,175.141l-70.156,70.141 c-1.719,1.734-4.484,1.734-6.203,0l-9.625-9.625c-1.703-1.688-1.703-4.469,0-6.188l70.141-70.156c1.719-1.719,4.516-1.719,6.234,0 l9.609,9.625C479.205,170.656,479.205,173.438,477.486,175.141z"></path> <rect x="88.408" y="201.844" class="st0" width="194.5" height="22.109"></rect> <rect x="88.408" y="279.219" class="st0" width="145.875" height="22.094"></rect> <rect x="88.408" y="356.563" class="st0" width="103.891" height="22.109"></rect> <path class="st0" d="M358.58,356.969l-8.063,6.656l-7.938,7.938v102.156H26.518V38.281h213.281v83.484 c0,5.906,2.438,11.359,6.313,15.203c3.859,3.875,9.297,6.313,15.219,6.313h81.25v76.5c4.297-5.125,8.813-10.469,13.391-15.922 c4.313-5.141,8.719-10.391,13.125-15.625v-72.578L265.221,11.766H11.049c-6.109,0-11.047,4.953-11.047,11.047v466.375 c0,6.094,4.938,11.047,11.047,11.047h347c6.109,0,11.047-4.953,11.047-11.047V337.031l-12.672,12.672L358.58,356.969z M261.924,45.969l75.188,75.203h-75.188V45.969z"></path> </g> </g></svg>
+        <h2 class="text-2xl font-bold text-teal-500">申請書</h2>
+        <button class="text-gray-500 hover:text-gray-700 focus:outline-none" onclick="closeModal()">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form id="attendanceForm" action="{{ route('admin.time_off.store') }}" method="POST">
+        @csrf
+        <input type="hidden" name="user_id" value="{{ $user->id }}">
+        <input type="hidden" name="date" id="modalDate" value="">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="attendance_type_records_id" class="block mb-2 text-sm font-medium text-gray-700">区分選択</label>
+            <select name="attendance_type_records_id" id="attendance_type_records_id" class="rounded-md border-gray-300 focus:border-teal-500 focus:ring-teal-500 block w-full">
+              <option value="">選択</option>
+              @foreach ($attendanceTypeRecords as $record)
+                @if ($record->name !=='休日出勤')
+                  <option value="{{ $record->id }}">{{ $record->name }}</option>
+                @endif
+              @endforeach
+            </select>
+          </div>
+
+          <div>
+            <label for="reason_select" class="block mb-2 text-sm font-medium text-gray-700">理由選択</label>
+            <select name="reason_select" id="reason_select" class="rounded-md border-gray-300 focus:border-teal-500 focus:ring-teal-500 block w-full">
+              <option value="">選択</option>
+              <option value="私用の為">私用の為</option>
+              <option value="通院の為">通院の為</option>
+              <option value="計画有給休暇消化の為">計画有給休暇消化の為</option>
+              <option value="体調不良の為">体調不良の為</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <label for="reason" class="block mb-2 text-sm font-medium text-gray-700">リストにない理由</label>
+          <input type="text" name="reason" id="reason" class="rounded-md border-gray-300 focus:border-teal-500 focus:ring-teal-500 block w-full" placeholder="入力してください">
+        </div>
+
+        <div class="mt-4">
+          <label for="boss_id" class="block mb-2 text-sm font-medium text-gray-700">上司を選択</label>
+          <select name="boss_id" id="boss_id" class="rounded-md border-gray-300 focus:border-teal-500 focus:ring-teal-500 block w-full" required>
+            <option value="">選択してください。</option>
+            @foreach ($bosses as $boss)
+              <option value="{{ $boss->id }}">{{ $boss->name }}</option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="flex justify-end mt-6 space-x-4">
+          <x-button purpose="default" onclick="closeModal()" class="">
+            キャンセル
+          </x-button>
+
+          <x-button purpose="search" type="submit" class="bg-teal-500 hover:bg-teal-600 text-white">
+            保存
+          </x-button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 
 <!-- Add Edit Modal -->
