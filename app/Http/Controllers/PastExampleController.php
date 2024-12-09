@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\PastExample;
+use App\Models\Application2;
 use Illuminate\Http\Request;
+use App\Models\PastExamplesCategory;
 use Illuminate\Support\Facades\Storage;
 
 class PastExampleController extends Controller
@@ -24,47 +26,49 @@ class PastExampleController extends Controller
 
         })->paginate(10);
 
-        return view('admin.past-examples.index', compact('pastExamples'));
+        return view('past-examples.index', compact('pastExamples'));
 
 
         // $pastExamples = PastExample::latest()->paginate(10);
         // return view('admin.past-examples.index', compact('pastExamples'));
     }
 
-    /**
-     * Show the form for creating a new past example.
-     */
     public function create()
     {
-        return view('admin.past-examples.create');
-    }
+        $category=PastExamplesCategory::all();
 
-    /**
-     * Store a newly created past example in storage.
-     */
+        return view('past-examples.create', compact('category'));
+    }
     public function store(Request $request)
     {
         // Validate the request
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'description' => 'required', // Corrected spelling
+            'past_examples_category_id'=>'required'
 
         ]);
+
+
 
         // Handle multiple image uploads
 
         $content=$request->input('description');
 
+
         $pastExample = PastExample::create([
             'title' => $validatedData['title'],
             'description' => $content,
+            'past_examples_category_id'=>$validatedData['past_examples_category_id']
         ]);
 
+
+        // dd($request->all());
         // Create the past example
 
 
-        return redirect()->route('admin.past-examples.index')
-            ->with('success', 'Past example created successfully.');
+        return redirect()->route('past-examples.index')
+            ->with('success', '事例作成完了しました。');
     }
 
     private function processContentImages($content)
@@ -132,32 +136,37 @@ class PastExampleController extends Controller
      */
     public function show(PastExample $pastExample)
     {
-        return view('admin.past-examples.show', compact('pastExample'));
+        return view('past-examples.show', compact('pastExample'));
     }
 
     /**
      * Show the form for editing the specified past example.
      */
-    public function edit($id)
+    public function edit(PastExample $pastExample)
     {
-        $example = PastExample::findOrFail($id); // Fetch the record by ID
-        return view('admin.past-examples.edit', compact('example'));
+        // $example = PastExample::findOrFail($id); // Fetch the record by ID
+        $categories=PastExamplesCategory::all();
+
+
+        return view('past-examples.edit', compact('pastExample','categories'));
     }
 
     /**
      * Update the specified past example in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, PastExample $pastExample)
     {
 
 
-        $pastExample = PastExample::findOrFail($id);
+
         // Validate the request
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'description' => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'remove_images' => 'array' // Optional: for removing existing images
+            'remove_images' => 'array', // Optional: for removing existing images
+            'past_examples_category_id' => 'required|exists:past_examples_category,id'
+
         ]);
 
         // Handle existing images
@@ -186,11 +195,14 @@ class PastExampleController extends Controller
         $pastExample->update([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
-            'images' => array_values($currentImages) // Reset array keys
+            'images' => array_values($currentImages), // Reset array keys
+            'past_examples_category_id' => $validatedData['past_examples_category_id']
         ]);
 
-        return redirect()->route('admin.past-examples.index')
-            ->with('success', 'Past example updated successfully.');
+
+
+        return redirect()->route('past-examples.index')
+            ->with('success', '事例が正常に更新されました。');
     }
 
     /**
@@ -208,8 +220,10 @@ class PastExampleController extends Controller
         // Delete the past example
         $pastExample->delete();
 
-        return redirect()->route('admin.past-examples.index')
-            ->with('success', 'Past example deleted successfully.');
+        // dd($pastExample);
+
+        return redirect()->route('past-examples.index')
+            ->with('success', '事例が正常に消去されました');
     }
 
     /**
@@ -230,6 +244,6 @@ class PastExampleController extends Controller
 
         $pastExamples = $query->latest()->paginate(10);
 
-        return view('admin.past-examples.index', compact('pastExamples'));
+        return view('past-examples.index', compact('pastExamples'));
     }
 }

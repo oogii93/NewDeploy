@@ -1,11 +1,16 @@
-@extends('admin.dashboard')
 
-@section('admin')
+
+<x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('admin.past-examples.update', $example->id) }}" method="POST" enctype="multipart/form-data">
+                <div class="bg-gradient-to-r from-blue-500 to-blue-400 p-6 rounded-t-xl">
+                    <h1 class="text-3xl font-extrabold text-white tracking-tight">
+                        過去実例編集
+
+                    </h1>
+                </div>
+                <div class="p-6 text-gray-900 dark:text-gray-100 bg-white">
+                    <form action="{{ route('past-examples.update', $pastExample->id) }}" method="POST" class="p-8 space-y-6">
                         @csrf
                         @method('PUT') <!-- Specify the HTTP method as PATCH -->
 
@@ -15,18 +20,37 @@
                                 type="text"
                                 name="title"
                                 id="title"
-                                value="{{ old('title', $example->title) }}"
+                                value="{{ old('title', $pastExample->title) }}"
                                 class="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2 dark:bg-gray-700 dark:text-gray-300"
                                 required>
                         </div>
+
+                        <div class="mb-4">
+                            <label for="past_examples_category_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                カテゴリ
+                            </label>
+                            <select
+                                name="past_examples_category_id"
+                                id="past_examples_category_id"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none transition duration-300"
+                                required
+                            >
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ $pastExample->past_examples_category_id == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="mb-4">
                             <textarea id="summernote" name="description">
-                                {{ old('description', $example->description) }}
+                                {{ old('description', $pastExample->description) }}
                             </textarea>
                         </div>
 
                         <div class="flex justify-between">
-                            <x-button purpose="default" href="{{ url('/admin/past-examples/') }}">
+                            <x-button purpose="default" href="{{ url('/past-examples/') }}">
                                 戻る
                             </x-button>
                             <x-button purpose="search" type="submit">
@@ -80,4 +104,6 @@
             height: 100%;
         }
     </style>
-@endsection
+
+</x-app-layout>
+

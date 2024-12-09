@@ -8,6 +8,7 @@ use App\Models\Application2Type01A;
 use App\Models\Application2Type03A;
 use App\Models\ComputerFormType01Z;
 use App\Models\PastExample;
+use App\Models\PastExamplesCategory;
 use Illuminate\Foundation\Auth\User;
 
 class Form2Controller extends Controller
@@ -68,23 +69,45 @@ class Form2Controller extends Controller
         //search oruulah
 
         $searchQuery=$request->input('search');
+        $categoryId=$request->input('category');
 
-        $pastExamplesData = PastExample::where(function($query) use ($searchQuery) {
-            $query->where('title', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('description', 'like', '%' . $searchQuery . '%');
-        })->paginate(8); //
+        $pastCategory=PastExamplesCategory::all();
+
+        $query=PastExample::query();
+
+        if($searchQuery){
+            $query->where(function ($q) use ($searchQuery){
+                $q->where('title', 'like', '%' .$searchQuery. '%')
+                    ->orWhere('description', 'like', '%' .$searchQuery. '%');
+            });
+        }
+
+        if($categoryId){
+            $query->where('past_examples_category_id', $categoryId);
+        }
 
 
-        //search duusah
-        $formComputer=[
-            '01Z'=>['title'=>'001.名刺作成依頼', 'type'=>'Type01Z']
+           // Paginate the results
+    $pastExamplesData = $query->paginate(8);
+
+        $formComputer=
+        [
+            '01Z' => ['title' => '001.名刺作成依頼', 'type' => 'Type01Z']
         ];
 
         return view('ComputerForm.index', [
             'formComputer' => $formComputer,
-            'pastExamples' => $pastExamplesData // Note the different variable name
+            'pastExamples' => $pastExamplesData,
+            'pastCategory' => $pastCategory,
+            'selectedCategory' => $categoryId // Pass selected category to view
         ]);
     }
+
+
+
+
+
+
 
     public function show2($type)
     {

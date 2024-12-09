@@ -1,11 +1,21 @@
 <x-app-layout>
 
-<div class="container mx-auto py-8">
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
-        <h1 class="text-2xl font-bold mb-6 text-center mt-5">{{ $pastExample->title }}</h1>
+    {{-- <div class="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8"> --}}
+        <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden mt-5">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-400 p-6">
+                <h1 class="text-3xl font-extrabold text-white tracking-tight">
+                    事例
+                    <br class="mt-2">{{ $pastExample->title }}
+                </h1>
+            </div>
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8  flex flex-col">
+        {{-- <h1 class="text-2xl font-bold mb-6 text-center mt-5">{{ $pastExample->title }}</h1> --}}
 
 
 
+        <div class="mb-4">
+            {{-- {{ $pastExample->past_examples_category_id-> }} --}}
+        </div>
         <div class="mb-4">
 
             <div id="summernote">{!! $pastExample->description !!}</div>
@@ -17,6 +27,7 @@
             </x-button>
         </div>
     </div>
+</div>
 </div>
 
 @section('styles')
@@ -45,7 +56,7 @@
                     formData.append('image', files[0]);
 
                     $.ajax({
-                        url: "{{ route('admin.past-examples.upload-image') }}",
+                        url: "{{ route('past-examples.upload-image') }}",
                         method: 'POST',
                         data: formData,
                         processData: false,

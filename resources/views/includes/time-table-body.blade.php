@@ -481,6 +481,8 @@ use App\Models\AttendanceTypeRecord;
             }
         }
 
+
+
         // Common calculations for both
         if ($arrivalTime && $departureTime) {
             // Subtract additional recorded breaks
@@ -497,6 +499,9 @@ use App\Models\AttendanceTypeRecord;
         }
     @endphp
 </td>
+
+
+
 
 
 

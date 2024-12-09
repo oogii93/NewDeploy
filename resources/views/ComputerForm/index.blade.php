@@ -136,20 +136,57 @@
 
 
 
+                    <div class="mb-5">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-3 text-center">
+                            カテゴリー
+                        </h2>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach($pastCategory as $category)
+                            <a href="{{ route('ComputerForm.index', ['category' => $category->id]) }}"
+                                class="px-4 py-3 rounded-md
+                                bg-gradient-to-r from-sky-50 to-sky-100
+                                hover:from-sky-100 hover:to-sky-200
+                                transition duration-300 ease-in-out
+                                text-sky-800 hover:text-sky-900
+                                font-medium
+                                shadow-sm hover:shadow-md
+                                {{ $selectedCategory == $category->id ? 'bg-sky-200 font-bold' : '' }}
+                             ">
+                                 {{ $category->name }}
+                             </a>
+                        @endforeach
+
+
+                            @if($pastCategory->isEmpty())
+                                <p class="text-center text-gray-500 italic mt-4">
+                                    カテゴリーが見つかりません
+                                </p>
+                            @endif
+
+                        </div>
+
+
+                    </div>
+
+
+
                         @if($pastExamples->count() > 0)
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-4xl mx-auto mt-6">
                                 @foreach ($pastExamples as $pastExample)
                                     <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg transform transition duration-300 hover:bg-gray-100 hover:shadow-xl">
                                         <div class="p-6">
                                             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 truncate">
                                                 {{ $pastExample->title }}
                                             </h3>
+
+
+
                                             <div class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3">
                                                 {!! Str::limit(strip_tags($pastExample->description), 150) !!}
                                             </div>
                                             <div class="flex justify-end mt-4">
                                                 <a
-                                                    href="{{ route('admin.past-examples.show', $pastExample) }}"
+                                                    href="{{ route('past-examples.show', $pastExample) }}"
                                                     class="px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition duration-300 ease-in-out transform hover:-translate-y-0.5"
                                                 >
                                                     詳細を見る

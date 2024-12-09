@@ -59,6 +59,7 @@ use App\Http\Controllers\CompanyScheduleController;
 use App\Http\Controllers\DepartureRecordController;
 use App\Http\Controllers\TestNotificationController;
 use App\Http\Controllers\AttendanceTypeRecordController;
+use App\Http\Controllers\PastExamplesCategoryController;
 use App\Http\Controllers\TimeOffRequestRecordController;
 
 //Admin Group Route
@@ -77,28 +78,7 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
 
 
 
-    // Past Examples
-    Route::get('/admin/past-examples', [PastExampleController::class, 'index'])
-        ->name('admin.past-examples.index');
 
-    Route::get('/admin/past-examples/create', [PastExampleController::class, 'create'])
-        ->name('admin.past-examples.create');
-
-    Route::post('/admin/past-examples', [PastExampleController::class, 'store'])
-        ->name('admin.past-examples.store');
-
-
-
-    Route::get('/admin/past-examples/{id}/edit', [PastExampleController::class, 'edit'])
-        ->name('admin.past-examples.edit');
-
-        Route::put('/admin/past-examples/{id}', [PastExampleController::class, 'update'])
-        ->name('admin.past-examples.update');
-
-    Route::delete('/admin/past-examples/{id}', [PastExampleController::class, 'destroy'])
-        ->name('admin.past-examples.destroy');
-        Route::post('admin/past-examples/upload-image', [PastExampleController::class, 'uploadImage'])
-        ->name('admin.past-examples.upload-image');
 
         // Route::get('/test-car-insurance-notification',
         // [App\Http\Controllers\CarInsuranceTestController::class, 'testNotification']);
@@ -1039,6 +1019,8 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
     Route::post('/applications2/{application2}/check', [Application2Controller::class, 'check'])->name('applications2.check');
 
+    Route::post('/applications2/{application2}/update-comment', [Application2Controller::class, 'updateComment']);
+
     //Computer Q and A route
 
     Route::get('/applications2', [Application2Controller::class, 'computer'])
@@ -1055,8 +1037,7 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                 Route::get('/namecards/{namecard}', [NameCardController::class, 'show'])->name('namecards.show');
 
 
-                Route::get('/admin/past-examples/{pastExample}', [PastExampleController::class, 'show'])
-                ->name('admin.past-examples.show');
+
 
                 Route::get('/ocr-test', [NameCardController::class, 'testOCR']);
 
@@ -1071,6 +1052,10 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
             Route::post('/namecards/storeConfirmedData', [NameCardController::class, 'storeConfirmedData'])->name('namecards.storeConfirmedData');
 
 
+
+
+
+            //Holdingsing middleware endees ajilah esoti
                 // CAR Crud
                 Route::get('/car', [CarController::class, 'index'])
                 ->name('car.index');
@@ -1092,6 +1077,60 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
                 Route::delete('/car/{car}', [CarController::class, 'destroy'])
                 ->name('car.destroy');
+
+
+                  // Past Examples
+                Route::get('/past-examples', [PastExampleController::class, 'index'])
+                ->name('past-examples.index');
+
+            Route::get('/past-examples/create', [PastExampleController::class, 'create'])
+                ->name('past-examples.create');
+
+            Route::post('/past-examples', [PastExampleController::class, 'store'])
+                ->name('past-examples.store');
+
+                Route::get('/past-examples/{pastExample}', [PastExampleController::class, 'show'])
+                ->name('past-examples.show');
+
+
+
+            Route::get('/past-examples/{pastExample}/edit', [PastExampleController::class, 'edit'])
+                ->name('past-examples.edit');
+
+                Route::put('/past-examples/{pastExample}', [PastExampleController::class, 'update'])
+                ->name('past-examples.update');
+
+            Route::delete('/past-examples/{pastExample}', [PastExampleController::class, 'destroy'])
+                ->name('past-examples.destroy');
+                Route::post('/past-examples/upload-image', [PastExampleController::class, 'uploadImage'])
+                ->name('past-examples.upload-image');
+
+
+                //past Examples Category
+
+
+                  // Past Examples
+                  Route::get('/past-examples-category', [PastExamplesCategoryController::class, 'index'])
+                  ->name('past-examples-category.index');
+
+              Route::get('/past-examples-category/create', [PastExamplesCategoryController::class, 'create'])
+                  ->name('past-examples-category.create');
+
+              Route::post('/past-examples-category', [PastExamplesCategoryController::class, 'store'])
+                  ->name('past-examples-category.store');
+
+                //   Route::get('/past-examples/{pastExample}', [PastExamplesCategoryController::class, 'show'])
+                //   ->name('past-examples.show');
+
+
+
+            Route::put('/past-examples-category/{pastExamplesCategory}', [PastExamplesCategoryController::class, 'update'])
+             ->name('past-examples-category.update');
+            Route::get('/past-examples-category/{pastExamplesCategory}/edit', [PastExamplesCategoryController::class, 'edit'])
+                ->name('past-examples-category.edit');
+
+              Route::delete('/past-examples-category/{pastExamplesCategory}', [PastExamplesCategoryController::class, 'destroy'])
+                  ->name('past-examples-category.destroy');
 
 
 

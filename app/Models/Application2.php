@@ -16,8 +16,15 @@ class Application2 extends Model
         'status',
         'is_checked',
         'checked_by',
-        'checked_at'
+        'checked_at',
+        'comment'
     ];
+
+    public function pastExample()
+{
+    return $this->hasMany(PastExample::class);
+
+}
 
     protected $table = 'applications2'; // Explicitly specify the table name
 

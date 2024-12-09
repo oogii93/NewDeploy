@@ -6,6 +6,8 @@ function workTimeCalc($startTime = '', $endTime = '')
 {
     $result = [
 
+
+
         'workedTime' => '00:00:00',
         'countLate' => 0,
         'countEarly' => 0,

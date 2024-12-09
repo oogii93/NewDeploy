@@ -64,6 +64,9 @@ class TableShowController extends Controller
      $bosses = User::where('is_boss', true)
      ->where('office_id', $officeId)  // Only fetch bosses from the same office
      ->get();
+    //  dd($attendanceTypeRecords->pluck('name'));
+
+
 
     // dd($attendanceTypeRecords);
     //bREAK MODEL -OOR HOLBOSONOO END DUUDAJ AJILUULAH

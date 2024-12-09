@@ -14,6 +14,17 @@ class PastExample extends Model
     protected $fillable=[
         'title',
         'description',
+        'past_examples_category_id'
 
     ];
+
+    public function application2()
+{
+    return $this->belongsTo(Application2::class);
+}
+
+    public function category()
+    {
+        return $this->belongsTo(PastExamplesCategory::class);
+    }
 }

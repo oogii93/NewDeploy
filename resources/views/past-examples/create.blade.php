@@ -1,22 +1,29 @@
-@extends('admin.dashboard')
 
-@section('admin')
-
+<x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form action="{{ route('admin.past-examples.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('past-examples.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
 
-                        <div class="form-group">
 
 
 
+                        <div class="mb-4">
+                            <label for="past_examples_category_id" class="block text-gray-700 dark:text-gray-300 font-bold  text-center mt-3 mb-3">カテゴリ</label>
+                            <select type="text" name="past_examples_category_id"  class="w-full border border-gray-300 dark:border-gray-700 rounded-md p-2  dark:bg-gray-700 dark:text-gray-300 mb-5" required>
+
+                                <option value="">選択</option>
+                                @foreach ($category as $category)
+
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+
+                                @endforeach
+
+                            </select>
                         </div>
-
-
 
                         <div class="mb-4">
                             <label for="title" class="block text-gray-700 dark:text-gray-300 font-bold  text-center mt-3 mb-3">タイトル</label>
@@ -31,7 +38,7 @@
 
                         {{-- <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white py-2 px-3 rounded-r h-10 w-28">投稿</button> --}}
                         <div class="flex justify-between">
-                            <x-button purpose="default" type="" href="{{ url('/admin/past-examples/') }}">
+                            <x-button purpose="default" type="" href="{{ url('/past-examples/') }}">
                                 戻る
                             </x-button>
                             <x-button purpose="search" type="submit">
@@ -105,4 +112,6 @@
             height: 100%;
         }
     </style>
-@endsection
+
+    </x-app-layout>
+

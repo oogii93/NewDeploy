@@ -856,7 +856,7 @@ $totalWorkedTime = 0;
                     if ($startTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true) || $endTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true)) {
                         $workedTimeInSeconds = $this->calculateWorkedTime($startTime, $endTime,$calculations,  $breakTimeInMinutes * 60);
                         $dailyWorkedSeconds += $workedTimeInSeconds;
-                        // dd($dailyWorkedSeconds);
+
                     }
 
                     if (
@@ -902,6 +902,8 @@ $totalWorkedTime = 0;
     $totalOvertimeSecondsB += $dailyOvertimeSecondsB + $morningOverTimeSeconds;
     $totalWorkedTime += $dailyWorkedSeconds;
 
+
+
         // dump([
 
         //     'total'=>$totalOvertimeSecondsB,
@@ -933,6 +935,7 @@ $totalWorkedTime = 0;
             // Subtract the number of holidays from the total days
 
             $daysInMonth -= $vacationRecordsCounts['公休'];
+
 
             //     dd([
             //     'udur'=>$daysInMonth
@@ -1096,6 +1099,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 
 
 
+
         $formattedTotalWorkedTime = $this->formatSeconds($totalWorkedTime);
         $formattedLateSeconds = $this->formatSeconds($lateArrivalSeconds);
 
@@ -1115,7 +1119,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 // dd($countLate);
 
 
-
+// dd($halfDayVacationDates, $formattedTotalWorkedTime);
 
         return [
             'staff_number' => $user->id,
@@ -1174,8 +1178,10 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
         return $totalWorkedDay;
     }
 
+
     private function calculateWorkedTime($startTime, $endTime, $calculations, $breakTimeInSeconds = 0)
     {
+
 
     $IQ6 = $this->timeToMinutes($this->getCalculationValue($calculations, '9'));
     $IQ7 = $this->timeToMinutes($this->getCalculationValue($calculations, '10'));
@@ -1192,6 +1198,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
     $arrivalMinutes = $this->timeToMinutes($startTime);
     $lunchTimeStartMinutes = $this->timeToMinutes($this->getCalculationValue($calculations, '17'));//12:00
     $lunchTimeEndMinutes = $this->timeToMinutes($this->getCalculationValue($calculations, '18'));//13:00
+
 
 
         // $IQ6 = $this->timeToMinutes("11:50");
@@ -1279,7 +1286,11 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 
 
 
+
+
+
     }
+
 
 
     private function timeToMinutes($time)
@@ -1341,6 +1352,8 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
             }
             $startDateForCountWeekend->addDay();
         }
+
+
 
         $totalWorkDay = 0;
         while ($startDateForCountWorkDay->lte($endDate)) {

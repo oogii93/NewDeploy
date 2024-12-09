@@ -114,6 +114,30 @@ class Application2Controller extends Controller
 }
 
 
+public function updateComment(Request $request, Application2 $application2)
+{
+    try {
+        $validatedData = $request->validate([
+            'comment' => 'nullable|string|max:1000'
+        ]);
+
+        $application2->update([
+            'comment' => $request->input('comment')
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Comment updated successfully'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error updating comment',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
 
 }
 
