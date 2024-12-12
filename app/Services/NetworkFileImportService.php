@@ -63,27 +63,26 @@ class NetworkFileImportService
     //  }
 
     private function getNetworkFilePath()
-{
-    // Try multiple path formats
-    $paths = [
-        '//172.16.153.8/出勤簿/1.xlsx',   // Standard network path
-        '\\\\172.16.153.8\\出勤簿\\1.xlsx', // Windows-style UNC path
-        '/mnt/network/出勤簿/1.xlsx',      // Potential Linux mount point
-        storage_path('network/1.xlsx')     // Local storage fallback
-    ];
+    {
+        $paths = [
+            '//172.16.153.8/出勤簿/1.xlsx',        // Network style
+            '\\\\172.16.153.8\出勤簿\1.xlsx',      // Windows UNC path
+            '/mnt/network/出勤簿/1.xlsx',          // Potential Linux mount
+            'Z:/出勤簿/1.xlsx',                    // Mapped drive
+            '/var/www/network/1.xlsx'              // Potential server mount point
+        ];
 
-    foreach ($paths as $path) {
-        // Normalize path separators
-        $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
+        foreach ($paths as $path) {
+            // Normalize path separators
+            $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
 
-        if (file_exists($normalizedPath)) {
-            return $normalizedPath;
+            if (file_exists($normalizedPath)) {
+                return $normalizedPath;
+            }
         }
+
+        throw new \Exception('Network file not found: ' . implode(', ', $paths));
     }
-
-    throw new \Exception('Network file not found: ' . implode(', ', $paths));
-}
-
 
     // private function getNetworkFilePath()
     // {
@@ -141,40 +140,35 @@ class NetworkFileImportService
     // }
 
     public function autoImport()
-{
-    try {
-        // Detailed path checking
-        $networkFilePath = $this->getNetworkFilePath();
+    {
+        try {
+            // Get network file path
+            $networkFilePath = $this->getNetworkFilePath();
 
-        // Log all attempts and details
-        Log::info('Attempting to import from path: ' . $networkFilePath);
-        Log::info('Current working directory: ' . getcwd());
-        Log::info('File exists check: ' . (file_exists($networkFilePath) ? 'Yes' : 'No'));
+            // Log details for debugging
+            \Log::info('Importing from path: ' . $networkFilePath);
+            \Log::info('File exists: ' . (file_exists($networkFilePath) ? 'Yes' : 'No'));
+            \Log::info('Current working directory: ' . getcwd());
+            \Log::info('Server OS: ' . PHP_OS);
 
-        // Additional path normalization
-        $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $networkFilePath);
-        Log::info('Normalized path: ' . $normalizedPath);
-        Log::info('Normalized file exists: ' . (file_exists($normalizedPath) ? 'Yes' : 'No'));
+            // Import the file
+            Excel::import(new ProductImport, $networkFilePath);
 
-        // Import attempt
-        Excel::import(new ProductImport, $networkFilePath);
+            return redirect()->route('products.index')
+                ->with('success', 'Products imported automatically from network location.');
 
-        return redirect()->route('products.index')
-            ->with('success', 'Products imported automatically from network location.');
-    } catch (\Exception $e) {
-        // Comprehensive error logging
-        Log::error('Automatic import error: ' . $e->getMessage());
-        Log::error('Error details: ', [
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => $e->getTraceAsString()
-        ]);
+        } catch (\Exception $e) {
+            // Comprehensive error logging
+            \Log::error('Automatic import error', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
 
-        return redirect()->back()
-            ->with('error', 'Automatic import failed: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Automatic import failed: ' . $e->getMessage());
+        }
     }
-}
-
     /**
      * Determine the full path to the network file
      *
