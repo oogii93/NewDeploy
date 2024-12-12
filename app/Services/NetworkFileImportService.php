@@ -62,60 +62,118 @@ class NetworkFileImportService
     //      }
     //  }
 
-
     private function getNetworkFilePath()
-    {
-        // Try different path formats
-        $paths = [
+{
+    // Try multiple path formats
+    $paths = [
+        '//172.16.153.8/出勤簿/1.xlsx',   // Standard network path
+        '\\\\172.16.153.8\\出勤簿\\1.xlsx', // Windows-style UNC path
+        '/mnt/network/出勤簿/1.xlsx',      // Potential Linux mount point
+        storage_path('network/1.xlsx')     // Local storage fallback
+    ];
 
-            '//172.16.153.8/出勤簿/1.xlsx', // Forward slashes
+    foreach ($paths as $path) {
+        // Normalize path separators
+        $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
 
-        ];
-
-        foreach ($paths as $path) {
-            // Replace backslashes with forward slashes for PHP compatibility
-            $normalizedPath = str_replace('\\', '/', $path);
-
-            // Try multiple methods to check file existence
-            if (file_exists($path) || file_exists($normalizedPath)) {
-                return $path;
-            }
+        if (file_exists($normalizedPath)) {
+            return $normalizedPath;
         }
-
-        throw new \Exception('Network file not found: ' . implode(', ', $paths));
     }
+
+    throw new \Exception('Network file not found: ' . implode(', ', $paths));
+}
+
+
+    // private function getNetworkFilePath()
+    // {
+    //     // Try different path formats
+    //     $paths = [
+
+    //         '//172.16.153.8/出勤簿/1.xlsx', // Forward slashes
+
+
+    //     ];
+
+    //     foreach ($paths as $path) {
+    //         // Replace backslashes with forward slashes for PHP compatibility
+    //         $normalizedPath = str_replace('\\', '/', $path);
+
+    //         // Try multiple methods to check file existence
+    //         if (file_exists($path) || file_exists($normalizedPath)) {
+    //             return $path;
+    //         }
+    //     }
+
+    //     throw new \Exception('Network file not found: ' . implode(', ', $paths));
+    // }
+    // public function autoImport()
+    // {
+    //     try {
+    //         // Specify the full path to the network file
+    //         $networkFilePath = $this->getNetworkFilePath();
+
+    //         // Check if file exists
+    //         if (!file_exists($networkFilePath)) {
+    //             return redirect()->back()
+    //                 ->with('error', 'File not found at the specified network location: ' . $networkFilePath);
+    //         }
+
+    //         // Import the file
+    //         Excel::import(new ProductImport, $networkFilePath);
+
+    //         return redirect()->route('products.index')
+    //             ->with('success', 'Products imported automatically from network location.');
+    //     } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+    //         $failures = $e->failures();
+
+    //         return redirect()->back()
+    //             ->withErrors($failures)
+    //             ->with('error', 'There were some issues with the automatic import.');
+    //     } catch (\Exception $e) {
+    //         // Log the full error for debugging
+    //         // Log::error('Automatic import error: ' . $e->getMessage());
+    //         // Log::error('File path attempted: ' . $networkFilePath);
+
+    //         return redirect()->back()
+    //             ->with('error', 'An error occurred during automatic import: ' . $e->getMessage());
+    //     }
+    // }
+
     public function autoImport()
-    {
-        try {
-            // Specify the full path to the network file
-            $networkFilePath = $this->getNetworkFilePath();
+{
+    try {
+        // Detailed path checking
+        $networkFilePath = $this->getNetworkFilePath();
 
-            // Check if file exists
-            if (!file_exists($networkFilePath)) {
-                return redirect()->back()
-                    ->with('error', 'File not found at the specified network location: ' . $networkFilePath);
-            }
+        // Log all attempts and details
+        Log::info('Attempting to import from path: ' . $networkFilePath);
+        Log::info('Current working directory: ' . getcwd());
+        Log::info('File exists check: ' . (file_exists($networkFilePath) ? 'Yes' : 'No'));
 
-            // Import the file
-            Excel::import(new ProductImport, $networkFilePath);
+        // Additional path normalization
+        $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $networkFilePath);
+        Log::info('Normalized path: ' . $normalizedPath);
+        Log::info('Normalized file exists: ' . (file_exists($normalizedPath) ? 'Yes' : 'No'));
 
-            return redirect()->route('products.index')
-                ->with('success', 'Products imported automatically from network location.');
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            $failures = $e->failures();
+        // Import attempt
+        Excel::import(new ProductImport, $networkFilePath);
 
-            return redirect()->back()
-                ->withErrors($failures)
-                ->with('error', 'There were some issues with the automatic import.');
-        } catch (\Exception $e) {
-            // Log the full error for debugging
-            // Log::error('Automatic import error: ' . $e->getMessage());
-            // Log::error('File path attempted: ' . $networkFilePath);
+        return redirect()->route('products.index')
+            ->with('success', 'Products imported automatically from network location.');
+    } catch (\Exception $e) {
+        // Comprehensive error logging
+        Log::error('Automatic import error: ' . $e->getMessage());
+        Log::error('Error details: ', [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
 
-            return redirect()->back()
-                ->with('error', 'An error occurred during automatic import: ' . $e->getMessage());
-        }
+        return redirect()->back()
+            ->with('error', 'Automatic import failed: ' . $e->getMessage());
     }
+}
 
     /**
      * Determine the full path to the network file

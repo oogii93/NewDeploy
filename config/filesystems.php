@@ -30,24 +30,14 @@ return [
 
     'disks' => [
 
-        'network' => [
-            'driver' => 'local',
-            'root' => env('NETWORK_FILE_PATH', storage_path('app/network')),
-            'throw' => false,
-        ],
+
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            // 'root' => storage_path('app'),
+            'root' => '\\172.16.153.8\出勤簿',
             'throw' => false,
         ],
-
-        // 'local' => [
-        //     'driver' => 'local',
-        //     // 'root' => storage_path('app'),
-        //     'root' => '\\172.16.153.8\出勤簿',
-        //     'throw' => false,
-        // ],
 
                 'public' => [
                 'driver' => 'local',
