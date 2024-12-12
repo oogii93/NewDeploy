@@ -191,13 +191,13 @@
                 <span class="input-hint">※会社のメールのみ</span>
             </div>
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             <label for="password" class="form-label required">パスワード</label>
             <div class="form-input">
                 <input type="password" id="password" name="password" required minlength="8" maxlength="20">
                 <span class="input-hint">※変更する場合のみ入力（8～20文字）</span>
             </div>
-        </div>
+        </div> --}}
 
         <div class="form-group">
             <label for="is_boss" class="form-label">上司</label>
