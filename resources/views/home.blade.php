@@ -195,15 +195,19 @@
                     <br>問い合わせ</span>
             </div>
         </div>
+
+
     </div>
 
 
 
 
 
+    <div class="flex justify-between bg-gray-150 relative z-1">
 
-    <div class="items-center justify-center bg-gray-150 relative z-1">
         <div class="container mx-auto px-4 py-5 max-w-3xl">
+
+
             <div class="bg-white shadow-lg rounded-lg p-8">
                 <h1 class="text-3xl font-bold mb-8 text-center text-gray-800">新着情報</h1>
                 <div class="space-y-6">
@@ -224,9 +228,39 @@
                         @endif
                     @endforeach
                 </div>
+
             </div>
+
+
+
+
         </div>
+        <div class="bg-white px-6 py-6 rounded-lg shadow-md">
+            <a href="{{ route('products.index') }}"
+               class="inline-block px-8 py-4 text-white font-semibold text-lg sm:text-xl lg:text-2xl bg-gradient-to-r from-emerald-600 to-purple-600 hover:shadow-indigo-500/50 transition-all duration-200 hover:-translate-y-0.5 rounded-md  ease-in-out">
+                転売！！
+            </a>
+            <p class="mt-2 px-2 py-2">転売データ編集</p>
+        </div>
+
+
+
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </div>
 

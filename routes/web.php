@@ -23,6 +23,7 @@ use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\CommentController;
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\CalendarController;
@@ -1131,6 +1132,42 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
               Route::delete('/past-examples-category/{pastExamplesCategory}', [PastExamplesCategoryController::class, 'destroy'])
                   ->name('past-examples-category.destroy');
+
+
+
+                  //Product Route
+
+                  Route::get('/products', [ProductController::class, 'index'])
+                  ->name('products.index');
+
+              Route::get('/products/create', [ProductController::class, 'create'])
+                  ->name('products.create');
+
+              Route::post('/products', [ProductController::class, 'store'])
+                  ->name('products.store');
+
+                  Route::get('/products/{product}', [ProductController::class, 'show'])
+                  ->name('products.show');
+
+
+
+              Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
+                  ->name('products.edit');
+
+                  Route::put('/products/{product}', [ProductController::class, 'update'])
+                  ->name('products.update');
+
+              Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+                  ->name('products.destroy');
+
+                  Route::post('products/import', [ProductController::class, 'importData'])->name('products.import');
+
+                  Route::post('/products/auto-import', [ProductController::class, 'autoImport'])
+                ->name('products.auto-import');
+
+                Route::post('/products/export', [ProductController::class, 'export'])->name('products.export');
+
+
 
 
 
