@@ -173,7 +173,8 @@ class ProductController extends Controller
 
     public function export()
     {
-        $networkFilePath = '//172.16.153.8/出勤簿/1.xlsx';
+        // $networkFilePath = '//172.16.153.8/出勤簿/1.xlsx';
+        $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
         try {
             // Define the network file path
 
