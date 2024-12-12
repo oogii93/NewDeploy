@@ -109,8 +109,8 @@ class NetworkFileImportService
                 ->with('error', 'There were some issues with the automatic import.');
         } catch (\Exception $e) {
             // Log the full error for debugging
-            Log::error('Automatic import error: ' . $e->getMessage());
-            Log::error('File path attempted: ' . $networkFilePath);
+            // Log::error('Automatic import error: ' . $e->getMessage());
+            // Log::error('File path attempted: ' . $networkFilePath);
 
             return redirect()->back()
                 ->with('error', 'An error occurred during automatic import: ' . $e->getMessage());
