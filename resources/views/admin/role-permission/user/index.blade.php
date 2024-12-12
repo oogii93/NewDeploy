@@ -107,10 +107,10 @@
 
 
 
-                        <div class="flex justify-center mt-10 mb-10">
+                        <div class="flex justify-center mt-2 mb-10">
                             <div class="table-responsive">
                                 <table class="w-full bg-white shadow-lg rounded-lg overflow-hidden border border-slate-400">
-                                    <thead class="bg-blue-200 text-gray-700 h-40">
+                                    <thead class="bg-blue-200 text-gray-700 h-10">
                                     <tr>
                                         <th class="min-w-[90px] border border-slate-400 text-left py-3 px-4 uppercase font-semibold text-sm">
                                             社員番号
@@ -264,12 +264,12 @@
                                                             class="absolute right-0 w-44 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20"
                                                         >
                                                             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                    <a href="{{ route('admin.assign-corporation', $user->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900" role="menuitem">
+                                                                    {{-- <a href="{{ route('admin.assign-corporation', $user->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900" role="menuitem">
                                                                         <img src="{{ asset('com.svg') }}" alt="Assign Corp" class="inline w-5 h-5 mr-2">会社与え
                                                                     </a>
                                                                     <a href="{{ route('admin.assign-office', $user->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-100 hover:text-green-900" role="menuitem">
                                                                         <img src="{{ asset('office.svg') }}" alt="Assign Office" class="inline w-5 h-5 mr-2">所属与え
-                                                                    </a>
+                                                                    </a> --}}
                                                                     <a href="{{ url('/admin/role-permission/users/' . $user->id . '/edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-100 hover:text-yellow-900" role="menuitem">
                                                                         <img src="{{ asset('2.svg') }}" alt="Edit" class="inline w-5 h-5 mr-2"> 編集
                                                                     </a>
