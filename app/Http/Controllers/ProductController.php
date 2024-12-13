@@ -284,11 +284,61 @@ class ProductController extends Controller
 
 
     public function pushToLocalServer()
-{
-    try {
-        // Network file path (the same Excel file on local server)
-        $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
+    {
+        try {
+            // Network file paths to try
+            $networkPaths = [
+                '\\\\172.16.153.8\\出勤簿\\1.xlsx',      // Windows UNC path
+                '//172.16.153.8/出勤簿/1.xlsx',          // Network style
+                '/mnt/network/出勤簿/1.xlsx',            // Potential Linux mount
+                'Z:/出勤簿/1.xlsx',                      // Mapped drive
+                '/var/www/network/1.xlsx'               // Potential server mount point
+            ];
 
+            $successPath = null;
+
+            // Try multiple network paths
+            foreach ($networkPaths as $path) {
+                // Normalize path separators
+                $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
+
+                try {
+                    // Check if file exists and is writable
+                    if ($this->canAccessFile($normalizedPath)) {
+                        $successPath = $this->pushDataToExcel($normalizedPath);
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    \Log::warning('Failed to access path: ' . $path . ' - ' . $e->getMessage());
+                    continue;
+                }
+            }
+
+            // If no path worked
+            if (!$successPath) {
+                // Fallback: Create a downloadable export
+                return $this->createDownloadableExport();
+            }
+
+            return redirect()->back()
+                ->with('success', 'Successfully pushed data to local server Excel file!');
+
+        } catch (\Exception $e) {
+            \Log::error('Push to Local Server Error: ' . $e->getMessage());
+            return $this->createDownloadableExport($e->getMessage());
+        }
+    }
+
+    // File access check method
+    private function canAccessFile($path)
+    {
+        // Check if file exists and is writable
+        return file_exists($path) && is_writable($path);
+    }
+
+    // Excel push method
+    private function pushDataToExcel($networkFilePath)
+    {
         // Load existing spreadsheet
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($networkFilePath);
         $sheet = $spreadsheet->getActiveSheet();
@@ -316,20 +366,42 @@ class ProductController extends Controller
             $row++;
         }
 
-        // Save the updated file back to network location
+        // Save the updated file
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save($networkFilePath);
 
-        return redirect()->back()
-            ->with('success', 'Successfully pushed all data to local server Excel file!');
-
-    } catch (\Exception $e) {
-        \Log::error('Push to Local Server Error: ' . $e->getMessage());
-        return redirect()->back()
-            ->with('error', 'Failed to push data: ' . $e->getMessage());
+        return $networkFilePath;
     }
-}
 
+    // Fallback method to create downloadable export
+    private function createDownloadableExport($errorMessage = null)
+    {
+        // Create a temporary Excel file with current database data
+        $filename = 'products_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+        $export = new class implements FromCollection, WithHeadings {
+            public function collection() {
+                return Product::all();
+            }
+
+            public function headings(): array {
+                return [
+                    'Office Name', 'Maker Name', 'Product Number', 'Product Name',
+                    'Pieces', 'ICM Net', 'Purchase Date', 'Purchased From',
+                    'List Price', 'Remarks'
+                ];
+            }
+        };
+
+        // Prepare error message
+        $message = $errorMessage
+            ? 'Failed to push to local server. Download backup: ' . $errorMessage
+            : 'Could not access network location. Download backup file.';
+
+        // Return downloadable Excel file
+        return Excel::download($export, $filename)
+            ->with('warning', $message);
+    }
 
 
 
