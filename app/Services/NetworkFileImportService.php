@@ -114,60 +114,6 @@ class NetworkFileImportService
         }
     }
 
-    // private function getNetworkFilePath()
-    // {
-    //     // Try different path formats
-    //     $paths = [
-
-    //         '//172.16.153.8/出勤簿/1.xlsx', // Forward slashes
-
-
-    //     ];
-
-    //     foreach ($paths as $path) {
-    //         // Replace backslashes with forward slashes for PHP compatibility
-    //         $normalizedPath = str_replace('\\', '/', $path);
-
-    //         // Try multiple methods to check file existence
-    //         if (file_exists($path) || file_exists($normalizedPath)) {
-    //             return $path;
-    //         }
-    //     }
-
-    //     throw new \Exception('Network file not found: ' . implode(', ', $paths));
-    // }
-    // public function autoImport()
-    // {
-    //     try {
-    //         // Specify the full path to the network file
-    //         $networkFilePath = $this->getNetworkFilePath();
-
-    //         // Check if file exists
-    //         if (!file_exists($networkFilePath)) {
-    //             return redirect()->back()
-    //                 ->with('error', 'File not found at the specified network location: ' . $networkFilePath);
-    //         }
-
-    //         // Import the file
-    //         Excel::import(new ProductImport, $networkFilePath);
-
-    //         return redirect()->route('products.index')
-    //             ->with('success', 'Products imported automatically from network location.');
-    //     } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-    //         $failures = $e->failures();
-
-    //         return redirect()->back()
-    //             ->withErrors($failures)
-    //             ->with('error', 'There were some issues with the automatic import.');
-    //     } catch (\Exception $e) {
-    //         // Log the full error for debugging
-    //         // Log::error('Automatic import error: ' . $e->getMessage());
-    //         // Log::error('File path attempted: ' . $networkFilePath);
-
-    //         return redirect()->back()
-    //             ->with('error', 'An error occurred during automatic import: ' . $e->getMessage());
-    //     }
-    // }
 
 
     /**

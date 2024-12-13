@@ -128,13 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </form>
 
 
-                                {{-- New Push to Local Server button --}}
-                    <form action="{{ route('products.push-to-local-server') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="px-4 py-2 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg">
-                            Push to Local Server
-                        </button>
-                    </form>
+
 
                     @if(session('warning'))
     <div class="alert alert-warning">

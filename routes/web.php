@@ -1168,14 +1168,8 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                 Route::post('/products/export', [ProductController::class, 'export'])->name('products.export');
 
 
-//                 Route::post('/pull-from-local', [ProductController::class, 'pullFromLocalServer'])
-//     ->name('products.pull-from-local');
 
-// Route::post('/push-to-local', [ProductController::class, 'pushToLocalServer'])
-//     ->name('products.push-to-local');
 
-Route::post('/products/push-to-local-server', [ProductController::class, 'pushToLocalServer'])
-    ->name('products.push-to-local-server');
 
 
 

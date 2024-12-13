@@ -206,7 +206,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
 
-        App\Providers\GoogleSheetsServiceProvider::class,
+
 
 
     ],
