@@ -199,11 +199,18 @@
 
     </div>
 
+    <div class="flex justify-end">
+        <a href="{{ route('products.index') }}"
+        class="inline-block px-8 py-4 text-gray-700 font-semibold text-lg sm:text-xl border-2 border-green-500 lg:text-2xl bg-white hover:bg-indigo-200 transition-all duration-200 hover:-translate-y-0.5 rounded-md  ease-in-out">
+         転売！！
+     </a>
+    </div>
 
 
 
 
-    <div class="flex justify-between bg-gray-150 relative z-1">
+
+    <div class="flex justify-center bg-gray-150 relative z-1">
 
         <div class="container mx-auto px-4 py-5 max-w-3xl">
 
@@ -235,17 +242,12 @@
 
 
         </div>
-        <div class="bg-white px-6 py-6 rounded-lg shadow-md">
-            <a href="{{ route('products.index') }}"
-               class="inline-block px-8 py-4 text-white font-semibold text-lg sm:text-xl lg:text-2xl bg-gradient-to-r from-emerald-600 to-purple-600 hover:shadow-indigo-500/50 transition-all duration-200 hover:-translate-y-0.5 rounded-md  ease-in-out">
-                転売！！
-            </a>
-            <p class="mt-2 px-2 py-2">転売データ編集</p>
-        </div>
 
 
 
     </div>
+
+
 
 
 

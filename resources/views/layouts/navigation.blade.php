@@ -87,7 +87,7 @@
         </div>
 
 
-        <div class="flex justify-between ml-60">
+        <div class="flex justify-between ml-auto">
 
 
                 <div>
