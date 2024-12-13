@@ -285,51 +285,42 @@ class ProductController extends Controller
     public function pushToLocalServer()
     {
         try {
-            // Network file paths to try
-            $networkPaths = [
-                '\\\\172.16.153.8\\出勤簿\\1.xlsx',      // Windows UNC path
-                '//172.16.153.8/出勤簿/1.xlsx',          // Network style
-                '/mnt/network/出勤簿/1.xlsx',            // Potential Linux mount
-                'Z:/出勤簿/1.xlsx',                      // Mapped drive
-                '/var/www/network/1.xlsx'               // Potential server mount point
-            ];
+            // Check if the current server IP is within the local network
+            if ($this->isConnectedToLocalServer()) {
+                $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
 
-            $successPath = null;
+                if ($this->canAccessFile($networkFilePath)) {
+                    $this->pushDataToExcel($networkFilePath);
 
-            // Try multiple network paths
-            foreach ($networkPaths as $path) {
-                // Normalize path separators
-                $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
-
-                try {
-                    // Check if file exists and is writable
-                    if ($this->canAccessFile($normalizedPath)) {
-                        $successPath = $this->pushDataToExcel($normalizedPath);
-                        break;
-                    }
-                } catch (\Exception $e) {
-                    \Log::warning('Failed to access path: ' . $path . ' - ' . $e->getMessage());
-                    continue;
+                    return redirect()->back()
+                        ->with('success', 'Successfully pushed data to local server Excel file!');
+                } else {
+                    return redirect()->back()
+                        ->with('warning', 'Network file is not accessible.');
                 }
+            } else {
+                return redirect()->back()
+                    ->with('error', 'You are not connected to the local network.');
             }
-
-            // If no path worked
-            if (!$successPath) {
-                // Add flash message
-                session()->flash('warning', 'Could not access network location. Downloaded backup file.');
-                return $this->createDownloadableExport();
-            }
+        } catch (\Exception $e) {
+            \Log::error('Export error: ' . $e->getMessage());
 
             return redirect()->back()
-                ->with('success', 'Successfully pushed data to local server Excel file!');
-
-            } catch (\Exception $e) {
-                // Add flash message
-                session()->flash('error', 'Failed to push to local server: ' . $e->getMessage());
-                return $this->createDownloadableExport($e->getMessage());
-            }
+                ->with('error', 'An error occurred during export: ' . $e->getMessage());
+        }
     }
 
+    // Helper function to check network connectivity
+    private function isConnectedToLocalServer(): bool
+    {
+        // Replace with your actual server's IP
+        $localServerIp = '172.16.153.8';
+
+        // Use ping to check connectivity
+        $pingResult = shell_exec("ping -c 1 $localServerIp");
+
+        return !empty($pingResult) && str_contains($pingResult, 'bytes from');
+    }
     // File access check method
     private function canAccessFile($path)
     {
