@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\FromCollection;
 
 
 
@@ -285,18 +286,38 @@ class ProductController extends Controller
     public function pushToLocalServer()
     {
         try {
-            $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
+            // Network file path configurations
+            $networkPaths = [
+                '\\\\172.16.153.8\\出勤簿\\1.xlsx',  // Windows UNC Path
+                '/mnt/network/1.xlsx',              // Linux mount
+                'Z:\\出勤簿\\1.xlsx'                // Mapped drive
+            ];
 
-            // Test direct access
-            if ($this->canAccessFile($networkFilePath)) {
-                $this->pushDataToExcel($networkFilePath);
-                return redirect()->back()->with('success', 'Data pushed successfully!');
-            } else {
-                return redirect()->back()->with('error', 'File not accessible.');
+            $successfulPath = null;
+
+            foreach ($networkPaths as $networkFilePath) {
+                $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $networkFilePath);
+
+                // Check if the file is accessible
+                if ($this->canAccessFile($normalizedPath)) {
+                    $this->pushDataToExcel($normalizedPath);
+                    $successfulPath = $normalizedPath;
+                    break;
+                }
             }
+
+            // If no successful push, return fallback
+            if (!$successfulPath) {
+                return $this->createDownloadableExport()
+                    ->with('error', 'File not accessible. Pushed as a downloadable backup.');
+            }
+
+            return redirect()->back()->with('success', 'Data successfully pushed to ' . $successfulPath);
+
         } catch (\Exception $e) {
-            \Log::error('Push failed: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Error occurred: ' . $e->getMessage());
+            Log::error('File push failed: ' . $e->getMessage());
+            return $this->createDownloadableExport($e->getMessage())
+                ->with('error', 'Error occurred: ' . $e->getMessage());
         }
     }
 
@@ -320,26 +341,35 @@ class ProductController extends Controller
     // File access check method
     private function canAccessFile($path)
     {
-        // Check if file exists and is writable
-        return file_exists($path) && is_writable($path);
+        try {
+            // Ensure file exists and is writable
+            if (file_exists($path) && is_writable($path)) {
+                Log::info("File is accessible: $path");
+                return true;
+            }
+        } catch (\Exception $e) {
+            Log::warning("Access check failed for $path: " . $e->getMessage());
+        }
+
+        Log::error("File not accessible: $path");
+        return false;
     }
 
     // Excel push method
     private function pushDataToExcel($networkFilePath)
     {
-        // Load existing spreadsheet
+        // Load spreadsheet
         $spreadsheet = IOFactory::load($networkFilePath);
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Clear existing data (keeping headers)
+        // Clear old data, keeping headers
         $highestRow = $sheet->getHighestRow();
         $sheet->removeRow(2, $highestRow - 1);
 
-        // Fetch ALL current products from Laravel database
-        $products = Product::all();
-
-        // Write products starting from row 2
+        // Fetch products from DB
+        $products = \App\Models\Product::all();
         $row = 2;
+
         foreach ($products as $product) {
             $sheet->setCellValue("A{$row}", $product->office_name)
                   ->setCellValue("B{$row}", $product->maker_name)
@@ -351,6 +381,7 @@ class ProductController extends Controller
                   ->setCellValue("H{$row}", $product->purchased_from)
                   ->setCellValue("I{$row}", $product->list_price)
                   ->setCellValue("J{$row}", $product->remarks);
+
             $row++;
         }
 
@@ -358,17 +389,17 @@ class ProductController extends Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save($networkFilePath);
 
-        return $networkFilePath;
+        Log::info("Data successfully pushed to $networkFilePath");
     }
+
 
     // Fallback method to create downloadable export
 // Fallback method to create downloadable export
 private function createDownloadableExport($errorMessage = null)
 {
-    // Create an anonymous class implementing required interfaces
-    $export = new class implements FromCollection, WithHeadings {
+    $export = new class implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
         public function collection() {
-            return Product::all();
+            return \App\Models\Product::all();
         }
 
         public function headings(): array {
@@ -380,19 +411,10 @@ private function createDownloadableExport($errorMessage = null)
         }
     };
 
-    // Prepare filename
-    $filename = 'products_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+    $filename = 'products_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+    Log::warning("Fallback export created. Reason: " . ($errorMessage ?? 'File not accessible'));
 
-    // Prepare error message
-    $message = $errorMessage
-        ? 'Failed to push to local server. Download backup: ' . $errorMessage
-        : 'Could not access network location. Download backup file.';
-
-    // Log the warning message
-    \Log::warning($message);
-
-    // Return downloadable Excel file
-    return Excel::download($export, $filename);
+    return \Maatwebsite\Excel\Facades\Excel::download($export, $filename);
 }
 
 
