@@ -11,10 +11,60 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Services\NetworkFileImportService;
 
+use App\Services\GoogleSheetsSyncService;
+
 
 
 class ProductController extends Controller
 {
+
+    // protected $syncService;
+
+    // public function __construct(GoogleSheetsSyncService $syncService)
+    // {
+    //     $this->syncService = $syncService;
+    // }
+    //  // Pull from Local Server to Google Sheets
+    //  public function pullFromLocalServer()
+    //  {
+    //      try {
+    //          $result = $this->syncService->pullFromLocalServerToGoogleSheets();
+
+    //          return redirect()->back()->with('success', $result);
+    //      } catch (\Exception $e) {
+    //          return redirect()->back()->with('error', 'Failed to pull data: ' . $e->getMessage());
+    //      }
+    //  }
+
+    //  // Push from Google Sheets to Local Server
+    //  public function pushToLocalServer()
+    //  {
+    //      try {
+    //          $result = $this->syncService->pushFromGoogleSheetsToLocalServer();
+
+    //          return redirect()->back()->with('success', $result);
+    //      } catch (\Exception $e) {
+    //          return redirect()->back()->with('error', 'Failed to push data: ' . $e->getMessage());
+    //      }
+    //  }
+
+    // public function autoImport()
+    // {
+    //     $result = $this->syncService->importFromGoogleSheets();
+
+    //     return $result
+    //         ? redirect()->route('products.index')->with('success', 'Import successful')
+    //         : redirect()->back()->with('error', 'Import failed');
+    // }
+
+    // public function export()
+    // {
+    //     $result = $this->syncService->exportToGoogleSheets();
+
+    //     return $result
+    //         ? redirect()->route('products.index')->with('success', 'Export successful')
+    //         : redirect()->back()->with('error', 'Export failed');
+    // }
 
 
     protected $networkImportService;
@@ -171,66 +221,116 @@ class ProductController extends Controller
     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
     */
 
-    public function export()
-    {
-        // $networkFilePath = '//172.16.153.8/出勤簿/1.xlsx';
+    // public function export()
+    // {
+    //     // $networkFilePath = '//172.16.153.8/出勤簿/1.xlsx';
+    //     $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
+    //     try {
+    //         // Define the network file path
+
+
+    //         // Check if the network file exists
+    //         if (!file_exists($networkFilePath)) {
+    //             return redirect()->back()
+    //                 ->with('error', 'File not found at the specified network location.');
+    //         }
+
+    //         // Load the existing file
+    //         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($networkFilePath);
+
+    //         // Get the active sheet
+    //         $sheet = $spreadsheet->getActiveSheet();
+
+    //         // Clear existing data, keeping headers intact
+    //         $highestRow = $sheet->getHighestRow();
+    //         $highestColumn = $sheet->getHighestColumn();
+    //         $sheet->removeRow(2, $highestRow - 1);
+
+    //         // Fetch updated products from the database
+    //         $products = \App\Models\Product::all();
+
+    //         // Start writing products at row 2
+    //         $row = 2;
+
+    //         foreach ($products as $product) {
+    //             $sheet->setCellValue("A{$row}", $product->office_name)
+    //                   ->setCellValue("B{$row}", $product->maker_name)
+    //                   ->setCellValue("C{$row}", $product->product_number)
+    //                   ->setCellValue("D{$row}", $product->product_name)
+    //                   ->setCellValue("E{$row}", $product->pieces)
+    //                   ->setCellValue("F{$row}", $product->icm_net)
+    //                   ->setCellValue("G{$row}", $product->purchase_date)
+    //                   ->setCellValue("H{$row}", $product->purchased_from)
+    //                   ->setCellValue("I{$row}", $product->list_price)
+    //                   ->setCellValue("J{$row}", $product->remarks);
+
+    //             $row++;
+    //         }
+
+    //         // Save the updated file back to the network location
+    //         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    //         $writer->save($networkFilePath);
+
+    //         return redirect()->back()
+    //             ->with('success', 'Products exported successfully to the network file.');
+
+    //     } catch (\Exception $e) {
+    //         // Log the error and return an appropriate message
+    //         \Log::error('Export error: ' . $e->getMessage());
+    //         return redirect()->back()
+    //             ->with('error', 'An error occurred during export: ' . $e->getMessage());
+    //     }
+    // }
+
+
+    public function pushToLocalServer()
+{
+    try {
+        // Network file path (the same Excel file on local server)
         $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
-        try {
-            // Define the network file path
 
+        // Load existing spreadsheet
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($networkFilePath);
+        $sheet = $spreadsheet->getActiveSheet();
 
-            // Check if the network file exists
-            if (!file_exists($networkFilePath)) {
-                return redirect()->back()
-                    ->with('error', 'File not found at the specified network location.');
-            }
+        // Clear existing data (keeping headers)
+        $highestRow = $sheet->getHighestRow();
+        $sheet->removeRow(2, $highestRow - 1);
 
-            // Load the existing file
-            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($networkFilePath);
+        // Fetch ALL current products from Laravel database
+        $products = Product::all();
 
-            // Get the active sheet
-            $sheet = $spreadsheet->getActiveSheet();
-
-            // Clear existing data, keeping headers intact
-            $highestRow = $sheet->getHighestRow();
-            $highestColumn = $sheet->getHighestColumn();
-            $sheet->removeRow(2, $highestRow - 1);
-
-            // Fetch updated products from the database
-            $products = \App\Models\Product::all();
-
-            // Start writing products at row 2
-            $row = 2;
-
-            foreach ($products as $product) {
-                $sheet->setCellValue("A{$row}", $product->office_name)
-                      ->setCellValue("B{$row}", $product->maker_name)
-                      ->setCellValue("C{$row}", $product->product_number)
-                      ->setCellValue("D{$row}", $product->product_name)
-                      ->setCellValue("E{$row}", $product->pieces)
-                      ->setCellValue("F{$row}", $product->icm_net)
-                      ->setCellValue("G{$row}", $product->purchase_date)
-                      ->setCellValue("H{$row}", $product->purchased_from)
-                      ->setCellValue("I{$row}", $product->list_price)
-                      ->setCellValue("J{$row}", $product->remarks);
-
-                $row++;
-            }
-
-            // Save the updated file back to the network location
-            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $writer->save($networkFilePath);
-
-            return redirect()->back()
-                ->with('success', 'Products exported successfully to the network file.');
-
-        } catch (\Exception $e) {
-            // Log the error and return an appropriate message
-            \Log::error('Export error: ' . $e->getMessage());
-            return redirect()->back()
-                ->with('error', 'An error occurred during export: ' . $e->getMessage());
+        // Write products starting from row 2
+        $row = 2;
+        foreach ($products as $product) {
+            $sheet->setCellValue("A{$row}", $product->office_name)
+                  ->setCellValue("B{$row}", $product->maker_name)
+                  ->setCellValue("C{$row}", $product->product_number)
+                  ->setCellValue("D{$row}", $product->product_name)
+                  ->setCellValue("E{$row}", $product->pieces)
+                  ->setCellValue("F{$row}", $product->icm_net)
+                  ->setCellValue("G{$row}", $product->purchase_date)
+                  ->setCellValue("H{$row}", $product->purchased_from)
+                  ->setCellValue("I{$row}", $product->list_price)
+                  ->setCellValue("J{$row}", $product->remarks);
+            $row++;
         }
+
+        // Save the updated file back to network location
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($networkFilePath);
+
+        return redirect()->back()
+            ->with('success', 'Successfully pushed all data to local server Excel file!');
+
+    } catch (\Exception $e) {
+        \Log::error('Push to Local Server Error: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'Failed to push data: ' . $e->getMessage());
     }
+}
+
+
 
 
 

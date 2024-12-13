@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endif
-    <div class="min-h-screen bg-gray-200 py-8">
+    <div class="min-h-screen bg-gray-100 py-8">
         <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 bg-gradient-to-r from-sky-600 to-blue-600 p-5 rounded-xl px-10 py-10">
@@ -96,6 +96,28 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <div class="flex justify-end space-x-4 mb-4">
+
+
+
+
+                {{-- <div class="flex space-x-4">
+                    <form action="{{ route('products.pull-from-local') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
+                            Pull from Local Server
+                        </button>
+                    </form>
+
+                    <form action="{{ route('products.push-to-local') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">
+                            Push to Local Server
+                        </button>
+                    </form>
+                </div> --}}
+
+
+
                 <!-- Import Form -->
                 <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
                     @csrf
@@ -104,6 +126,25 @@ document.addEventListener('DOMContentLoaded', function() {
                         Import from Excel
                     </button>
                 </form>
+
+
+                                {{-- New Push to Local Server button --}}
+                    <form action="{{ route('products.push-to-local-server') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-lg">
+                            Push to Local Server
+                        </button>
+                    </form>
+
+
+
+
+
+
+
+
+
+
 
 
                     <!-- New auto import button -->
@@ -123,12 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-                <div class="text-right mb-4">
-                    <a href="{{ route('products.export') }}"
-                       class="inline-block px-6 py-3 text-white font-bold bg-blue-600 hover:bg-blue-700 rounded-lg transition duration-300 ease-in-out">
-                        Export to Excel
-                    </a>
-                </div>
+
+
+
 
 
 

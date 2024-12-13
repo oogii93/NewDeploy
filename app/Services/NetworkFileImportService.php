@@ -83,6 +83,36 @@ class NetworkFileImportService
 
         throw new \Exception('Network file not found: ' . implode(', ', $paths));
     }
+    public function autoImport()
+    {
+        try {
+            // Get network file path
+            $networkFilePath = $this->getNetworkFilePath();
+
+            // Log details for debugging
+            \Log::info('Importing from path: ' . $networkFilePath);
+            \Log::info('File exists: ' . (file_exists($networkFilePath) ? 'Yes' : 'No'));
+            \Log::info('Current working directory: ' . getcwd());
+            \Log::info('Server OS: ' . PHP_OS);
+
+            // Import the file
+            Excel::import(new ProductImport, $networkFilePath);
+
+            return redirect()->route('products.index')
+                ->with('success', 'Products imported automatically from network location.');
+
+        } catch (\Exception $e) {
+            // Comprehensive error logging
+            \Log::error('Automatic import error', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Automatic import failed: ' . $e->getMessage());
+        }
+    }
 
     // private function getNetworkFilePath()
     // {
@@ -139,36 +169,7 @@ class NetworkFileImportService
     //     }
     // }
 
-    public function autoImport()
-    {
-        try {
-            // Get network file path
-            $networkFilePath = $this->getNetworkFilePath();
 
-            // Log details for debugging
-            \Log::info('Importing from path: ' . $networkFilePath);
-            \Log::info('File exists: ' . (file_exists($networkFilePath) ? 'Yes' : 'No'));
-            \Log::info('Current working directory: ' . getcwd());
-            \Log::info('Server OS: ' . PHP_OS);
-
-            // Import the file
-            Excel::import(new ProductImport, $networkFilePath);
-
-            return redirect()->route('products.index')
-                ->with('success', 'Products imported automatically from network location.');
-
-        } catch (\Exception $e) {
-            // Comprehensive error logging
-            \Log::error('Automatic import error', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-
-            return redirect()->back()
-                ->with('error', 'Automatic import failed: ' . $e->getMessage());
-        }
-    }
     /**
      * Determine the full path to the network file
      *
