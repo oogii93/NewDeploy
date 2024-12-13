@@ -316,8 +316,8 @@ class ProductController extends Controller
 
         } catch (\Exception $e) {
             Log::error('File push failed: ' . $e->getMessage());
-            return $this->createDownloadableExport($e->getMessage())
-                ->with('error', 'Error occurred: ' . $e->getMessage());
+            return $this->createDownloadableExport()
+            ->header('Warning-Message', 'File not accessible. Pushed as a downloadable backup.');
         }
     }
 
@@ -412,8 +412,13 @@ private function createDownloadableExport($errorMessage = null)
     };
 
     $filename = 'products_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
-    Log::warning("Fallback export created. Reason: " . ($errorMessage ?? 'File not accessible'));
 
+    \Log::warning("Fallback export created. Reason: " . ($errorMessage ?? 'File not accessible'));
+
+    // Flash error message for UI feedback
+    session()->flash('error', $errorMessage ?? 'File not accessible. Pushed as a downloadable backup.');
+
+    // Return the file download response
     return \Maatwebsite\Excel\Facades\Excel::download($export, $filename);
 }
 
