@@ -49,15 +49,43 @@ class TimeOffRequestRecordController extends Controller
     }
 
 
-    public function index2()
+    public function index2(Request $request)
     {
-        $timeOffRequestRecords = TimeOffRequestRecord::with(['user', 'attendanceTypeRecord'])
-            ->where('boss_id', auth()->id()) //wow end newtersen hereglegchiin id === boss_id zaaj baina
-            ->get();
+        $searchQuery = $request->input('search');
 
+        $query = TimeOffRequestRecord::with(['user', 'attendanceTypeRecord'])
+            ->where('boss_id', auth()->id());
+
+        // Add comprehensive search conditions
+        if ($searchQuery) {
+            $query->where(function($q) use ($searchQuery) {
+                // Search by user name
+                $q->whereHas('user', function($userQuery) use ($searchQuery) {
+                    $userQuery->where('name', 'like', "%{$searchQuery}%");
+                })
+                // Search by status
+                ->orWhere('status', 'like', "%{$searchQuery}%")
+
+                // Search by reason
+                ->orWhere('reason', 'like', "%{$searchQuery}%")
+
+                // Search by reason_select
+                ->orWhere('reason_select', 'like', "%{$searchQuery}%")
+
+                // Search by date (allowing different date formats)
+                ->orWhere('date', 'like', "%{$searchQuery}%")
+
+                // Search by attendance type name
+                ->orWhereHas('attendanceTypeRecord', function($attendanceQuery) use ($searchQuery) {
+                    $attendanceQuery->where('name', 'like', "%{$searchQuery}%");
+                });
+            });
+        }
+
+        $timeOffRequestRecords = $query->paginate(20);
         $divisions = Division::whereIn('name', ['人事課', '経理課'])->get();
 
-        return view('time_off_boss.index', compact('timeOffRequestRecords', 'divisions'));
+        return view('time_off_boss.index', compact('timeOffRequestRecords', 'divisions', 'searchQuery'));
     }
 
 
