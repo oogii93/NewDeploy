@@ -90,7 +90,7 @@ class ProductController extends Controller
         $product = Product::create($validatedData);
 
         return redirect()->route('products.index')
-            ->with('success', 'Product created successfully.');
+            ->with('success', '製品が正常に作成されました。');
     }
 
     // public function store(Request $request)
@@ -134,7 +134,7 @@ class ProductController extends Controller
         $product->update($validatedData);
 
         return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully.');
+            ->with('success', '製品が正常に更新されました。');
     }
 
 
@@ -147,7 +147,7 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully.');
+            ->with('success', '製品が正常に削除されました。');
     }
 
 
@@ -163,7 +163,7 @@ class ProductController extends Controller
             Excel::import(new ProductImport, $file);
 
             return redirect()->route('products.index')
-                ->with('success', 'Products imported successfully.');
+                ->with('success', '製品は正常にインポートされました。');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 

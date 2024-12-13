@@ -152,6 +152,23 @@
         </div>
     </div>
 
+    <style>
+        #video, #canvas {
+    width: 100%;
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure the video fills the container */
+    border-radius: 8px;
+}
+
+#camera-container {
+    position: relative;
+    aspect-ratio: 16/9; /* Maintain 16:9 aspect ratio */
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+}
+    </style>
+
 
 
     <script>
@@ -179,8 +196,8 @@
         const constraints = {
             video: {
                 facingMode: { ideal: 'environment' },
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
+                width: { ideal: 1920 }, // Higher resolution for better quality
+                height: { ideal: 1080 }
             }
         };
 
@@ -208,6 +225,9 @@
 
         // Extract text from image
         captureBtn.addEventListener('click', function() {
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
             const context = canvas.getContext('2d');
 
             // Apply image preprocessing

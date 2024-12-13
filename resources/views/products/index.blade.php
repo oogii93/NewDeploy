@@ -119,28 +119,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
                 <!-- Import Form -->
-                <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="flex items-center space-x-2">
-                    @csrf
-                    <input type="file" name="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-blue-200" required>
-                    <button type="submit" class="px-4 py-2 text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 rounded-lg">
-                        Import from Excel
-                    </button>
-                </form>
+                <div class="flex justify-normal">
+                    <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4 items-center">
+                        @csrf
+
+                        <div class="w-full sm:w-auto">
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="excel_file">ファイル選択</label>
+                            <input type="file" name="excel_file" id="excel_file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:ring focus:ring-blue-200" required>
+                        </div>
+
+                        <div>
+                            <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold shadow-md focus:outline-none focus:ring focus:ring-green-300 transition duration-200">
+                                輸入
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
 
 
 
 
-                    @if(session('warning'))
-    <div class="alert alert-warning">
-        {{ session('warning') }}
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
 
 
 
@@ -264,10 +263,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100 ">
-                            @foreach ($products as $product)
+                            @foreach ($products as $key => $product)
                             <tr class="hover:bg-gray-50 transition-colors duration-200">
                                 <td class="px-6 py-4 whitespace-nowrap border border-gray-200">
-                                    {{  $product->id}}
+                                    {{ $key + 1 }}
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap border border-gray-200">
