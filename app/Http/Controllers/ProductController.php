@@ -1,17 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
+
+
 use App\Models\Product;
 use Illuminate\Http\Request;
-use App\Exports\ProductExport;
-use App\Imports\ProductImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use App\Services\NetworkFileImportService;
-
-use App\Services\GoogleSheetsSyncService;
 
 
 
@@ -69,10 +68,10 @@ class ProductController extends Controller
 
     protected $networkImportService;
 
-    public function __construct(NetworkFileImportService $networkImportService)
-    {
-        $this->networkImportService=$networkImportService;
-    }
+    // public function __construct(NetworkFileImportService $networkImportService)
+    // {
+    //     $this->networkImportService=$networkImportService;
+    // }
 
     public function autoImport()
     {
@@ -340,7 +339,7 @@ class ProductController extends Controller
     private function pushDataToExcel($networkFilePath)
     {
         // Load existing spreadsheet
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($networkFilePath);
+        $spreadsheet = IOFactory::load($networkFilePath);
         $sheet = $spreadsheet->getActiveSheet();
 
         // Clear existing data (keeping headers)
@@ -367,7 +366,7 @@ class ProductController extends Controller
         }
 
         // Save the updated file
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
         $writer->save($networkFilePath);
 
         return $networkFilePath;
@@ -376,9 +375,7 @@ class ProductController extends Controller
     // Fallback method to create downloadable export
     private function createDownloadableExport($errorMessage = null)
     {
-        // Create a temporary Excel file with current database data
-        $filename = 'products_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-
+        // Create an anonymous class implementing required interfaces
         $export = new class implements FromCollection, WithHeadings {
             public function collection() {
                 return Product::all();
@@ -393,6 +390,9 @@ class ProductController extends Controller
             }
         };
 
+        // Prepare filename
+        $filename = 'products_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+
         // Prepare error message
         $message = $errorMessage
             ? 'Failed to push to local server. Download backup: ' . $errorMessage
@@ -402,7 +402,6 @@ class ProductController extends Controller
         return Excel::download($export, $filename)
             ->with('warning', $message);
     }
-
 
 
 
