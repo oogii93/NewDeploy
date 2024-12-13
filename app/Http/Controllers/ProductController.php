@@ -315,17 +315,19 @@ class ProductController extends Controller
 
             // If no path worked
             if (!$successPath) {
-                // Fallback: Create a downloadable export
+                // Add flash message
+                session()->flash('warning', 'Could not access network location. Downloaded backup file.');
                 return $this->createDownloadableExport();
             }
 
             return redirect()->back()
                 ->with('success', 'Successfully pushed data to local server Excel file!');
 
-        } catch (\Exception $e) {
-            \Log::error('Push to Local Server Error: ' . $e->getMessage());
-            return $this->createDownloadableExport($e->getMessage());
-        }
+            } catch (\Exception $e) {
+                // Add flash message
+                session()->flash('error', 'Failed to push to local server: ' . $e->getMessage());
+                return $this->createDownloadableExport($e->getMessage());
+            }
     }
 
     // File access check method
@@ -373,35 +375,38 @@ class ProductController extends Controller
     }
 
     // Fallback method to create downloadable export
-    private function createDownloadableExport($errorMessage = null)
-    {
-        // Create an anonymous class implementing required interfaces
-        $export = new class implements FromCollection, WithHeadings {
-            public function collection() {
-                return Product::all();
-            }
+// Fallback method to create downloadable export
+private function createDownloadableExport($errorMessage = null)
+{
+    // Create an anonymous class implementing required interfaces
+    $export = new class implements FromCollection, WithHeadings {
+        public function collection() {
+            return Product::all();
+        }
 
-            public function headings(): array {
-                return [
-                    'Office Name', 'Maker Name', 'Product Number', 'Product Name',
-                    'Pieces', 'ICM Net', 'Purchase Date', 'Purchased From',
-                    'List Price', 'Remarks'
-                ];
-            }
-        };
+        public function headings(): array {
+            return [
+                'Office Name', 'Maker Name', 'Product Number', 'Product Name',
+                'Pieces', 'ICM Net', 'Purchase Date', 'Purchased From',
+                'List Price', 'Remarks'
+            ];
+        }
+    };
 
-        // Prepare filename
-        $filename = 'products_export_' . date('Y-m-d_H-i-s') . '.xlsx';
+    // Prepare filename
+    $filename = 'products_export_' . date('Y-m-d_H-i-s') . '.xlsx';
 
-        // Prepare error message
-        $message = $errorMessage
-            ? 'Failed to push to local server. Download backup: ' . $errorMessage
-            : 'Could not access network location. Download backup file.';
+    // Prepare error message
+    $message = $errorMessage
+        ? 'Failed to push to local server. Download backup: ' . $errorMessage
+        : 'Could not access network location. Download backup file.';
 
-        // Return downloadable Excel file
-        return Excel::download($export, $filename)
-            ->with('warning', $message);
-    }
+    // Log the warning message
+    \Log::warning($message);
+
+    // Return downloadable Excel file
+    return Excel::download($export, $filename);
+}
 
 
 
