@@ -285,41 +285,37 @@ class ProductController extends Controller
     public function pushToLocalServer()
     {
         try {
-            // Check if the current server IP is within the local network
-            if ($this->isConnectedToLocalServer()) {
-                $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
+            $networkFilePath = '\\\\172.16.153.8\\出勤簿\\1.xlsx';
 
-                if ($this->canAccessFile($networkFilePath)) {
-                    $this->pushDataToExcel($networkFilePath);
-
-                    return redirect()->back()
-                        ->with('success', 'Successfully pushed data to local server Excel file!');
-                } else {
-                    return redirect()->back()
-                        ->with('warning', 'Network file is not accessible.');
-                }
+            // Test direct access
+            if ($this->canAccessFile($networkFilePath)) {
+                $this->pushDataToExcel($networkFilePath);
+                return redirect()->back()->with('success', 'Data pushed successfully!');
             } else {
-                return redirect()->back()
-                    ->with('error', 'You are not connected to the local network.');
+                return redirect()->back()->with('error', 'File not accessible.');
             }
         } catch (\Exception $e) {
-            \Log::error('Export error: ' . $e->getMessage());
-
-            return redirect()->back()
-                ->with('error', 'An error occurred during export: ' . $e->getMessage());
+            \Log::error('Push failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Error occurred: ' . $e->getMessage());
         }
     }
 
     // Helper function to check network connectivity
     private function isConnectedToLocalServer(): bool
     {
-        // Replace with your actual server's IP
         $localServerIp = '172.16.153.8';
+        $port = 445; // SMB port commonly used for file sharing
 
-        // Use ping to check connectivity
-        $pingResult = shell_exec("ping -c 1 $localServerIp");
+        // Check connection using fsockopen
+        $connection = @fsockopen($localServerIp, $port, $errno, $errstr, 5);
 
-        return !empty($pingResult) && str_contains($pingResult, 'bytes from');
+        if ($connection) {
+            fclose($connection);
+            return true;
+        }
+
+        \Log::error("Failed to connect to local server: $errno - $errstr");
+        return false;
     }
     // File access check method
     private function canAccessFile($path)
