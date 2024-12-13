@@ -282,80 +282,46 @@ class ProductController extends Controller
     //     }
     // }
 
-
     public function pushToLocalServer()
     {
         try {
-            // Network file path configurations
+            // Simplified network paths
             $networkPaths = [
-                '\\\\172.16.153.8\\出勤簿\\1.xlsx',  // Windows UNC Path
+                storage_path('network/1.xlsx'),     // Fallback local storage path
+                '\\\\172.16.153.8\\出勤簿\\1.xlsx', // Windows UNC Path
                 '/mnt/network/1.xlsx',              // Linux mount
                 'Z:\\出勤簿\\1.xlsx'                // Mapped drive
             ];
 
-            $successfulPath = null;
-
             foreach ($networkPaths as $networkFilePath) {
+                // Normalize path
                 $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $networkFilePath);
 
-                // Check if the file is accessible
-                if ($this->canAccessFile($normalizedPath)) {
-                    $this->pushDataToExcel($normalizedPath);
-                    $successfulPath = $normalizedPath;
-                    break;
+                try {
+                    // Check if file exists and is writable
+                    if (file_exists($normalizedPath) && is_writable($normalizedPath)) {
+                        // Directly push data to the existing Excel file
+                        $this->pushDataToExcel($normalizedPath);
+
+                        // Redirect back with success message
+                        return redirect()->back()->with('success', 'Data successfully pushed to ' . $normalizedPath);
+                    }
+                } catch (\Exception $fileException) {
+                    \Log::error("Failed to push to {$normalizedPath}: " . $fileException->getMessage());
+                    continue;
                 }
             }
 
-            // If no successful push, return fallback
-            if (!$successfulPath) {
-                return $this->createDownloadableExport()
-                    ->with('error', 'File not accessible. Pushed as a downloadable backup.');
-            }
-
-            return redirect()->back()->with('success', 'Data successfully pushed to ' . $successfulPath);
+            // If no path works
+            return redirect()->back()->with('error', 'Unable to push data to any network location');
 
         } catch (\Exception $e) {
-            Log::error('File push failed: ' . $e->getMessage());
-            return $this->createDownloadableExport()
-            ->header('Warning-Message', 'File not accessible. Pushed as a downloadable backup.');
+            \Log::error('Push process failed: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'An unexpected error occurred');
         }
     }
 
-    // Helper function to check network connectivity
-    private function isConnectedToLocalServer(): bool
-    {
-        $localServerIp = '172.16.153.8';
-        $port = 445; // SMB port commonly used for file sharing
-
-        // Check connection using fsockopen
-        $connection = @fsockopen($localServerIp, $port, $errno, $errstr, 5);
-
-        if ($connection) {
-            fclose($connection);
-            return true;
-        }
-
-        \Log::error("Failed to connect to local server: $errno - $errstr");
-        return false;
-    }
-    // File access check method
-    private function canAccessFile($path)
-    {
-        try {
-            // Ensure file exists and is writable
-            if (file_exists($path) && is_writable($path)) {
-                Log::info("File is accessible: $path");
-                return true;
-            }
-        } catch (\Exception $e) {
-            Log::warning("Access check failed for $path: " . $e->getMessage());
-        }
-
-        Log::error("File not accessible: $path");
-        return false;
-    }
-
-    // Excel push method
+    // Excel push method (unchanged from previous implementation)
     private function pushDataToExcel($networkFilePath)
     {
         // Load spreadsheet
@@ -389,38 +355,90 @@ class ProductController extends Controller
         $writer = new Xlsx($spreadsheet);
         $writer->save($networkFilePath);
 
-        Log::info("Data successfully pushed to $networkFilePath");
+        \Log::info("Data successfully pushed to $networkFilePath");
     }
 
 
-    // Fallback method to create downloadable export
-// Fallback method to create downloadable export
-private function createDownloadableExport($errorMessage = null)
+    private function normalizePath($path)
 {
-    $export = new class implements \Maatwebsite\Excel\Concerns\FromCollection, \Maatwebsite\Excel\Concerns\WithHeadings {
-        public function collection() {
-            return \App\Models\Product::all();
-        }
+    // Convert Windows paths to server-compatible paths
+    $path = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
 
-        public function headings(): array {
-            return [
-                'Office Name', 'Maker Name', 'Product Number', 'Product Name',
-                'Pieces', 'ICM Net', 'Purchase Date', 'Purchased From',
-                'List Price', 'Remarks'
-            ];
-        }
-    };
+    // If path is a network path, try to resolve locally
+    if (strpos($path, '172.16.153.8') !== false) {
+        // Replace with local equivalent or storage path
+        $path = storage_path('network/' . basename($path));
+    }
 
-    $filename = 'products_export_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
-
-    \Log::warning("Fallback export created. Reason: " . ($errorMessage ?? 'File not accessible'));
-
-    // Flash error message for UI feedback
-    session()->flash('error', $errorMessage ?? 'File not accessible. Pushed as a downloadable backup.');
-
-    // Return the file download response
-    return \Maatwebsite\Excel\Facades\Excel::download($export, $filename);
+    return $path;
 }
+
+
+    // Helper function to check network connectivity
+    private function isConnectedToLocalServer(): bool
+    {
+        $localServerIp = '172.16.153.8';
+        $port = 445; // SMB port
+
+        // Multiple connection strategies
+        $strategies = [
+            function() use ($localServerIp, $port) {
+                // Attempt socket connection
+                $connection = @fsockopen($localServerIp, $port, $errno, $errstr, 3);
+                if ($connection) {
+                    fclose($connection);
+                    return true;
+                }
+                return false;
+            },
+            function() use ($localServerIp) {
+                // Ping check as an alternative
+                return exec("ping -c 1 {$localServerIp}") !== false;
+            }
+        ];
+
+        foreach ($strategies as $strategy) {
+            if ($strategy()) {
+                return true;
+            }
+        }
+
+        \Log::warning("All network connectivity checks failed for {$localServerIp}");
+        return false;
+    }
+
+    // File access check method
+    private function canAccessFile($path)
+    {
+        try {
+            // Ensure file exists, is readable and writable
+            if (file_exists($path) && is_readable($path) && is_writable($path)) {
+                \Log::info("File is fully accessible: {$path}");
+                return true;
+            }
+
+            // If file doesn't exist, try to create it
+            if (!file_exists($path)) {
+                $directory = dirname($path);
+                if (!is_dir($directory)) {
+                    @mkdir($directory, 0755, true);
+                }
+                @touch($path);
+
+                if (file_exists($path)) {
+                    \Log::info("File created successfully: {$path}");
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            \Log::warning("Comprehensive access check failed for {$path}: " . $e->getMessage());
+        }
+
+        \Log::error("File not fully accessible: {$path}");
+        return false;
+    }
+
+
 
 
 
