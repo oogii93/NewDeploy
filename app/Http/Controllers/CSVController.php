@@ -1122,7 +1122,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 // dd($halfDayVacationDates, $formattedTotalWorkedTime);
 
         return [
-            'staff_number' => $user->id,
+            'staff_number' => $user->employer_id,
             'name' => $user->name,
             'workedDay' => number_format($subtractedWorkedDay, 1, '.', ''),
             'workedHoliday' => (int) $totalWorkedHoliday,
@@ -1456,7 +1456,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 
 
                 $values['workedHoliday'],
-                $values['workedTime'],
+                $values['workedTime'] = str_replace(':', '.', $values['workedTime']),
                 $values['countLate'],
                 $values['earlyLeave'],
                 sprintf('%01.1f', (float)$values['vacationRecordsCounts']['有休日数']),
@@ -1465,13 +1465,13 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
                 $values['vacationRecordsCounts']['特休'],
                 $values['vacationRecordsCounts']['']=0,
                 $values['vacationRecordsCounts']['欠勤'],
-                $values['overWorkedTimeA'],
-                $values['overWorkedTimeB'],
-                $values['overWorkedTimeC'],
-                $values['overWorkedTimeD'],
-                $values['totalLateTime'],
-                $values['totalEarlyLeaveTime'],
-                $values['totalBreakTime'],
+                $values['overWorkedTimeA'] = str_replace(':', '.', $values['overWorkedTimeA']),
+                $values['overWorkedTimeB'] = str_replace(':', '.', $values['overWorkedTimeB']),
+                $values['overWorkedTimeC'] = str_replace(':', '.', $values['overWorkedTimeC']),
+                $values['overWorkedTimeD'] = str_replace(':', '.', $values['overWorkedTimeD']),
+                $values['totalLateTime'] =str_replace(':', '.', $values['totalLateTime']),
+                $values['totalEarlyLeaveTime'] =str_replace(':', '.', $values['totalEarlyLeaveTime']),
+                $values['totalBreakTime'] =str_replace(':', '.', $values['totalBreakTime']),
 
             ]);
             // dd([
