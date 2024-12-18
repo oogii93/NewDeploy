@@ -63,6 +63,6 @@ class FilterController extends Controller
         $month = date('m');
         // dd($startDate,$endDate);
 
-        return view('admin.filter', compact('users', 'selectedYear', 'selectedMonth', 'corpId', 'officeId', 'startDate', 'endDate'));
+        return view('admin.csv.filter', compact('users', 'selectedYear', 'selectedMonth', 'corpId', 'officeId', 'startDate', 'endDate'));
     }
 }

@@ -147,138 +147,407 @@
 
 
                 <li class="relative group">
-                    <a href="{{ route('dashboard') }}"
+                    <a href=""
                         class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
 
                         <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                            height="30px" width="30px" version="1.1" id="Layer_1"
+                        height="30px" width="30px" version="1.1" id="Layer_1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        viewBox="0 0 366.285 366.285" xml:space="preserve" fill="#000000">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g id="XMLID_30_">
+                                <g id="XMLID_31_">
+                                    <path id="XMLID_71_" style="fill:#00969B;"
+                                        d="M70.717,286.199l-31.01,31.01c-8.797,8.797-8.797,23.193,0,31.99l0,0 c8.797,8.797,23.193,8.797,31.99,0l33.232-33.232C92.038,307.853,80.499,297.794,70.717,286.199z">
+                                    </path>
+                                    <path id="XMLID_85_" style="fill:#1F2C47;"
+                                        d="M55.702,365.797c-8.731,0-16.922-3.383-23.066-9.526 c-12.719-12.719-12.719-33.414,0-46.133l38.706-38.706l7.019,8.319c9.163,10.861,19.894,20.199,31.896,27.753l10.604,6.674 l-42.092,42.093C72.625,362.414,64.433,365.797,55.702,365.797z M70.356,300.703l-23.577,23.578 c-4.921,4.92-4.921,12.927,0,17.848c2.366,2.366,5.535,3.669,8.923,3.669s6.558-1.303,8.924-3.669l24.728-24.728 C82.585,312.355,76.237,306.775,70.356,300.703z">
+                                    </path>
+                                </g>
+                                <g id="XMLID_88_">
+                                    <path id="XMLID_89_" style="fill:#00969B;"
+                                        d="M326.578,317.209l-31.01-31.01c-9.781,11.594-21.321,21.654-34.212,29.768 l33.232,33.232c8.797,8.797,23.193,8.797,31.99,0l0,0C335.375,340.402,335.375,326.006,326.578,317.209z">
+                                    </path>
+                                    <path id="XMLID_90_" style="fill:#1F2C47;"
+                                        d="M310.583,365.797c-8.731,0-16.922-3.383-23.066-9.526l-42.092-42.092l10.604-6.674 c12.002-7.555,22.733-16.893,31.896-27.753l7.019-8.319l38.706,38.706c12.719,12.719,12.719,33.414,0,46.133 C327.505,362.414,319.314,365.797,310.583,365.797z M276.932,317.401l24.728,24.727c2.366,2.366,5.535,3.669,8.924,3.669 s6.558-1.303,8.923-3.669c4.921-4.92,4.921-12.927,0-17.848l-23.577-23.578C290.048,306.775,283.7,312.355,276.932,317.401z">
+                                    </path>
+                                </g>
+                                <g id="XMLID_93_">
+                                    <g id="XMLID_102_">
+                                        <path id="XMLID_103_" style="fill:#00969B;"
+                                            d="M133.143,52.971c-8.624-24.73-32.135-42.481-59.805-42.481 C38.357,10.49,10,38.847,10,73.827c0,25.882,15.532,48.123,37.776,57.95C61.985,93.703,93.703,64.165,133.143,52.971z">
+                                        </path>
+                                        <path id="XMLID_104_" style="fill:#1F2C47;"
+                                            d="M53.437,145.208l-9.702-4.286C17.167,129.187,0,102.85,0,73.827 C0,33.389,32.899,0.49,73.337,0.49c31.159,0,58.988,19.767,69.248,49.188l3.493,10.017l-10.205,2.896 c-36.141,10.257-65.571,37.428-78.728,72.682L53.437,145.208z M73.337,20.49C43.927,20.49,20,44.417,20,73.827 c0,17.654,8.737,33.943,22.904,43.796c15.351-32.495,42.939-57.965,76.52-70.646C110,30.811,92.538,20.49,73.337,20.49z">
+                                        </path>
+                                    </g>
+                                    <g id="XMLID_107_">
+                                        <path id="XMLID_108_" style="fill:#00969B;"
+                                            d="M292.948,10.49c-27.671,0-51.182,17.751-59.805,42.481 c39.439,11.194,71.158,40.732,85.366,78.805c22.244-9.827,37.776-32.068,37.776-57.95 C356.285,38.847,327.928,10.49,292.948,10.49z">
+                                        </path>
+                                        <path id="XMLID_109_" style="fill:#1F2C47;"
+                                            d="M312.848,145.208l-3.708-9.937c-13.157-35.253-42.587-62.424-78.728-72.682 l-10.205-2.896l3.493-10.017c10.26-29.421,38.089-49.188,69.248-49.188c40.438,0,73.337,32.899,73.337,73.337 c0,29.022-17.167,55.359-43.735,67.097L312.848,145.208z M246.861,46.978c33.581,12.68,61.169,38.15,76.52,70.646 c14.167-9.854,22.904-26.143,22.904-43.796c0-29.41-23.927-53.337-53.337-53.337C273.747,20.49,256.285,30.811,246.861,46.978z">
+                                        </path>
+                                    </g>
+                                    <g id="XMLID_169_">
+                                        <path id="XMLID_197_" style="fill:#1F2C47;"
+                                            d="M183.143,348.485c-86.588,0-157.032-70.444-157.032-157.032 S96.555,34.42,183.143,34.42s157.032,70.444,157.032,157.032S269.73,348.485,183.143,348.485z M183.143,54.42 c-75.56,0-137.032,61.473-137.032,137.032s61.473,137.032,137.032,137.032s137.032-61.473,137.032-137.032 S258.702,54.42,183.143,54.42z">
+                                        </path>
+                                    </g>
+                                    <g id="XMLID_223_">
+                                        <path id="XMLID_224_" style="fill:#1F2C47;"
+                                            d="M183.143,314.554c-67.878,0-123.102-55.223-123.102-123.102 S115.264,68.351,183.143,68.351v20c-56.851,0-103.102,46.251-103.102,103.102s46.251,103.102,103.102,103.102 s103.102-46.251,103.102-103.102h20C306.244,259.331,251.021,314.554,183.143,314.554z">
+                                        </path>
+                                    </g>
+                                    <g id="XMLID_225_">
+                                        <polygon id="XMLID_226_" style="fill:#1F2C47;"
+                                            points="185.117,214.93 133.43,189.087 142.374,171.198 181.168,190.594 232.622,139.141 246.765,153.283 ">
+                                        </polygon>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+
+                    </svg>
+
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">勤怠入力</span>
+
+                    </a>
+
+
+                    <div
+                        class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
+                        <a href="{{ route('dashboard') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠入力</a>
+                        <a href="{{ route('other') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">全員勤怠一覧</a>
+
+
+                    </div>
+
+                </li>
+
+                <li class="relative group">
+                    <a href=""
+                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+
+                        <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                        height="30px" width="30px" viewBox="0 0 60 60" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                        </g>
+                        <g id="SVGRepo_iconCarrier">
+                            <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                            <title>Paperdesk</title>
+                            <desc>Created with Sketch.</desc>
+                            <defs> </defs>
+                            <g id="colored" stroke="none" stroke-width="1" fill="none"
+                                fill-rule="evenodd" sketch:type="MSPage">
+                                <g id="Marketing_sliced" sketch:type="MSLayerGroup"
+                                    transform="translate(-480.000000, 0.000000)"> </g>
+                                <g id="Marketing" sketch:type="MSLayerGroup"
+                                    transform="translate(-472.000000, 0.000000)" stroke="#314E55"
+                                    stroke-width="2" stroke-linejoin="round">
+                                    <g id="Papersdesk" transform="translate(475.000000, 6.000000)"
+                                        sketch:type="MSShapeGroup">
+                                        <rect id="Rectangle-1493" stroke-linecap="round" fill="#e6da8e" x="0"
+                                            y="29" width="55" height="20"> </rect>
+                                        <path d="M20,34 L35,34" id="Line" stroke-linecap="square"> </path>
+                                        <rect id="Rectangle-1494" stroke-linecap="round" fill="#f8f7f7" x="10"
+                                            y="9" width="24" height="20"> </rect>
+                                        <path d="M37,6 L37,28.8266802 L13,28.8266802" id="Rectangle-1494"
+                                            stroke-linecap="round"
+                                            transform="translate(25.000000, 17.413340) scale(1, -1) translate(-25.000000, -17.413340) ">
+                                        </path>
+                                        <path d="M40,3 L40,28.9098058 L16,28.9098058" id="Rectangle-1494"
+                                            stroke-linecap="round"
+                                            transform="translate(28.000000, 15.954903) scale(1, -1) translate(-28.000000, -15.954903) ">
+                                        </path>
+                                        <path d="M43,0 L43,28.8638468 L19,28.8638468" id="Rectangle-1494"
+                                            stroke-linecap="round"
+                                            transform="translate(31.000000, 14.431923) scale(1, -1) translate(-31.000000, -14.431923) ">
+                                        </path>
+                                        <path d="M54.9083136,28.8929167 L50.2690171,19.7056894" id="Path-3383"
+                                            stroke-linecap="round"> </path>
+                                        <path d="M4.63929653,28.8929167 L0,19.7056894" id="Path-3383"
+                                            stroke-linecap="round"
+                                            transform="translate(2.319648, 24.299303) scale(-1, 1) translate(-2.319648, -24.299303) ">
+                                        </path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">各種申請</span>
+
+                    </a>
+
+
+                    <div
+                        class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
+                        <a href="{{ route('forms.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">各種申請</a>
+                        <a href="{{ route('applications.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請履歴</a>
+
+
+                    </div>
+
+                </li>
+
+
+                @auth
+
+
+                @if (auth()->user()->is_boss)
+                    <div
+                        class="flex flex-col items-center justify-center w-24 h-16  bg-white border border-gray-200 hover:bg-gray-100">
+                        <li class="relative group">
+                            <a href=""
+                                class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+                                <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                                    height="30px" width="30px" version="1.1" id="Capa_1"
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                    viewBox="0 0 440.928 440.928" xml:space="preserve" fill="#000000">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <g>
+                                            <g id="XMLID_28_">
+                                                <g>
+                                                    <path style="fill:#E2B369;"
+                                                        d="M398.104,282.228l-0.01,109.36c-8.81-2.04-15.4-9.94-15.4-19.37v-97.61 C386.844,278.558,392.174,281.298,398.104,282.228z">
+                                                    </path>
+                                                    <rect x="42.824" y="401.118" style="fill:#E2B369;" width="355.27"
+                                                        height="30.81"></rect>
+                                                    <path
+                                                        d="M58.224,372.218h0.01v-97.61c-4.16,3.95-9.49,6.69-15.41,7.62v109.36C51.634,389.548,58.224,381.648,58.224,372.218z M187.444,281.518c0,18.2,14.81,33.02,33.02,33.02c18.2,0,33.01-14.82,33.01-33.02v-29.26c0-58.81,8.13-114.44,24.16-165.34 c1.82-5.8,2.75-11.85,2.75-18c0-16.53-6.59-31.93-18.56-43.35c-11.25-10.74-25.84-16.57-41.34-16.57c-0.96,0-1.92,0.02-2.89,0.07 c-31.02,1.44-56.07,26.9-57.03,57.97c-0.2,6.59,0.66,13.1,2.56,19.33c16.14,53.05,24.32,105.46,24.32,155.77V281.518z M382.694,372.218c0,9.43,6.59,17.33,15.4,19.37l0.01-109.36c-5.93-0.93-11.26-3.67-15.41-7.62V372.218z M407.104,273.578 l-0.01,123.05v44.3H33.824v-39.81v-127.54h4.5c10.97,0,19.9-8.93,19.9-19.91h0.01v-4.16h120.21v-7.37 c0-49.42-8.05-100.95-23.93-153.15c-2.19-7.17-3.17-14.65-2.94-22.23c1.1-35.73,29.91-65.02,65.6-66.68 c19.05-0.89,37.11,5.85,50.87,18.98c13.76,13.14,21.34,30.85,21.34,49.86c0,7.07-1.07,14.03-3.17,20.71 c-15.5,49.22-23.46,103.01-23.71,159.88h120.19v4.16c0,10.98,8.93,19.91,19.91,19.91H407.104z M398.094,431.928v-30.81H42.824 v30.81H398.094z M59.254,392.118h322.41c-3.95-4.16-6.69-9.48-7.62-15.4H66.874C65.944,382.638,63.214,387.958,59.254,392.118z M373.694,367.718v-109.21h-111.22v23.01c0,23.17-18.84,42.02-42.01,42.02s-42.02-18.85-42.02-42.02v-23.01H67.234v109.21 H373.694z">
+                                                    </path>
+                                                    <path style="fill:#E2B369;"
+                                                        d="M374.044,376.718c0.93,5.92,3.67,11.24,7.62,15.4H59.254c3.96-4.16,6.69-9.48,7.62-15.4H374.044z">
+                                                    </path>
+                                                    <path style="fill:#FFCC73;"
+                                                        d="M253.474,281.518c0,18.2-14.81,33.02-33.01,33.02c-18.21,0-33.02-14.82-33.02-33.02v-39.38 c0-50.31-8.18-102.72-24.32-155.77c-1.9-6.23-2.76-12.74-2.56-19.33c0.96-31.07,26.01-56.53,57.03-57.97 c0.97-0.05,1.93-0.07,2.89-0.07c15.5,0,30.09,5.83,41.34,16.57c11.97,11.42,18.56,26.82,18.56,43.35c0,6.15-0.93,12.2-2.75,18 c-16.03,50.9-24.16,106.53-24.16,165.34V281.518z">
+                                                    </path>
+                                                    <path style="fill:#FFCC73;"
+                                                        d="M178.444,281.518c0,23.17,18.85,42.02,42.02,42.02s42.01-18.85,42.01-42.02v-23.01h111.22v109.21 H67.234v-109.21h111.21V281.518z">
+                                                    </path>
+                                                    <path style="fill:#E2B369;"
+                                                        d="M58.234,274.608v97.61h-0.01c0,9.43-6.59,17.33-15.4,19.37v-109.36 C48.744,281.298,54.074,278.558,58.234,274.608z">
+                                                    </path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">承認</span>
+                            </a>
+
+
+                            <div
+                                class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
+                                <a href="{{ route('applications.boss_index') }}"
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(上司)</a>
+                                <a href="{{ route('time_off_boss.index') }}"
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(上司)</a>
+                            </div>
+                    </div>
+                    </li>
+                @endif
+            @endauth
+
+
+            <li class="relative group">
+                <a href="{{ route('forms2.index') }}"
+                    class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+
+
+                    <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                    height="40px" width="40px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#FFDC64;" d="M358.614,102.079H50.772c-4.722,0-8.551,3.829-8.551,8.551v179.574h25.653 c9.445,0,17.102,7.656,17.102,17.102c0,9.445-7.658,17.102-17.102,17.102H42.221v25.653c0,4.722,3.829,8.551,8.551,8.551h316.393 V110.63C367.165,105.908,363.336,102.079,358.614,102.079z"></path> <path style="fill:#C7CFE2;" d="M469.779,238.898H367.165v119.716h136.818v-85.512C503.983,254.212,488.669,238.898,469.779,238.898z "></path> <path style="fill:#AFB9D2;" d="M367.165,264.551h92.638c9.446,0,17.102,7.656,17.102,17.102v76.96h-109.74V264.551z"></path> <path style="fill:#C7CFE2;" d="M435.574,136.284h-68.409v34.205h94.063v-8.551C461.228,147.769,449.742,136.284,435.574,136.284z"></path> <polygon style="fill:#B4E6FF;" points="469.779,238.898 452.676,170.489 367.165,170.489 367.165,238.898 "></polygon> <circle style="fill:#FFFFFF;" cx="204.693" cy="213.244" r="68.409"></circle> <path style="fill:#F1F4FB;" d="M469.779,273.102h34.205v34.205h-17.102c-9.446,0-17.102-7.656-17.102-17.102V273.102z"></path> <path style="fill:#959CB5;" d="M427.023,298.756c-25.772,0-48.194,14.265-59.858,35.317v24.541h127.676 C490.624,324.877,461.902,298.756,427.023,298.756z"></path> <path style="fill:#AFB9D2;" d="M476.904,320.412v38.202h17.937C493.005,343.925,486.518,330.686,476.904,320.412z"></path> <circle style="fill:#5B5D6E;" cx="427.023" cy="367.165" r="42.756"></circle> <path style="fill:#9BD6FF;" d="M401.37,196.142h57.72l-6.413-25.653h-85.511v68.409h25.653v-34.205 C392.818,199.971,396.647,196.142,401.37,196.142z"></path> <path style="fill:#FFC850;" d="M144.835,298.756c-21.593,0-40.819,10.028-53.355,25.653H67.875H42.221v25.653 c0,4.722,3.829,8.551,8.551,8.551h316.393v-34.205H198.19C185.654,308.784,166.428,298.756,144.835,298.756z"></path> <circle style="fill:#5B5D6E;" cx="144.835" cy="367.165" r="42.756"></circle> <path d="M476.158,231.363l-13.259-53.035c3.625-0.77,6.345-3.986,6.345-7.839v-8.551c0-18.566-15.105-33.67-33.67-33.67h-60.392 V110.63c0-9.136-7.432-16.568-16.568-16.568H50.772c-9.136,0-16.568,7.432-16.568,16.568V256c0,4.427,3.589,8.017,8.017,8.017 s8.017-3.589,8.017-8.017V110.63c0-0.294,0.239-0.534,0.534-0.534h307.841c0.295,0,0.534,0.24,0.534,0.534v145.372 c0,4.427,3.589,8.017,8.017,8.017c4.427,0,8.017-3.589,8.017-8.017v-9.088h94.569c0.007,0,0.014,0.002,0.021,0.002 c0.007,0,0.015-0.001,0.022-0.001c11.637,0.007,21.518,7.646,24.912,18.171h-24.928c-4.427,0-8.017,3.589-8.017,8.017v17.102 c0,13.851,11.268,25.119,25.119,25.119h9.086v35.273h-20.962c-6.886-19.884-25.787-34.205-47.982-34.205 s-41.097,14.321-47.982,34.205h-3.86v-60.392c0-4.427-3.589-8.017-8.017-8.017c-4.427,0-8.017,3.589-8.017,8.017v60.391H192.817 c-6.886-19.884-25.787-34.205-47.982-34.205s-41.097,14.321-47.982,34.205H50.772c-0.295,0-0.534-0.241-0.534-0.534v-17.637h34.739 c4.427,0,8.017-3.589,8.017-8.017c0-4.427-3.589-8.017-8.017-8.017h-42.75c-0.002,0-0.003,0-0.005,0s-0.003,0-0.005,0H8.017 c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h26.188v17.637c0,9.136,7.432,16.568,16.568,16.568h43.304 c-0.002,0.178-0.014,0.356-0.014,0.534c0,27.995,22.777,50.772,50.772,50.772s50.772-22.777,50.772-50.772 c0-0.178-0.012-0.356-0.014-0.534h180.67c-0.002,0.178-0.014,0.356-0.014,0.534c0,27.995,22.777,50.772,50.772,50.772 c27.995,0,50.772-22.777,50.772-50.772c0-0.178-0.012-0.356-0.014-0.534h26.203c4.427,0,8.017-3.589,8.017-8.017v-85.512 C512,251.99,496.423,234.448,476.158,231.363z M375.182,178.505h71.235l13.094,52.376h-84.329V178.505z M435.574,144.301 c9.725,0,17.637,7.912,17.637,17.637v0.534h-78.029v-18.171H435.574z M144.835,401.904c-19.155,0-34.739-15.583-34.739-34.739 c0-19.156,15.584-34.739,34.739-34.739c19.155,0,34.739,15.583,34.739,34.739C179.574,386.321,163.99,401.904,144.835,401.904z M427.023,401.904c-19.155,0-34.739-15.583-34.739-34.739c0-19.156,15.584-34.739,34.739-34.739 c19.155,0,34.739,15.583,34.739,34.739C461.762,386.321,446.178,401.904,427.023,401.904z M486.881,299.29 c-5.01,0-9.086-4.076-9.086-9.086v-9.086h18.171v18.171H486.881z"></path> <path d="M144.835,350.597c-9.136,0-16.568,7.432-16.568,16.568c0,9.136,7.432,16.568,16.568,16.568 c9.136,0,16.568-7.432,16.568-16.568C161.403,358.029,153.971,350.597,144.835,350.597z"></path> <path d="M427.023,350.597c-9.136,0-16.568,7.432-16.568,16.568c0,9.136,7.432,16.568,16.568,16.568s16.568-7.432,16.568-16.568 C443.591,358.029,436.159,350.597,427.023,350.597z"></path> <path d="M205.228,324.409c0,4.427,3.589,8.017,8.017,8.017H332.96c4.427,0,8.017-3.589,8.017-8.017c0-4.427-3.589-8.017-8.017-8.017 H213.244C208.817,316.392,205.228,319.982,205.228,324.409z"></path> <path d="M25.119,298.221h102.614c4.427,0,8.017-3.589,8.017-8.017c0-4.427-3.589-8.017-8.017-8.017H25.119 c-4.427,0-8.017,3.589-8.017,8.017C17.102,294.632,20.692,298.221,25.119,298.221z"></path> <path d="M204.693,136.818c-42.141,0-76.426,34.285-76.426,76.426s34.285,76.426,76.426,76.426s76.426-34.285,76.426-76.426 S246.834,136.818,204.693,136.818z M204.693,273.637c-33.3,0-60.392-27.092-60.392-60.392s27.092-60.392,60.392-60.392 s60.392,27.092,60.392,60.392S237.993,273.637,204.693,273.637z"></path> <path d="M212.71,209.924V179.04c0-4.427-3.589-8.017-8.017-8.017s-8.017,3.589-8.017,8.017v34.205c0,2.126,0.844,4.164,2.348,5.668 l25.653,25.653c1.565,1.565,3.617,2.348,5.668,2.348s4.103-0.782,5.668-2.348c3.131-3.131,3.131-8.206,0-11.337L212.71,209.924z"></path> </g></svg>
+
+                    <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">社内注文</span>
+                </a>
+            </li>
+
+
+
+
+            <li class="relative group">
+                <div
+                    class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+                    <svg class="transition-transform duration-300 hover:scale-105" height="30px" width="30px"
+                        version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
+                        enable-background="new 0 0 64 64" xml:space="preserve" fill="#000000">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <g>
+                                    <g>
+                                        <path fill="#506C7F"
+                                            d="M50,2c-0.553,0-1,0.447-1,1v1v2v4c0,0.553,0.447,1,1,1s1-0.447,1-1V6V4V3C51,2.447,50.553,2,50,2z">
+                                        </path>
+                                        <path fill="#506C7F"
+                                            d="M14,2c-0.553,0-1,0.447-1,1v1v2v4c0,0.553,0.447,1,1,1s1-0.447,1-1V6V4V3C15,2.447,14.553,2,14,2z">
+                                        </path>
+                                    </g>
+                                    <path fill="#f5f5f4"
+                                        d="M62,60c0,1.104-0.896,2-2,2H4c-1.104,0-2-0.896-2-2V17h60V60z"></path>
+                                    <path fill="#f3dd8c"
+                                        d="M62,15H2V8c0-1.104,0.896-2,2-2h7v4c0,1.657,1.343,3,3,3s3-1.343,3-3V6h30v4c0,1.657,1.343,3,3,3 s3-1.343,3-3V6h7c1.104,0,2,0.896,2,2V15z">
+                                    </path>
+                                    <g>
+                                        <path fill="#394240"
+                                            d="M11,54h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C10,53.553,10.447,54,11,54z M12,49h4v3h-4V49z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M23,54h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C22,53.553,22.447,54,23,54z M24,49h4v3h-4V49z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M35,54h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C34,53.553,34.447,54,35,54z M36,49h4v3h-4V49z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M11,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C10,42.553,10.447,43,11,43z M12,38h4v3h-4V38z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M23,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C22,42.553,22.447,43,23,43z M24,38h4v3h-4V38z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M35,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C34,42.553,34.447,43,35,43z M36,38h4v3h-4V38z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M47,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C46,42.553,46.447,43,47,43z M48,38h4v3h-4V38z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M11,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C10,31.553,10.447,32,11,32z M12,27h4v3h-4V27z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M23,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C22,31.553,22.447,32,23,32z M24,27h4v3h-4V27z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M35,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C34,31.553,34.447,32,35,32z M36,27h4v3h-4V27z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M47,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C46,31.553,46.447,32,47,32z M48,27h4v3h-4V27z">
+                                        </path>
+                                        <path fill="#394240"
+                                            d="M60,4h-7V3c0-1.657-1.343-3-3-3s-3,1.343-3,3v1H17V3c0-1.657-1.343-3-3-3s-3,1.343-3,3v1H4 C1.789,4,0,5.789,0,8v52c0,2.211,1.789,4,4,4h56c2.211,0,4-1.789,4-4V8C64,5.789,62.211,4,60,4z M49,3c0-0.553,0.447-1,1-1 s1,0.447,1,1v7c0,0.553-0.447,1-1,1s-1-0.447-1-1V3z M13,3c0-0.553,0.447-1,1-1s1,0.447,1,1v7c0,0.553-0.447,1-1,1s-1-0.447-1-1 V3z M62,60c0,1.104-0.896,2-2,2H4c-1.104,0-2-0.896-2-2V17h60V60z M62,15H2V8c0-1.104,0.896-2,2-2h7v4c0,1.657,1.343,3,3,3 s3-1.343,3-3V6h30v4c0,1.657,1.343,3,3,3s3-1.343,3-3V6h7c1.104,0,2,0.896,2,2V15z">
+                                        </path>
+                                    </g>
+                                </g>
+                                <g>
+                                    <rect x="12" y="27" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="24" y="27" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="36" y="27" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="48" y="27" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="12" y="38" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="24" y="38" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="36" y="38" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="48" y="38" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="12" y="49" fill="#00969B" width="4" height="3"></rect>
+                                    <rect x="24" y="49" fill="#00969B" width="4" height="3">
+                                    </rect>
+                                    <rect x="36" y="49" fill="#00969B" width="4" height="3"></rect>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                    <a href="" class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">スケジュール</a>
+                </div>
+
+                <div
+                    class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
+                    <a href="{{ route('room.index') }}"
+                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">会議室</a>
+                    <a href="{{ route('actionSchedule.index') }}"
+                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">行動予定表</a>
+                    <a href="{{ route('companySchedule.index') }}"
+                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">会社予定表</a>
+                </div>
+            </li>
+
+
+
+
+
+                {{-- <li class="relative group">
+                    <a href="{{ route('forms.index') }}"
+                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+                        <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                            height="30px" width="30px" viewBox="0 0 60 60" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            viewBox="0 0 366.285 366.285" xml:space="preserve" fill="#000000">
+                            xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
-                                <g id="XMLID_30_">
-                                    <g id="XMLID_31_">
-                                        <path id="XMLID_71_" style="fill:#00969B;"
-                                            d="M70.717,286.199l-31.01,31.01c-8.797,8.797-8.797,23.193,0,31.99l0,0 c8.797,8.797,23.193,8.797,31.99,0l33.232-33.232C92.038,307.853,80.499,297.794,70.717,286.199z">
-                                        </path>
-                                        <path id="XMLID_85_" style="fill:#1F2C47;"
-                                            d="M55.702,365.797c-8.731,0-16.922-3.383-23.066-9.526 c-12.719-12.719-12.719-33.414,0-46.133l38.706-38.706l7.019,8.319c9.163,10.861,19.894,20.199,31.896,27.753l10.604,6.674 l-42.092,42.093C72.625,362.414,64.433,365.797,55.702,365.797z M70.356,300.703l-23.577,23.578 c-4.921,4.92-4.921,12.927,0,17.848c2.366,2.366,5.535,3.669,8.923,3.669s6.558-1.303,8.924-3.669l24.728-24.728 C82.585,312.355,76.237,306.775,70.356,300.703z">
-                                        </path>
-                                    </g>
-                                    <g id="XMLID_88_">
-                                        <path id="XMLID_89_" style="fill:#00969B;"
-                                            d="M326.578,317.209l-31.01-31.01c-9.781,11.594-21.321,21.654-34.212,29.768 l33.232,33.232c8.797,8.797,23.193,8.797,31.99,0l0,0C335.375,340.402,335.375,326.006,326.578,317.209z">
-                                        </path>
-                                        <path id="XMLID_90_" style="fill:#1F2C47;"
-                                            d="M310.583,365.797c-8.731,0-16.922-3.383-23.066-9.526l-42.092-42.092l10.604-6.674 c12.002-7.555,22.733-16.893,31.896-27.753l7.019-8.319l38.706,38.706c12.719,12.719,12.719,33.414,0,46.133 C327.505,362.414,319.314,365.797,310.583,365.797z M276.932,317.401l24.728,24.727c2.366,2.366,5.535,3.669,8.924,3.669 s6.558-1.303,8.923-3.669c4.921-4.92,4.921-12.927,0-17.848l-23.577-23.578C290.048,306.775,283.7,312.355,276.932,317.401z">
-                                        </path>
-                                    </g>
-                                    <g id="XMLID_93_">
-                                        <g id="XMLID_102_">
-                                            <path id="XMLID_103_" style="fill:#00969B;"
-                                                d="M133.143,52.971c-8.624-24.73-32.135-42.481-59.805-42.481 C38.357,10.49,10,38.847,10,73.827c0,25.882,15.532,48.123,37.776,57.95C61.985,93.703,93.703,64.165,133.143,52.971z">
+                                <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                                <title>Paperdesk</title>
+                                <desc>Created with Sketch.</desc>
+                                <defs> </defs>
+                                <g id="colored" stroke="none" stroke-width="1" fill="none"
+                                    fill-rule="evenodd" sketch:type="MSPage">
+                                    <g id="Marketing_sliced" sketch:type="MSLayerGroup"
+                                        transform="translate(-480.000000, 0.000000)"> </g>
+                                    <g id="Marketing" sketch:type="MSLayerGroup"
+                                        transform="translate(-472.000000, 0.000000)" stroke="#314E55"
+                                        stroke-width="2" stroke-linejoin="round">
+                                        <g id="Papersdesk" transform="translate(475.000000, 6.000000)"
+                                            sketch:type="MSShapeGroup">
+                                            <rect id="Rectangle-1493" stroke-linecap="round" fill="#e6da8e" x="0"
+                                                y="29" width="55" height="20"> </rect>
+                                            <path d="M20,34 L35,34" id="Line" stroke-linecap="square"> </path>
+                                            <rect id="Rectangle-1494" stroke-linecap="round" fill="#f8f7f7" x="10"
+                                                y="9" width="24" height="20"> </rect>
+                                            <path d="M37,6 L37,28.8266802 L13,28.8266802" id="Rectangle-1494"
+                                                stroke-linecap="round"
+                                                transform="translate(25.000000, 17.413340) scale(1, -1) translate(-25.000000, -17.413340) ">
                                             </path>
-                                            <path id="XMLID_104_" style="fill:#1F2C47;"
-                                                d="M53.437,145.208l-9.702-4.286C17.167,129.187,0,102.85,0,73.827 C0,33.389,32.899,0.49,73.337,0.49c31.159,0,58.988,19.767,69.248,49.188l3.493,10.017l-10.205,2.896 c-36.141,10.257-65.571,37.428-78.728,72.682L53.437,145.208z M73.337,20.49C43.927,20.49,20,44.417,20,73.827 c0,17.654,8.737,33.943,22.904,43.796c15.351-32.495,42.939-57.965,76.52-70.646C110,30.811,92.538,20.49,73.337,20.49z">
+                                            <path d="M40,3 L40,28.9098058 L16,28.9098058" id="Rectangle-1494"
+                                                stroke-linecap="round"
+                                                transform="translate(28.000000, 15.954903) scale(1, -1) translate(-28.000000, -15.954903) ">
                                             </path>
-                                        </g>
-                                        <g id="XMLID_107_">
-                                            <path id="XMLID_108_" style="fill:#00969B;"
-                                                d="M292.948,10.49c-27.671,0-51.182,17.751-59.805,42.481 c39.439,11.194,71.158,40.732,85.366,78.805c22.244-9.827,37.776-32.068,37.776-57.95 C356.285,38.847,327.928,10.49,292.948,10.49z">
+                                            <path d="M43,0 L43,28.8638468 L19,28.8638468" id="Rectangle-1494"
+                                                stroke-linecap="round"
+                                                transform="translate(31.000000, 14.431923) scale(1, -1) translate(-31.000000, -14.431923) ">
                                             </path>
-                                            <path id="XMLID_109_" style="fill:#1F2C47;"
-                                                d="M312.848,145.208l-3.708-9.937c-13.157-35.253-42.587-62.424-78.728-72.682 l-10.205-2.896l3.493-10.017c10.26-29.421,38.089-49.188,69.248-49.188c40.438,0,73.337,32.899,73.337,73.337 c0,29.022-17.167,55.359-43.735,67.097L312.848,145.208z M246.861,46.978c33.581,12.68,61.169,38.15,76.52,70.646 c14.167-9.854,22.904-26.143,22.904-43.796c0-29.41-23.927-53.337-53.337-53.337C273.747,20.49,256.285,30.811,246.861,46.978z">
+                                            <path d="M54.9083136,28.8929167 L50.2690171,19.7056894" id="Path-3383"
+                                                stroke-linecap="round"> </path>
+                                            <path d="M4.63929653,28.8929167 L0,19.7056894" id="Path-3383"
+                                                stroke-linecap="round"
+                                                transform="translate(2.319648, 24.299303) scale(-1, 1) translate(-2.319648, -24.299303) ">
                                             </path>
-                                        </g>
-                                        <g id="XMLID_169_">
-                                            <path id="XMLID_197_" style="fill:#1F2C47;"
-                                                d="M183.143,348.485c-86.588,0-157.032-70.444-157.032-157.032 S96.555,34.42,183.143,34.42s157.032,70.444,157.032,157.032S269.73,348.485,183.143,348.485z M183.143,54.42 c-75.56,0-137.032,61.473-137.032,137.032s61.473,137.032,137.032,137.032s137.032-61.473,137.032-137.032 S258.702,54.42,183.143,54.42z">
-                                            </path>
-                                        </g>
-                                        <g id="XMLID_223_">
-                                            <path id="XMLID_224_" style="fill:#1F2C47;"
-                                                d="M183.143,314.554c-67.878,0-123.102-55.223-123.102-123.102 S115.264,68.351,183.143,68.351v20c-56.851,0-103.102,46.251-103.102,103.102s46.251,103.102,103.102,103.102 s103.102-46.251,103.102-103.102h20C306.244,259.331,251.021,314.554,183.143,314.554z">
-                                            </path>
-                                        </g>
-                                        <g id="XMLID_225_">
-                                            <polygon id="XMLID_226_" style="fill:#1F2C47;"
-                                                points="185.117,214.93 133.43,189.087 142.374,171.198 181.168,190.594 232.622,139.141 246.765,153.283 ">
-                                            </polygon>
                                         </g>
                                     </g>
                                 </g>
                             </g>
-
                         </svg>
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">勤怠入力</span>
+
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">各種申請</span>
                     </a>
-                </li>
+                </li> --}}
 
 
 
 
 
-                <li class="relative group">
-                    <a href="{{ route('myPage.index') }}"
-                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-
-                        <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                            height="30px" width="30px" version="1.1" id="Layer_1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <g>
-                                    <path style="fill:#00969B;"
-                                        d="M322.136,353.449v40.41c0,26.994,8.316,48.376,19.501,64.724 c20.229,29.562,49.862,42.647,56.716,42.647c10.647,0,76.221-31.556,76.221-107.37v-40.41c-25.556-7.005-52.292-18.2-76.221-32.328 c-4.434,2.618-8.906,5.117-13.419,7.501C365.002,339.147,344.23,347.395,322.136,353.449z">
-                                    </path>
-                                    <g>
-                                        <path style="fill:#fbfaf9;"
-                                            d="M322.136,393.859v-40.41c22.094-6.054,42.866-14.302,62.799-24.827 c-25.893-0.991-45.371-8.564-56.896-39.291c-4.304,2.733-9.113,5.772-14.533,9.449c-38.149,22.027-76.94,21.985-115.012,0.004 c-5.418-3.675-10.23-6.715-14.532-9.453c-17.469,65.191-146.535,22.026-146.535,169.249h218.572l85.639,0.002 C330.452,442.235,322.136,420.853,322.136,393.859z">
-                                        </path>
-                                        <path style="fill:#fbfaf9;"
-                                            d="M198.494,298.784c38.072,21.981,76.864,22.023,115.012-0.004 c5.421-3.677,10.229-6.716,14.531-9.451c24.684-15.709,32.558-21.417,42.157-79.718c1.82-11.067,6.35-31.339,9.016-52.32 c-37.514-1.061-55.779-48.917-55.779-48.917c-55.811,51.647-150.237,21.232-150.237,21.232 c-9.996,16.659-40.404,27.685-40.404,27.685c2.666,20.983,7.195,41.255,9.015,52.32c9.599,58.298,17.475,64.007,42.157,79.72 C188.263,292.068,193.074,295.11,198.494,298.784z">
-                                        </path>
-                                    </g>
-                                    <path style="fill:#565164;"
-                                        d="M173.194,129.607c0,0,94.426,30.415,150.237-21.232c0,0,18.265,47.857,55.777,48.917 c2.432-19.143,3.31-38.879-0.835-52.755c-17.786-59.55-66.518-93.763-122.373-93.767c-55.856,0-104.585,34.22-122.375,93.767 c-4.146,13.876-3.267,33.612-0.835,52.755C132.79,157.292,163.197,146.267,173.194,129.607z">
-                                    </path>
-                                    <g>
-                                        <path style="fill:#000003;"
-                                            d="M179.47,101.914c1.76,1.081,3.706,1.597,5.632,1.597c3.618,0,7.152-1.822,9.185-5.131 c1.032-1.677,2.129-3.324,3.26-4.892c10.237-14.178,24.463-23.661,41.14-27.424c5.803-1.31,9.444-7.075,8.136-12.877 c-1.311-5.802-7.078-9.446-12.877-8.136c-21.878,4.937-40.504,17.326-53.864,35.829c-1.443,1.998-2.838,4.09-4.145,6.218 C172.821,92.165,174.403,98.798,179.47,101.914z">
-                                        </path>
-                                        <path style="fill:#000003;"
-                                            d="M266.48,64.856c0.044,0.006,0.151,0.02,0.176,0.024c0.467,0.06,0.928,0.089,1.387,0.089 c5.314,0,9.895-3.945,10.614-9.358c0.782-5.879-3.388-11.291-9.267-12.097c-0.179-0.024-0.355-0.046-0.532-0.066 c-5.917-0.625-11.216,3.668-11.838,9.583C256.401,58.906,260.627,64.173,266.48,64.856z">
-                                        </path>
-                                        <path style="fill:#000003;"
-                                            d="M477.421,343.06c-24.938-6.834-51.074-17.918-73.591-31.213c-3.377-1.994-7.572-1.995-10.95,0 c-3.454,2.039-6.921,3.988-10.403,5.871c-18.551-1.1-31.726-6.061-40.95-24.353c22.307-15.171,30.314-27.458,39.293-82.002 c0.56-3.401,1.403-7.8,2.381-12.892c5.367-27.983,13.48-70.272,5.49-97.014c-9.253-30.978-26.81-56.828-50.777-74.755 C314.563,9.235,286.237,0.002,255.999,0c-30.238,0-58.562,9.232-81.914,26.699c-23.967,17.928-41.526,43.777-50.781,74.756 c-7.987,26.734,0.124,69.02,5.491,97.001c0.978,5.099,1.821,9.501,2.382,12.906c9.03,54.841,17.077,66.966,39.661,82.254 c-7.189,13.938-23.255,20.769-47.132,29.948c-21.353,8.209-45.553,17.513-64.549,37.182 c-21.871,22.647-32.502,54.649-32.502,97.835c0,5.948,4.822,10.77,10.77,10.77h218.572h80.129 c4.165,5.519,8.471,10.284,12.587,14.317c17.86,17.5,39.674,28.332,49.639,28.332c9.968,0,31.78-10.833,49.64-28.332 c17.039-16.695,37.35-45.826,37.35-89.808v-40.412C485.345,348.595,482.101,344.342,477.421,343.06z M143.944,107.62 c15.863-53.096,58.8-86.08,112.054-86.08c53.261,0.004,96.198,32.988,112.055,86.081c2.882,9.645,2.935,23.058,1.696,37.119 c-23.512-7.957-36.123-39.86-36.257-40.205c-1.275-3.342-4.126-5.833-7.609-6.647c-3.482-0.812-7.143,0.154-9.768,2.583 c-50.444,46.679-138.744,19.165-139.62,18.885c-4.767-1.536-9.96,0.417-12.537,4.71c-3.803,6.338-13.099,12.648-21.981,17.317 C141.037,128.558,141.292,116.493,143.944,107.62z M152.432,207.863c-0.606-3.683-1.475-8.216-2.481-13.465 c-1.648-8.588-3.686-19.219-5.349-30.333c9.033-4.072,23.313-11.628,32.729-22.1c22.718,5.864,91.819,19.382,142.358-16.687 c7.919,14.053,23.411,35.121,47.352,41.135c-1.594,10.262-3.461,20.014-4.993,27.998c-1.006,5.242-1.874,9.77-2.48,13.451 c-8.945,54.336-14.584,57.923-38.322,73.02c-3.97,2.525-8.457,5.379-13.454,8.759c-17.203,9.87-34.628,14.872-51.795,14.872 c-17.167-0.001-34.59-5.003-51.789-14.868c-4.994-3.38-9.481-6.234-13.449-8.757c-0.34-0.215-0.673-0.429-1.005-0.64 c-0.023-0.014-0.046-0.029-0.069-0.043C166.846,265.669,161.242,261.373,152.432,207.863z M255.999,447.811H48.448 c3.548-73.595,43.903-89.116,82.987-104.142c22.591-8.685,45.82-17.623,57.54-38.296c1.133,0.75,2.289,1.522,3.473,2.324 l0.66,0.414c20.621,11.906,41.779,17.943,62.887,17.944c0,0,0.002,0,0.003,0c21.106,0,42.266-6.039,62.893-17.948l0.659-0.414 c1.314-0.891,2.59-1.742,3.842-2.568c7.582,14.025,17.243,22.352,27.72,27.28c-10.335,4.121-20.905,7.662-31.822,10.653 c-4.68,1.282-7.923,5.535-7.923,10.388v40.412c0,3.885,0.166,7.648,0.467,11.302h-67.02c-5.948,0-10.77,4.822-10.77,10.77 s4.822,10.77,10.77,10.77h70.648c1.994,7.674,4.613,14.7,7.635,21.109h-67.098V447.811z M463.805,393.859 c0,68.166-57.184,94.913-65.451,96.554c-5.197-1.032-29.718-11.989-47.218-36.913c-0.365-0.68-0.802-1.313-1.299-1.896 c-6.822-10.204-12.422-22.641-15.144-37.563c-0.022-0.121-0.039-0.242-0.065-0.362c-1.105-6.179-1.724-12.775-1.724-19.822 v-32.303c19.833-5.968,38.65-13.687,57.008-23.384c0.018-0.01,0.036-0.019,0.055-0.028c2.806-1.484,5.604-3.01,8.391-4.587 c20.601,11.608,42.977,21.177,65.445,27.99v32.312H463.805z">
-                                        </path>
-                                        <path style="fill:#000003;"
-                                            d="M374.291,403.702c-4.206-4.206-11.025-4.206-15.232,0c-4.205,4.206-4.205,11.025,0,15.232 l21.024,21.024c2.103,2.103,4.859,3.155,7.616,3.155c2.756,0,5.513-1.052,7.614-3.155l42.336-42.333 c4.205-4.206,4.206-11.025,0-15.231c-4.205-4.206-11.025-4.206-15.232,0l-34.718,34.717L374.291,403.702z">
-                                        </path>
-                                        <path style="fill:#000003;"
-                                            d="M213.938,405.161h-0.781c-5.948,0-10.77,4.822-10.77,10.77s4.822,10.77,10.77,10.77h0.781 c5.948,0,10.77-4.822,10.77-10.77C224.708,409.983,219.886,405.161,213.938,405.161z">
-                                        </path>
-                                        <path style="fill:#000003;"
-                                            d="M212.813,212.326c7.341,0,13.33-5.987,13.33-13.33s-5.989-13.329-13.33-13.329 c-7.343,0-13.33,5.987-13.33,13.329C199.483,206.339,205.469,212.326,212.813,212.326z">
-                                        </path>
-                                        <path style="fill:#000003;"
-                                            d="M299.194,212.326c7.342,0,13.33-5.987,13.33-13.33s-5.987-13.329-13.33-13.329 c-7.341,0-13.33,5.987-13.33,13.329C285.864,206.339,291.852,212.326,299.194,212.326z">
-                                        </path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">マイページ</span>
-                    </a>
-                </li>
 
 
 
-                <li class="relative group">
+
+
+
+
+
+
+                {{-- <li class="relative group">
                     <a href="{{ route('other') }}"
                         class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
 
@@ -315,7 +584,7 @@
 
                         <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">勤退情報確認</span>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="relative group">
                     <a href="{{ route('pdfCompany.index') }}"
@@ -483,42 +752,7 @@
                 </li>
 
 
-                @if (Auth::check() && Auth::user()->hasRole('admin'))
-                    <li class="relative group">
-                        <a href="{{ route('admin.dashboard') }}"
-                            class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                            <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                                height="30px" width="30px" version="1.1" id="Layer_1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path style="fill:#00969B;"
-                                        d="M496.106,324.207l-52.614-43.331c1.158-8.459,1.725-16.685,1.725-24.877s-0.568-16.417-1.725-24.877 l52.614-43.331c6.311-5.198,7.936-14.169,3.851-21.237l-44.522-77.112c-4.074-7.079-12.666-10.162-20.313-7.279l-63.944,23.953 c-13.156-10.129-27.548-18.432-42.963-24.799l-11.231-67.361C315.648,5.899,308.68,0,300.522,0h-89.043 c-8.159,0-15.126,5.899-16.462,13.958l-11.231,67.361c-15.416,6.367-29.807,14.67-42.963,24.799L76.878,82.165 c-7.624-2.894-16.228,0.2-20.313,7.279l-44.522,77.112c-4.085,7.068-2.46,16.039,3.851,21.237l52.614,43.331 c-1.158,8.459-1.725,16.685-1.725,24.877s0.568,16.417,1.725,24.877l-52.614,43.331c-6.311,5.198-7.936,14.169-3.851,21.237 l44.522,77.112c4.085,7.079,12.7,10.184,20.313,7.279l63.944-23.953c13.156,10.129,27.548,18.432,42.963,24.799l11.231,67.361 c1.332,8.061,8.323,13.958,16.462,13.958h89.043c8.153,0,15.122-5.894,16.462-13.958l11.231-67.361 c15.416-6.367,29.807-14.67,42.964-24.799l63.944,23.953c7.635,2.894,16.228-0.2,20.313-7.279l44.522-77.112 C504.042,338.376,502.417,329.405,496.106,324.207z">
-                                    </path>
-                                    <path style="fill:#00969B;"
-                                        d="M499.957,345.444l-44.522,77.112c-4.085,7.079-12.678,10.173-20.313,7.279l-63.944-23.953 c-13.156,10.129-27.548,18.432-42.963,24.799l-11.231,67.361c-1.34,8.064-8.309,13.958-16.462,13.958h-43.82V0h43.82 c8.159,0,15.126,5.899,16.462,13.958l11.231,67.361c15.416,6.367,29.807,14.67,42.964,24.799l63.944-23.953 c7.647-2.883,16.239,0.2,20.313,7.279l44.522,77.112c4.085,7.068,2.46,16.039-3.851,21.237l-52.614,43.331 c1.158,8.459,1.725,16.685,1.725,24.877s-0.568,16.417-1.725,24.877l52.614,43.331C502.417,329.405,504.042,338.376,499.957,345.444 z">
-                                    </path>
-                                    <path style="fill:#f5d493;"
-                                        d="M312.32,322.783v184.331c-3.039,3.039-7.235,4.886-11.798,4.886h-89.043 c-3.929,0-7.58-1.369-10.463-3.695V322.783H312.32z">
-                                    </path>
-                                    <path style="fill:#e9b66f;"
-                                        d="M312.32,322.783v184.331c-3.039,3.039-7.235,4.886-11.798,4.886H256.69V322.783H312.32z">
-                                    </path>
-                                    <path style="fill:#f5de69;"
-                                        d="M312.32,147.111v75.498L256.668,256l-55.652-33.391v-75.498 c-40.897,20.836-66.781,62.392-66.783,108.886c-0.001,69.725,56.8,122.405,122.371,122.438 c67.539,0.035,122.498-54.903,122.498-122.435C379.103,209.504,353.218,167.947,312.32,147.111z">
-                                    </path>
-                                    <path style="fill:#e6be6f;"
-                                        d="M379.103,256c0-46.496-25.886-88.053-66.783-108.889v75.498L256.668,256v122.431 C324.181,378.43,379.103,323.511,379.103,256z">
-                                    </path>
-                                </g>
-                            </svg>
-                            <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">管理者専用
-                            </span>
-                        </a>
-                    </li>
-                @endif
+
 
 
 
@@ -592,292 +826,16 @@
 
 
 
-                <li class="relative group">
-                    <div
-                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                        <svg class="transition-transform duration-300 hover:scale-105" height="30px" width="30px"
-                            version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
-                            enable-background="new 0 0 64 64" xml:space="preserve" fill="#000000">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <g>
-                                    <g>
-                                        <g>
-                                            <path fill="#506C7F"
-                                                d="M50,2c-0.553,0-1,0.447-1,1v1v2v4c0,0.553,0.447,1,1,1s1-0.447,1-1V6V4V3C51,2.447,50.553,2,50,2z">
-                                            </path>
-                                            <path fill="#506C7F"
-                                                d="M14,2c-0.553,0-1,0.447-1,1v1v2v4c0,0.553,0.447,1,1,1s1-0.447,1-1V6V4V3C15,2.447,14.553,2,14,2z">
-                                            </path>
-                                        </g>
-                                        <path fill="#f5f5f4"
-                                            d="M62,60c0,1.104-0.896,2-2,2H4c-1.104,0-2-0.896-2-2V17h60V60z"></path>
-                                        <path fill="#f3dd8c"
-                                            d="M62,15H2V8c0-1.104,0.896-2,2-2h7v4c0,1.657,1.343,3,3,3s3-1.343,3-3V6h30v4c0,1.657,1.343,3,3,3 s3-1.343,3-3V6h7c1.104,0,2,0.896,2,2V15z">
-                                        </path>
-                                        <g>
-                                            <path fill="#394240"
-                                                d="M11,54h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C10,53.553,10.447,54,11,54z M12,49h4v3h-4V49z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M23,54h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C22,53.553,22.447,54,23,54z M24,49h4v3h-4V49z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M35,54h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C34,53.553,34.447,54,35,54z M36,49h4v3h-4V49z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M11,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C10,42.553,10.447,43,11,43z M12,38h4v3h-4V38z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M23,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C22,42.553,22.447,43,23,43z M24,38h4v3h-4V38z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M35,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C34,42.553,34.447,43,35,43z M36,38h4v3h-4V38z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M47,43h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C46,42.553,46.447,43,47,43z M48,38h4v3h-4V38z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M11,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C10,31.553,10.447,32,11,32z M12,27h4v3h-4V27z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M23,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C22,31.553,22.447,32,23,32z M24,27h4v3h-4V27z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M35,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C34,31.553,34.447,32,35,32z M36,27h4v3h-4V27z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M47,32h6c0.553,0,1-0.447,1-1v-5c0-0.553-0.447-1-1-1h-6c-0.553,0-1,0.447-1,1v5 C46,31.553,46.447,32,47,32z M48,27h4v3h-4V27z">
-                                            </path>
-                                            <path fill="#394240"
-                                                d="M60,4h-7V3c0-1.657-1.343-3-3-3s-3,1.343-3,3v1H17V3c0-1.657-1.343-3-3-3s-3,1.343-3,3v1H4 C1.789,4,0,5.789,0,8v52c0,2.211,1.789,4,4,4h56c2.211,0,4-1.789,4-4V8C64,5.789,62.211,4,60,4z M49,3c0-0.553,0.447-1,1-1 s1,0.447,1,1v7c0,0.553-0.447,1-1,1s-1-0.447-1-1V3z M13,3c0-0.553,0.447-1,1-1s1,0.447,1,1v7c0,0.553-0.447,1-1,1s-1-0.447-1-1 V3z M62,60c0,1.104-0.896,2-2,2H4c-1.104,0-2-0.896-2-2V17h60V60z M62,15H2V8c0-1.104,0.896-2,2-2h7v4c0,1.657,1.343,3,3,3 s3-1.343,3-3V6h30v4c0,1.657,1.343,3,3,3s3-1.343,3-3V6h7c1.104,0,2,0.896,2,2V15z">
-                                            </path>
-                                        </g>
-                                    </g>
-                                    <g>
-                                        <rect x="12" y="27" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="24" y="27" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="36" y="27" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="48" y="27" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="12" y="38" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="24" y="38" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="36" y="38" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="48" y="38" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="12" y="49" fill="#00969B" width="4" height="3"></rect>
-                                        <rect x="24" y="49" fill="#00969B" width="4" height="3">
-                                        </rect>
-                                        <rect x="36" y="49" fill="#00969B" width="4" height="3"></rect>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                        <a href="" class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">スケジュール</a>
-                    </div>
-
-                    <div
-                        class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
-                        <a href="{{ route('room.index') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">会議室</a>
-                        <a href="{{ route('actionSchedule.index') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">行動予定表</a>
-                        <a href="{{ route('companySchedule.index') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">会社予定表</a>
-                    </div>
-                </li>
 
 
 
 
 
 
-                <li class="relative group">
-                    <a href="{{ route('forms.index') }}"
-                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                        <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                            height="30px" width="30px" viewBox="0 0 60 60" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                            xmlns:sketch="http://www.bohemiancoding.com/sketch/ns" fill="#000000">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                            </g>
-                            <g id="SVGRepo_iconCarrier">
-                                <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-                                <title>Paperdesk</title>
-                                <desc>Created with Sketch.</desc>
-                                <defs> </defs>
-                                <g id="colored" stroke="none" stroke-width="1" fill="none"
-                                    fill-rule="evenodd" sketch:type="MSPage">
-                                    <g id="Marketing_sliced" sketch:type="MSLayerGroup"
-                                        transform="translate(-480.000000, 0.000000)"> </g>
-                                    <g id="Marketing" sketch:type="MSLayerGroup"
-                                        transform="translate(-472.000000, 0.000000)" stroke="#314E55"
-                                        stroke-width="2" stroke-linejoin="round">
-                                        <g id="Papersdesk" transform="translate(475.000000, 6.000000)"
-                                            sketch:type="MSShapeGroup">
-                                            <rect id="Rectangle-1493" stroke-linecap="round" fill="#e6da8e" x="0"
-                                                y="29" width="55" height="20"> </rect>
-                                            <path d="M20,34 L35,34" id="Line" stroke-linecap="square"> </path>
-                                            <rect id="Rectangle-1494" stroke-linecap="round" fill="#f8f7f7" x="10"
-                                                y="9" width="24" height="20"> </rect>
-                                            <path d="M37,6 L37,28.8266802 L13,28.8266802" id="Rectangle-1494"
-                                                stroke-linecap="round"
-                                                transform="translate(25.000000, 17.413340) scale(1, -1) translate(-25.000000, -17.413340) ">
-                                            </path>
-                                            <path d="M40,3 L40,28.9098058 L16,28.9098058" id="Rectangle-1494"
-                                                stroke-linecap="round"
-                                                transform="translate(28.000000, 15.954903) scale(1, -1) translate(-28.000000, -15.954903) ">
-                                            </path>
-                                            <path d="M43,0 L43,28.8638468 L19,28.8638468" id="Rectangle-1494"
-                                                stroke-linecap="round"
-                                                transform="translate(31.000000, 14.431923) scale(1, -1) translate(-31.000000, -14.431923) ">
-                                            </path>
-                                            <path d="M54.9083136,28.8929167 L50.2690171,19.7056894" id="Path-3383"
-                                                stroke-linecap="round"> </path>
-                                            <path d="M4.63929653,28.8929167 L0,19.7056894" id="Path-3383"
-                                                stroke-linecap="round"
-                                                transform="translate(2.319648, 24.299303) scale(-1, 1) translate(-2.319648, -24.299303) ">
-                                            </path>
-                                        </g>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
 
-                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">各種申請</span>
-                    </a>
-                </li>
-
-                @auth
-                    <li class="relative group">
-                        <a href="{{ route('applications.index') }}"
-                            class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                            <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                                height="30px" width="30px" viewBox="0 0 1024 1024" class="icon" version="1.1"
-                                xmlns="http://www.w3.org/2000/svg" fill="#000000">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        d="M855.68042 343.328203H739.741789v-10.934071c0-38.926072-31.658534-70.584607-70.64604-70.584607H483.413122c-18.081815 0-56.226663-58.508903-118.580255-58.508903H166.592286c-38.984434 0-70.704401 31.716896-70.704401 70.642968v472.888605c0 38.147919 30.516902 69.203385 68.483593 70.405426 0.418769 0 0.781225 0.239589 1.199994 0.23959H794.166413c38.929144 0 64.097269-32.49812 70.64604-70.64604l61.514006-332.857952c7.629993-39.288528-31.716896-70.645016-70.646039-70.645016z"
-                                        fill="#27323A"></path>
-                                    <path
-                                        d="M142.023133 273.94359c0-13.514262 10.992433-24.506695 24.569153-24.506695h198.240581c24.08895 0 44.692594 16.81834 62.895227 31.658534 16.941207 13.816309 32.918937 26.850369 55.685028 26.850369h185.682627c13.517334 0 24.509767 10.992433 24.509767 24.448334v10.934071H591.665445c-36.886493 0-68.545027 50.161166-82.24154 50.161166H313.58843c-38.926072 0-63.374406 31.716896-70.704401 70.642968l-59.409922 285.704961c-1.98429 10.091414-6.188363 20.244261-17.66407 21.326508-13.154879-0.421841-23.787928-11.115299-23.787927-24.331611V273.94359z"
-                                        fill="#79CCBF"></path>
-                                    <path
-                                        d="M880.971411 405.562001L819.33761 739.023021c-0.541635 3.306126-6.068568 32.31894-25.171197 32.318941H224.44283c1.261427-4.324892 3.183259-7.147743 4.145712-12.134065l59.650535-286.544547c1.442654-7.750812 7.631017-33.038732 25.350377-33.038732h195.835474c23.249364 0 38.867711-14.477738 53.944423-28.475275 7.209177-6.668565 22.166093-20.48385 28.776297-21.686915h263.534772c8.590398 0 18.383861 4.324892 23.307725 10.272642 1.743677 2.101013 2.165517 3.422849 2.165518 4.506119-0.001024 0.481226-0.120818 0.902043-0.182252 1.320812z"
-                                        fill="#f7cf73"></path>
-                                    <path
-                                        d="M766.654615 625.006223H577.126274c-11.053866 0-20.004671-8.949782-20.004672-20.004671s8.949782-20.004671 20.004672-20.004672h189.527317c10.992433 0 19.943238 8.949782 19.943238 20.004672s-8.949782 20.004671-19.942214 20.004671zM784.434383 536.641848H594.907066c-11.053866 0-20.004671-8.953877-20.004671-20.004671 0-11.053866 8.950806-20.004671 20.004671-20.004672h189.527317c10.995505 0 19.94631 8.949782 19.94631 20.004672 0 11.050794-8.950806 20.004671-19.94631 20.004671z"
-                                        fill="#27323A"></path>
-                                    <path
-                                        d="M483.413122 307.945798c-22.76609 0-38.744845-13.035084-55.685028-26.850369-18.201609-14.840194-38.806278-31.658534-62.895227-31.658534H166.592286c-13.575696 0-24.569152 10.992433-24.569153 24.506695v34.002208h341.389989z"
-                                        fill="#FFFFFF"></path>
-                                </g>
-                            </svg>
-                            <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">申請履歴</span>
-                        </a>
-                    </li>
-
-                    @if (auth()->user()->is_boss)
-                        <div
-                            class="flex flex-col items-center justify-center w-24 h-16  bg-white border border-gray-200 hover:bg-gray-100">
-                            <li class="relative group">
-                                <a href=""
-                                    class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                                    <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                                        height="30px" width="30px" version="1.1" id="Capa_1"
-                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        viewBox="0 0 440.928 440.928" xml:space="preserve" fill="#000000">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <g>
-                                                <g id="XMLID_28_">
-                                                    <g>
-                                                        <path style="fill:#E2B369;"
-                                                            d="M398.104,282.228l-0.01,109.36c-8.81-2.04-15.4-9.94-15.4-19.37v-97.61 C386.844,278.558,392.174,281.298,398.104,282.228z">
-                                                        </path>
-                                                        <rect x="42.824" y="401.118" style="fill:#E2B369;" width="355.27"
-                                                            height="30.81"></rect>
-                                                        <path
-                                                            d="M58.224,372.218h0.01v-97.61c-4.16,3.95-9.49,6.69-15.41,7.62v109.36C51.634,389.548,58.224,381.648,58.224,372.218z M187.444,281.518c0,18.2,14.81,33.02,33.02,33.02c18.2,0,33.01-14.82,33.01-33.02v-29.26c0-58.81,8.13-114.44,24.16-165.34 c1.82-5.8,2.75-11.85,2.75-18c0-16.53-6.59-31.93-18.56-43.35c-11.25-10.74-25.84-16.57-41.34-16.57c-0.96,0-1.92,0.02-2.89,0.07 c-31.02,1.44-56.07,26.9-57.03,57.97c-0.2,6.59,0.66,13.1,2.56,19.33c16.14,53.05,24.32,105.46,24.32,155.77V281.518z M382.694,372.218c0,9.43,6.59,17.33,15.4,19.37l0.01-109.36c-5.93-0.93-11.26-3.67-15.41-7.62V372.218z M407.104,273.578 l-0.01,123.05v44.3H33.824v-39.81v-127.54h4.5c10.97,0,19.9-8.93,19.9-19.91h0.01v-4.16h120.21v-7.37 c0-49.42-8.05-100.95-23.93-153.15c-2.19-7.17-3.17-14.65-2.94-22.23c1.1-35.73,29.91-65.02,65.6-66.68 c19.05-0.89,37.11,5.85,50.87,18.98c13.76,13.14,21.34,30.85,21.34,49.86c0,7.07-1.07,14.03-3.17,20.71 c-15.5,49.22-23.46,103.01-23.71,159.88h120.19v4.16c0,10.98,8.93,19.91,19.91,19.91H407.104z M398.094,431.928v-30.81H42.824 v30.81H398.094z M59.254,392.118h322.41c-3.95-4.16-6.69-9.48-7.62-15.4H66.874C65.944,382.638,63.214,387.958,59.254,392.118z M373.694,367.718v-109.21h-111.22v23.01c0,23.17-18.84,42.02-42.01,42.02s-42.02-18.85-42.02-42.02v-23.01H67.234v109.21 H373.694z">
-                                                        </path>
-                                                        <path style="fill:#E2B369;"
-                                                            d="M374.044,376.718c0.93,5.92,3.67,11.24,7.62,15.4H59.254c3.96-4.16,6.69-9.48,7.62-15.4H374.044z">
-                                                        </path>
-                                                        <path style="fill:#FFCC73;"
-                                                            d="M253.474,281.518c0,18.2-14.81,33.02-33.01,33.02c-18.21,0-33.02-14.82-33.02-33.02v-39.38 c0-50.31-8.18-102.72-24.32-155.77c-1.9-6.23-2.76-12.74-2.56-19.33c0.96-31.07,26.01-56.53,57.03-57.97 c0.97-0.05,1.93-0.07,2.89-0.07c15.5,0,30.09,5.83,41.34,16.57c11.97,11.42,18.56,26.82,18.56,43.35c0,6.15-0.93,12.2-2.75,18 c-16.03,50.9-24.16,106.53-24.16,165.34V281.518z">
-                                                        </path>
-                                                        <path style="fill:#FFCC73;"
-                                                            d="M178.444,281.518c0,23.17,18.85,42.02,42.02,42.02s42.01-18.85,42.01-42.02v-23.01h111.22v109.21 H67.234v-109.21h111.21V281.518z">
-                                                        </path>
-                                                        <path style="fill:#E2B369;"
-                                                            d="M58.234,274.608v97.61h-0.01c0,9.43-6.59,17.33-15.4,19.37v-109.36 C48.744,281.298,54.074,278.558,58.234,274.608z">
-                                                        </path>
-                                                    </g>
-                                                </g>
-                                            </g>
-                                        </g>
-                                    </svg>
-                                    <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">承認</span>
-                                </a>
-
-
-                                <div
-                                    class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
-                                    <a href="{{ route('applications.boss_index') }}"
-                                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(上司)</a>
-                                    <a href="{{ route('time_off_boss.index') }}"
-                                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(上司)</a>
-                                </div>
-                        </div>
-                        </li>
-                    @endif
-                @endauth
 
                 <!--HR-->
 
-                @auth
-                    @if (auth()->user()->division && auth()->user()->corp->corp_name === '太成HD')
-                        <li class="relative group">
-                            <a href=""
-                                class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-
-                                <img src="{{ asset('logo22.png') }}"
-                                alt=""
-                                class="w-8 h-8 transition-transform duration-300 transform group-hover:-translate-y-1 mt-1"
-                                >
-
-                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">Holdings管理</span>
-
-                            </a>
-
-
-                            <div
-                                class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
-                                <a href="{{ route('hr.hr.dashboard') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a>
-                                <a href="{{ route('Kintaihr') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
-
-                                <a href="{{ route('applications2.index') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文</a>
-
-                                <a href="{{ route('car.index') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">車管理</a>
-
-                                <a href="{{ route('applications2.computer') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">パソコン問い合わせ</a>
-
-                                <a href="{{ route('past-examples.index') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">問い合わせ事例管理</a>
-                            </div>
-
-                        </li>
-                    @endif
-                @endauth
 
                 <!--KEIRI-->
 
@@ -991,6 +949,24 @@
 
 
                 </li>
+                <li class="relative group">
+                    <a href="{{ route('ComputerForm.index') }}"
+                    class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+
+
+
+
+
+                    <svg
+                     height="30px" width="30px"
+                    class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                    viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M403.2 803.2c-0.8 0-8.8 64-9.6 65.6-1.6 13.6-4 21.6-11.2 28-2.4 2.4-4.8 3.2-7.2 4.8-5.6 4-10.4 6.4-16.8 10.4-4.8 2.4-10.4 12-4.8 14.4h316.8c5.6-2.4 0-11.2-4.8-13.6-6.4-4-11.2-7.2-16.8-12-2.4-1.6-4.8-4-7.2-6.4-6.4-6.4-9.6-12-11.2-25.6 0-1.6-9.6-71.2-9.6-65.6" fill="#D2D5D6"></path><path d="M992 704.8V124c0-14.4-11.2-26.4-25.6-26.4H57.6c-14.4 0-25.6 12-25.6 26.4v581.6" fill="#938993"></path><path d="M84 149.6h856v503.2h-856z" fill="#E2D3E2"></path><path d="M376 137.6l576 528v-528z" fill="#FAFBFA"></path><path d="M32 704v72.8c0 14.4 11.2 26.4 25.6 26.4h908c14.4 0 25.6-12 25.6-26.4V704" fill="#D2D5D6"></path><path d="M511.2 754.4m-24 0a24 24 0 1 0 48 0 24 24 0 1 0-48 0Z" fill="#414343"></path><path d="M623.2 827.2c-0.8-24-1.6-24-1.6-24H404s-0.8 0-1.6 24h220.8z" fill="#0D1014"></path><path d="M449.6 568.8l-1.6 4z" fill="#99D9E6"></path><path d="M353.6 934.4c-0.8 0-2.4 0-3.2-0.8-4-1.6-7.2-5.6-7.2-10.4 0-8 6.4-16 11.2-18.4l3.2-1.6c4.8-2.4 8.8-4.8 12-8 1.6-0.8 2.4-1.6 4-2.4 0.8-0.8 1.6-0.8 2.4-1.6 4.8-4 6.4-10.4 8-22.4 8-67.2 8-67.2 16-67.2 4.8 0 8 3.2 8 8v2.4c-0.8 5.6-7.2 54.4-8 58.4-1.6 14.4-4.8 24.8-13.6 32.8-1.6 1.6-4 3.2-5.6 4-0.8 0.8-1.6 0.8-2.4 1.6-4.8 4-9.6 6.4-14.4 8.8l-3.2 1.6H656c-5.6-3.2-10.4-7.2-15.2-10.4-1.6-1.6-3.2-3.2-5.6-4.8l-2.4-1.6c-8.8-8-12-16.8-13.6-30.4-0.8-4-6.4-48.8-8-58.4 0-0.8-0.8-1.6-0.8-3.2 0-4 3.2-8 7.2-8.8 8.8-0.8 8.8-0.8 16.8 67.2 1.6 12.8 4 16.8 8 20.8l2.4 2.4c1.6 1.6 3.2 2.4 4 4 5.6 4 9.6 7.2 16 11.2 4.8 2.4 12 10.4 11.2 17.6 0 4.8-3.2 8-7.2 10.4-0.8 0.8-2.4 0.8-3.2 0.8l-312-1.6zM992 712.8c-4.8 0-8-3.2-8-8V124c0-10.4-8-18.4-17.6-18.4H57.6c-9.6 0-17.6 8-17.6 18.4v581.6c0 4.8-3.2 8-8 8s-8-3.2-8-8V124c0-19.2 15.2-34.4 33.6-34.4h908c18.4 0 33.6 15.2 33.6 34.4v581.6c0.8 4-2.4 7.2-7.2 7.2z" fill="#6A576D"></path><path d="M940 660.8h-856c-4.8 0-8-3.2-8-8V149.6c0-4.8 3.2-8 8-8h856c4.8 0 8 3.2 8 8v503.2c0 4.8-4 8-8 8z m-848-16h840V157.6h-840v487.2zM966.4 811.2H57.6c-18.4 0-33.6-15.2-33.6-34.4V704c0-4.8 3.2-8 8-8h960c4.8 0 8 3.2 8 8v72.8c0 19.2-15.2 34.4-33.6 34.4zM40 712v64.8c0 10.4 8 18.4 17.6 18.4h908c9.6 0 17.6-8 17.6-18.4V712H40z" fill="#6A576D"></path></g></svg>
+
+                        <span class="mt-1 text-gray-800 text-[11px] font-medium">PC問い合わせ</span>
+                    </a>
+
+
+                </li>
                 {{-- <a href="{{ route('suggestion.index') }}" class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">投書箱</a> --}}
 
 
@@ -999,19 +975,152 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+                @if (Auth::check() && Auth::user()->hasRole('admin'))
                 <li class="relative group" style="margin-left: 5rem;">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+                        <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                            height="30px" width="30px" version="1.1" id="Layer_1"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path style="fill:#00969B;"
+                                    d="M496.106,324.207l-52.614-43.331c1.158-8.459,1.725-16.685,1.725-24.877s-0.568-16.417-1.725-24.877 l52.614-43.331c6.311-5.198,7.936-14.169,3.851-21.237l-44.522-77.112c-4.074-7.079-12.666-10.162-20.313-7.279l-63.944,23.953 c-13.156-10.129-27.548-18.432-42.963-24.799l-11.231-67.361C315.648,5.899,308.68,0,300.522,0h-89.043 c-8.159,0-15.126,5.899-16.462,13.958l-11.231,67.361c-15.416,6.367-29.807,14.67-42.963,24.799L76.878,82.165 c-7.624-2.894-16.228,0.2-20.313,7.279l-44.522,77.112c-4.085,7.068-2.46,16.039,3.851,21.237l52.614,43.331 c-1.158,8.459-1.725,16.685-1.725,24.877s0.568,16.417,1.725,24.877l-52.614,43.331c-6.311,5.198-7.936,14.169-3.851,21.237 l44.522,77.112c4.085,7.079,12.7,10.184,20.313,7.279l63.944-23.953c13.156,10.129,27.548,18.432,42.963,24.799l11.231,67.361 c1.332,8.061,8.323,13.958,16.462,13.958h89.043c8.153,0,15.122-5.894,16.462-13.958l11.231-67.361 c15.416-6.367,29.807-14.67,42.964-24.799l63.944,23.953c7.635,2.894,16.228-0.2,20.313-7.279l44.522-77.112 C504.042,338.376,502.417,329.405,496.106,324.207z">
+                                </path>
+                                <path style="fill:#00969B;"
+                                    d="M499.957,345.444l-44.522,77.112c-4.085,7.079-12.678,10.173-20.313,7.279l-63.944-23.953 c-13.156,10.129-27.548,18.432-42.963,24.799l-11.231,67.361c-1.34,8.064-8.309,13.958-16.462,13.958h-43.82V0h43.82 c8.159,0,15.126,5.899,16.462,13.958l11.231,67.361c15.416,6.367,29.807,14.67,42.964,24.799l63.944-23.953 c7.647-2.883,16.239,0.2,20.313,7.279l44.522,77.112c4.085,7.068,2.46,16.039-3.851,21.237l-52.614,43.331 c1.158,8.459,1.725,16.685,1.725,24.877s-0.568,16.417-1.725,24.877l52.614,43.331C502.417,329.405,504.042,338.376,499.957,345.444 z">
+                                </path>
+                                <path style="fill:#f5d493;"
+                                    d="M312.32,322.783v184.331c-3.039,3.039-7.235,4.886-11.798,4.886h-89.043 c-3.929,0-7.58-1.369-10.463-3.695V322.783H312.32z">
+                                </path>
+                                <path style="fill:#e9b66f;"
+                                    d="M312.32,322.783v184.331c-3.039,3.039-7.235,4.886-11.798,4.886H256.69V322.783H312.32z">
+                                </path>
+                                <path style="fill:#f5de69;"
+                                    d="M312.32,147.111v75.498L256.668,256l-55.652-33.391v-75.498 c-40.897,20.836-66.781,62.392-66.783,108.886c-0.001,69.725,56.8,122.405,122.371,122.438 c67.539,0.035,122.498-54.903,122.498-122.435C379.103,209.504,353.218,167.947,312.32,147.111z">
+                                </path>
+                                <path style="fill:#e6be6f;"
+                                    d="M379.103,256c0-46.496-25.886-88.053-66.783-108.889v75.498L256.668,256v122.431 C324.181,378.43,379.103,323.511,379.103,256z">
+                                </path>
+                            </g>
+                        </svg>
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">管理者専用
+                        </span>
+                    </a>
+                </li>
+            @endif
+
+            @auth
+            @if (auth()->user()->division && auth()->user()->corp->corp_name === '太成HD')
+                <li class="relative group">
+                    <a href=""
+                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+
+                        <img src="{{ asset('logo22.png') }}"
+                        alt=""
+                        class="w-8 h-8 transition-transform duration-300 transform group-hover:-translate-y-1 mt-1"
+                        >
+
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">Holdings管理</span>
+
+                    </a>
+
+
+                    <div
+                        class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
+                        <a href="{{ route('hr.hr.dashboard') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a>
+                        <a href="{{ route('Kintaihr') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
+
+                        <a href="{{ route('applications2.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文</a>
+
+                        <a href="{{ route('car.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">車管理</a>
+
+                        <a href="{{ route('applications2.computer') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">パソコン問い合わせ</a>
+
+                        <a href="{{ route('past-examples.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">問い合わせ事例管理</a>
+                    </div>
+
+                </li>
+            @endif
+        @endauth
+
+
+
+
+
+
+                <li class="relative group">
+                    <a href="{{ route('myPage.index') }}"
+                        class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
+
+                        <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
+                            height="30px" width="30px" version="1.1" id="Layer_1"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <g>
+                                    <path style="fill:#00969B;"
+                                        d="M322.136,353.449v40.41c0,26.994,8.316,48.376,19.501,64.724 c20.229,29.562,49.862,42.647,56.716,42.647c10.647,0,76.221-31.556,76.221-107.37v-40.41c-25.556-7.005-52.292-18.2-76.221-32.328 c-4.434,2.618-8.906,5.117-13.419,7.501C365.002,339.147,344.23,347.395,322.136,353.449z">
+                                    </path>
+                                    <g>
+                                        <path style="fill:#fbfaf9;"
+                                            d="M322.136,393.859v-40.41c22.094-6.054,42.866-14.302,62.799-24.827 c-25.893-0.991-45.371-8.564-56.896-39.291c-4.304,2.733-9.113,5.772-14.533,9.449c-38.149,22.027-76.94,21.985-115.012,0.004 c-5.418-3.675-10.23-6.715-14.532-9.453c-17.469,65.191-146.535,22.026-146.535,169.249h218.572l85.639,0.002 C330.452,442.235,322.136,420.853,322.136,393.859z">
+                                        </path>
+                                        <path style="fill:#fbfaf9;"
+                                            d="M198.494,298.784c38.072,21.981,76.864,22.023,115.012-0.004 c5.421-3.677,10.229-6.716,14.531-9.451c24.684-15.709,32.558-21.417,42.157-79.718c1.82-11.067,6.35-31.339,9.016-52.32 c-37.514-1.061-55.779-48.917-55.779-48.917c-55.811,51.647-150.237,21.232-150.237,21.232 c-9.996,16.659-40.404,27.685-40.404,27.685c2.666,20.983,7.195,41.255,9.015,52.32c9.599,58.298,17.475,64.007,42.157,79.72 C188.263,292.068,193.074,295.11,198.494,298.784z">
+                                        </path>
+                                    </g>
+                                    <path style="fill:#565164;"
+                                        d="M173.194,129.607c0,0,94.426,30.415,150.237-21.232c0,0,18.265,47.857,55.777,48.917 c2.432-19.143,3.31-38.879-0.835-52.755c-17.786-59.55-66.518-93.763-122.373-93.767c-55.856,0-104.585,34.22-122.375,93.767 c-4.146,13.876-3.267,33.612-0.835,52.755C132.79,157.292,163.197,146.267,173.194,129.607z">
+                                    </path>
+                                    <g>
+                                        <path style="fill:#000003;"
+                                            d="M179.47,101.914c1.76,1.081,3.706,1.597,5.632,1.597c3.618,0,7.152-1.822,9.185-5.131 c1.032-1.677,2.129-3.324,3.26-4.892c10.237-14.178,24.463-23.661,41.14-27.424c5.803-1.31,9.444-7.075,8.136-12.877 c-1.311-5.802-7.078-9.446-12.877-8.136c-21.878,4.937-40.504,17.326-53.864,35.829c-1.443,1.998-2.838,4.09-4.145,6.218 C172.821,92.165,174.403,98.798,179.47,101.914z">
+                                        </path>
+                                        <path style="fill:#000003;"
+                                            d="M266.48,64.856c0.044,0.006,0.151,0.02,0.176,0.024c0.467,0.06,0.928,0.089,1.387,0.089 c5.314,0,9.895-3.945,10.614-9.358c0.782-5.879-3.388-11.291-9.267-12.097c-0.179-0.024-0.355-0.046-0.532-0.066 c-5.917-0.625-11.216,3.668-11.838,9.583C256.401,58.906,260.627,64.173,266.48,64.856z">
+                                        </path>
+                                        <path style="fill:#000003;"
+                                            d="M477.421,343.06c-24.938-6.834-51.074-17.918-73.591-31.213c-3.377-1.994-7.572-1.995-10.95,0 c-3.454,2.039-6.921,3.988-10.403,5.871c-18.551-1.1-31.726-6.061-40.95-24.353c22.307-15.171,30.314-27.458,39.293-82.002 c0.56-3.401,1.403-7.8,2.381-12.892c5.367-27.983,13.48-70.272,5.49-97.014c-9.253-30.978-26.81-56.828-50.777-74.755 C314.563,9.235,286.237,0.002,255.999,0c-30.238,0-58.562,9.232-81.914,26.699c-23.967,17.928-41.526,43.777-50.781,74.756 c-7.987,26.734,0.124,69.02,5.491,97.001c0.978,5.099,1.821,9.501,2.382,12.906c9.03,54.841,17.077,66.966,39.661,82.254 c-7.189,13.938-23.255,20.769-47.132,29.948c-21.353,8.209-45.553,17.513-64.549,37.182 c-21.871,22.647-32.502,54.649-32.502,97.835c0,5.948,4.822,10.77,10.77,10.77h218.572h80.129 c4.165,5.519,8.471,10.284,12.587,14.317c17.86,17.5,39.674,28.332,49.639,28.332c9.968,0,31.78-10.833,49.64-28.332 c17.039-16.695,37.35-45.826,37.35-89.808v-40.412C485.345,348.595,482.101,344.342,477.421,343.06z M143.944,107.62 c15.863-53.096,58.8-86.08,112.054-86.08c53.261,0.004,96.198,32.988,112.055,86.081c2.882,9.645,2.935,23.058,1.696,37.119 c-23.512-7.957-36.123-39.86-36.257-40.205c-1.275-3.342-4.126-5.833-7.609-6.647c-3.482-0.812-7.143,0.154-9.768,2.583 c-50.444,46.679-138.744,19.165-139.62,18.885c-4.767-1.536-9.96,0.417-12.537,4.71c-3.803,6.338-13.099,12.648-21.981,17.317 C141.037,128.558,141.292,116.493,143.944,107.62z M152.432,207.863c-0.606-3.683-1.475-8.216-2.481-13.465 c-1.648-8.588-3.686-19.219-5.349-30.333c9.033-4.072,23.313-11.628,32.729-22.1c22.718,5.864,91.819,19.382,142.358-16.687 c7.919,14.053,23.411,35.121,47.352,41.135c-1.594,10.262-3.461,20.014-4.993,27.998c-1.006,5.242-1.874,9.77-2.48,13.451 c-8.945,54.336-14.584,57.923-38.322,73.02c-3.97,2.525-8.457,5.379-13.454,8.759c-17.203,9.87-34.628,14.872-51.795,14.872 c-17.167-0.001-34.59-5.003-51.789-14.868c-4.994-3.38-9.481-6.234-13.449-8.757c-0.34-0.215-0.673-0.429-1.005-0.64 c-0.023-0.014-0.046-0.029-0.069-0.043C166.846,265.669,161.242,261.373,152.432,207.863z M255.999,447.811H48.448 c3.548-73.595,43.903-89.116,82.987-104.142c22.591-8.685,45.82-17.623,57.54-38.296c1.133,0.75,2.289,1.522,3.473,2.324 l0.66,0.414c20.621,11.906,41.779,17.943,62.887,17.944c0,0,0.002,0,0.003,0c21.106,0,42.266-6.039,62.893-17.948l0.659-0.414 c1.314-0.891,2.59-1.742,3.842-2.568c7.582,14.025,17.243,22.352,27.72,27.28c-10.335,4.121-20.905,7.662-31.822,10.653 c-4.68,1.282-7.923,5.535-7.923,10.388v40.412c0,3.885,0.166,7.648,0.467,11.302h-67.02c-5.948,0-10.77,4.822-10.77,10.77 s4.822,10.77,10.77,10.77h70.648c1.994,7.674,4.613,14.7,7.635,21.109h-67.098V447.811z M463.805,393.859 c0,68.166-57.184,94.913-65.451,96.554c-5.197-1.032-29.718-11.989-47.218-36.913c-0.365-0.68-0.802-1.313-1.299-1.896 c-6.822-10.204-12.422-22.641-15.144-37.563c-0.022-0.121-0.039-0.242-0.065-0.362c-1.105-6.179-1.724-12.775-1.724-19.822 v-32.303c19.833-5.968,38.65-13.687,57.008-23.384c0.018-0.01,0.036-0.019,0.055-0.028c2.806-1.484,5.604-3.01,8.391-4.587 c20.601,11.608,42.977,21.177,65.445,27.99v32.312H463.805z">
+                                        </path>
+                                        <path style="fill:#000003;"
+                                            d="M374.291,403.702c-4.206-4.206-11.025-4.206-15.232,0c-4.205,4.206-4.205,11.025,0,15.232 l21.024,21.024c2.103,2.103,4.859,3.155,7.616,3.155c2.756,0,5.513-1.052,7.614-3.155l42.336-42.333 c4.205-4.206,4.206-11.025,0-15.231c-4.205-4.206-11.025-4.206-15.232,0l-34.718,34.717L374.291,403.702z">
+                                        </path>
+                                        <path style="fill:#000003;"
+                                            d="M213.938,405.161h-0.781c-5.948,0-10.77,4.822-10.77,10.77s4.822,10.77,10.77,10.77h0.781 c5.948,0,10.77-4.822,10.77-10.77C224.708,409.983,219.886,405.161,213.938,405.161z">
+                                        </path>
+                                        <path style="fill:#000003;"
+                                            d="M212.813,212.326c7.341,0,13.33-5.987,13.33-13.33s-5.989-13.329-13.33-13.329 c-7.343,0-13.33,5.987-13.33,13.329C199.483,206.339,205.469,212.326,212.813,212.326z">
+                                        </path>
+                                        <path style="fill:#000003;"
+                                            d="M299.194,212.326c7.342,0,13.33-5.987,13.33-13.33s-5.987-13.329-13.33-13.329 c-7.341,0-13.33,5.987-13.33,13.329C285.864,206.339,291.852,212.326,299.194,212.326z">
+                                        </path>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                        <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">マイページ</span>
+                    </a>
+                </li>
+
+
+
+
+
+
+
+
+                <li class="relative group" >
 
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
@@ -1047,7 +1156,7 @@
 
 
 
-                <li class="ml-auto">
+                <li class="relative group">
                     <!--notifications-->
 
 

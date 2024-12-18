@@ -171,12 +171,12 @@
                 <li class="relative group shadow">
                     <div class="flex flex-col items-center justify-center w-24 h-16  bg-sky-200  group-hover:bg-gray-50">
 
-                        <!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
-                  <svg enable-background="new 0 0 32 32" height="32px" id="Layer_1" version="1.1" viewBox="0 0 32 32" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="fill-gray-800 group-hover:-translate-y-1 transition-transform duration-300">
-                    <g id="search_1_">
-                        <path d="M20,0.005c-6.627,0-12,5.373-12,12c0,2.026,0.507,3.933,1.395,5.608l-8.344,8.342l0.007,0.006   C0.406,26.602,0,27.49,0,28.477c0,1.949,1.58,3.529,3.529,3.529c0.985,0,1.874-0.406,2.515-1.059l-0.002-0.002l8.341-8.34   c1.676,0.891,3.586,1.4,5.617,1.4c6.627,0,12-5.373,12-12C32,5.378,26.627,0.005,20,0.005z M4.795,29.697   c-0.322,0.334-0.768,0.543-1.266,0.543c-0.975,0-1.765-0.789-1.765-1.764c0-0.498,0.21-0.943,0.543-1.266l-0.009-0.008l8.066-8.066   c0.705,0.951,1.545,1.791,2.494,2.498L4.795,29.697z M20,22.006c-5.522,0-10-4.479-10-10c0-5.522,4.478-10,10-10   c5.521,0,10,4.478,10,10C30,17.527,25.521,22.006,20,22.006z" fill-rule="evenodd"/>
-                        <path d="M20,5.005c-3.867,0-7,3.134-7,7c0,0.276,0.224,0.5,0.5,0.5s0.5-0.224,0.5-0.5c0-3.313,2.686-6,6-6   c0.275,0,0.5-0.224,0.5-0.5S20.275,5.005,20,5.005z" fill-rule="evenodd"/></g>
-                    </svg>
+
+
+                    <svg
+
+                    class="w-8 h-8 fill-gray-800 group-hover:-translate-y-1 transition-transform duration-300"
+                    fill="#000000" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M30-0.003h-28c-1.099 0-2 0.9-2 2v28.006c0 1.099 0.9 2 2 2h28c1.099 0 2-0.901 2-2v-28.006c0-1.099-0.901-2-2-2zM30 30.003h-28v-28.006h28v28.006zM7 11.010h2v2c0 0.552 0.448 1 1 1s1-0.448 1-1v-2h2c0.552 0 1-0.448 1-1s-0.448-1-1-1h-2v-2c0-0.552-0.448-1-1-1s-1 0.448-1 1v2h-2c-0.552 0-1 0.448-1 1s0.448 1 1 1zM13.536 18.474c-0.39-0.39-1.024-0.391-1.414-0l-2.122 2.121-2.122-2.121c-0.391-0.39-1.024-0.39-1.415 0s-0.391 1.024 0 1.415l2.121 2.121-2.121 2.121c-0.391 0.39-0.391 1.024 0 1.415s1.024 0.39 1.415 0l2.122-2.12 2.122 2.121c0.39 0.39 1.024 0.39 1.414 0s0.39-1.024 0-1.415l-2.121-2.121 2.121-2.121c0.39-0.391 0.39-1.024 0-1.415zM19 11.009h6c0.552 0 1-0.448 1-1s-0.448-1-1-1h-6c-0.552 0-1 0.448-1 1s0.448 1 1 1zM19 21.009h6c0.552 0 1-0.448 1-1s-0.448-1-1-1h-6c-0.552 0-1 0.448-1 1s0.448 1 1 1zM19 25.009h6c0.552 0 1-0.448 1-1s-0.448-1-1-1h-6c-0.552 0-1 0.448-1 1s0.448 1 1 1z"></path> </g></svg>
 
 
                       <a href="#" class="mr-2 text-gray-800 text-xs">計算オプション</a>
@@ -184,9 +184,10 @@
 
                     <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block">
                         <a href="{{ route('admin.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">フィルター</a>
-                        <a href="{{ route('admin.calculated') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">CSV</a>
-                        <a href="{{ route('admin.calendar.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">calendar</a>
-                        <a href="{{ route('admin.calendar12.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">year calendar</a>
+                        <a href="{{ route('admin.calculated') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">給料計算</a>
+                        <a href="{{ route('admin.csv.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">給与計算データ作成</a>
+                        <a href="{{ route('admin.calendar.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">公休設定</a>
+                        <a href="{{ route('admin.calendar12.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">全社年間公休設定</a>
                       </div>
                 </li>
 

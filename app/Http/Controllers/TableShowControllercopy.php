@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\VacationCalendar;
 use App\Models\AttendanceTypeRecord;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\TableShowController;
 
 class TableShowController extends Controller
 {

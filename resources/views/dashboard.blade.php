@@ -83,11 +83,13 @@
 
 
 
-
             <div class="max-w-sm mx-auto px-8">
 
 
-                <div class="bg-white p-6 rounded-md shadow-md max-w-2xl mx-auto font-sans">
+
+
+
+                <div class="bg-white p-6 rounded-md shadow-md max-w-2xl mx-auto font-sans mt-3">
                     <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">勤怠記録</h2>
                     <form id="timeRecordForm" method="POST" class="space-y-6">
                         @csrf

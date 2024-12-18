@@ -1,5 +1,9 @@
 <div class="w-full overflow-x-auto shadow-lg rounded-lg">
-    <table class="w-full table-auto divide-y divide-gray-200 bg-sky-300">
+    <table class="w-full table-auto divide-y divide-gray-200 bg-blue-200">
+        <head>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <meta name="csrf-token" content="{{ csrf_token() }}">
+        </head>
         <!-- Company Info Header -->
         <thead class="">
                 <th colspan="2" class="px-4 py-3 text-left border-r ">
@@ -54,6 +58,9 @@
                 </th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider whitespace-nowrap">
                     <span class="block">残業時間2</span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-semibold bg-yellow-200 uppercase tracking-wider whitespace-nowrap">
+                    <span class="block">支給チェック</span>
                 </th>
             </tr>
         </thead>
@@ -119,6 +126,7 @@
                         @elseif ($isHoliday)
                         <span class="text-white bg-emerald-600 px-2 py-1 rounded-lg">公休</span>
                         @endif
+
                     </td>
 
 
@@ -442,6 +450,42 @@
                             }
                         @endphp
                     </td>
+
+                    {{-- <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300"> --}}
+
+                        <td class="{{ !$currentDate->isWeekend() ? 'bg-white' : 'flex justify-center py-4 bg-green-200' }} border-gray-600">
+                            @php
+                                $checkboxData = \App\Models\CheckBoxData::where('user_id', $user->id)
+                                    ->where('date', $currentDate->format('Y-m-d'))
+                                    ->first();
+                            @endphp
+
+                            @if($currentDate->isWeekend())
+                                @if($checkboxData && $checkboxData->is_checked)
+                                    <span class="text-green-700 font-bold text-xs">チェックされました。</span>
+                                    <button
+                                        class="uncheck-btn text-red-500 hover:text-red-700 bg-red-100 w-8 h-8 flex items-center justify-center rounded-full font-bold text-md"
+                                        data-user-id="{{ $user->id }}"
+                                        data-date="{{ $currentDate->format('Y-m-d') }}"
+                                        onclick="uncheckData(event)"
+                                    >
+                                        &#x2715; <!-- X symbol -->
+                                    </button>
+                                @else
+                                    <input type="checkbox"
+                                        class="checkbox-data"
+                                        data-user-id="{{ $user->id }}"
+                                        data-date="{{ $currentDate->format('Y-m-d') }}"
+                                        onclick="saveCheckboxData(event)"
+                                    >
+                                @endif
+                            @endif
+                        </td>
+
+
+
+
+
                 </tr>
                 @php
                     $currentDate->addDay();
@@ -449,4 +493,93 @@
             @endwhile
         </tbody>
     </table>
+
+
+
+    <script>
+        function saveCheckboxData(event) {
+            const checkbox = event.target;
+            const userId = checkbox.dataset.userId;
+            const date = checkbox.dataset.date;
+
+            const tdRow = checkbox.closest('tr');
+
+// Find the arrival and departure time cells
+const arrivalTimeCell = tdRow.querySelector('td:nth-child(4)'); // Adjust index based on your table structure
+const departureTimeCell = tdRow.querySelector('td:nth-child(5)'); // Adjust index based on your table structure
+
+const arrivalTime = arrivalTimeCell ? arrivalTimeCell.textContent.trim() : null;
+const departureTime = departureTimeCell ? departureTimeCell.textContent.trim() : null;
+
+
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("checkbox.save") }}',
+                data: {
+                    user_id: userId,
+                    date: date,
+                    is_checked: 1,
+                    arrival_recorded_at:arrivalTime || null,
+                    departure_recorded_at:departureTime || null,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    console.log(response.message);
+
+                    // Replace checkbox with "Stored" and uncheck button
+                    const tdElement = checkbox.closest('td');
+                    tdElement.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="text-green-700 font-bold mr-2 text-xs">チェックされました。</span>
+                            <button
+                                class="uncheck-btn text-red-500 hover:text-red-700 text-xs font-bold bg-red-100 px-2 py-2 rounded-full"
+                                data-user-id="${userId}"
+                                data-date="${date}"
+                                onclick="uncheckData(event)"
+                            >
+                                &#x2715;
+                            </button>
+                        </div>
+                    `;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error saving checkbox data:', xhr.responseJSON?.message || error);
+                }
+            });
+        }
+
+        function uncheckData(event) {
+            const button = event.target.closest('.uncheck-btn');
+            const userId = button.dataset.userId;
+            const date = button.dataset.date;
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("checkbox.uncheck") }}',
+                data: {
+                    user_id: userId,
+                    date: date,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    console.log(response.message);
+
+                    // Replace "Stored" and uncheck button with checkbox
+                    const tdElement = button.closest('td');
+                    tdElement.innerHTML = `
+                        <input type="checkbox"
+                               class="checkbox-data"
+                               data-user-id="${userId}"
+                               data-date="${date}"
+                               onclick="saveCheckboxData(event)"
+                        >
+                    `;
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error deleting checkbox data:', xhr.responseJSON?.message || error);
+                }
+            });
+        }
+        </script>
 </div>

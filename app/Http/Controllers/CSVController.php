@@ -7,12 +7,13 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Corp;
 use App\Models\User;
-use App\Models\Office;
 use App\Models\Breaks;
+use App\Models\Office;
 use League\Csv\Writer;
+use App\Models\Calculation;
+use App\Models\CheckboxData;
 use Illuminate\Http\Request;
 use App\Models\ArrivalRecord;
-use App\Models\Calculation;
 use App\Models\DepartureRecord;
 use App\Models\VacationCalendar;
 use Illuminate\Support\Facades\CSV;
@@ -25,6 +26,10 @@ class CSVController extends Controller
 
     //pisda
     // Add these functions to your existing controller/class:
+
+
+
+
 
 private function parseExtendedTime($timeString)
 {
@@ -107,6 +112,7 @@ private function isValidTimeString($timeString)
 
 
 
+
     //amraltiin olgogdson udrvvdiig end VacationCalendar - aar duudaad ajiluulah
     protected function getHolidays($corpId, $officeId, $startDate, $endDate)
     {
@@ -172,8 +178,18 @@ private function isValidTimeString($timeString)
             $offices = Office::all();
         }
 
+        // dd($request->all());
+
         return view('admin.calculated', compact('corps', 'offices', 'selectedCorpId', 'selectedYear', 'selectedMonth','calculations'));
     }
+
+
+
+
+
+
+
+
 
     protected function getCalculationValue($calculations, $key)
     {
@@ -186,6 +202,9 @@ private function isValidTimeString($timeString)
 
 
     }
+
+
+
 
 
     //tsagnii bodoltuud ehelne
@@ -236,6 +255,180 @@ private function isValidTimeString($timeString)
 
         $breakTimeInSeconds=0;
         $allBreakTime=0;
+
+
+        //endees shine umnuud nemne
+
+        $checkedHoursSeconds = 0;
+        $checkedHoursSeconds2 = 0;
+        $excessHoursSeconds = 0;
+        $excessHoursSeconds2 = 0;
+        $shinyaWeekends = 0;
+        $maxDailySeconds = 27600; // 7 hours 40 minutes in seconds
+
+        $breakDeductionSeconds = 30 * 60;
+
+        // Fetch CheckboxData for the given user and date range
+        $checkboxData = CheckboxData::where('user_id', $user->id)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->whereNotNull('arrival_recorded_at')
+            ->whereNotNull('departure_recorded_at')
+            ->get();
+
+        foreach ($checkboxData as $data) {
+            $arrivalTime = Carbon::parse($data->arrival_recorded_at);
+            $departureTime = Carbon::parse($data->departure_recorded_at);
+
+
+            $corp=$data->user->office->corp;
+            $isYumeyaCorp=$corp->corp_name === 'ユメヤ';
+
+            $maxDailySeconds=$isYumeyaCorp ? 28800 : 27600;
+
+            // Calculate total time difference
+            $timeDiffSeconds = $arrivalTime->diffInSeconds($departureTime);
+
+
+            $breakSeconds=0;
+
+            $lunchStartTime = Carbon::parse($arrivalTime->format('Y-m-d') . '12:00:00');
+            $lunchEndTime = Carbon::parse($arrivalTime->format('Y-m-d') . '13:00:00');
+
+            if ($arrivalTime <= $lunchEndTime && $departureTime >= $lunchStartTime) {
+                $breakSeconds = 3600; // 1 hour lunch break for ALL
+            }
+
+            if(!$isYumeyaCorp){
+
+
+
+                $break1Start=Carbon::parse($arrivalTime->format('Y-m-d') . '11:00:00');
+                $break1End=Carbon::parse($arrivalTime->format('Y-m-d') . '11:10:00');
+
+
+                if($arrivalTime <= $break1End && $departureTime >= $break1Start)
+                {
+                    $breakSeconds += 600;
+                }
+
+                    // Small break 3 (17:30-17:40)
+
+                $break2Start=Carbon::parse($arrivalTime->format('Y-m-d') . '15:00:00');
+                $break2End=Carbon::parse($arrivalTime->format('Y-m-d') . '15:10:00');
+
+
+                if($arrivalTime <= $break2End && $departureTime >= $break2Start)
+                {
+                    $breakSeconds += 600;
+                }
+                    // Small break 3 (17:30-17:40)
+                $break3Start = Carbon::parse($arrivalTime->format('Y-m-d') . ' 17:30:00');
+                $break3End = Carbon::parse($arrivalTime->format('Y-m-d') . ' 17:40:00');
+
+                if ($arrivalTime <= $break3End && $departureTime >= $break3Start) {
+                    $breakSeconds += 600; // 10 minutes
+                }
+
+
+
+
+            }
+            $timeDiffSeconds -=$breakSeconds;
+
+            // if(!$isYumeyaCorp){
+            //     $timeDiffSeconds -= $breakSeconds;
+            // }
+
+
+
+
+
+            // Create cutoff times
+            $dailyLimitTime = Carbon::parse($arrivalTime->format('Y-m-d') . ' 22:00:00');
+
+
+            // Saturday Logic
+            if ($arrivalTime->isDayOfWeek(Carbon::SATURDAY)) {
+                // If total work time exceeds daily limit (7:40)
+                if ($timeDiffSeconds > $maxDailySeconds) {
+
+                    $excessTime =$timeDiffSeconds - $maxDailySeconds;
+                    //niit tsagaas - 7:40 abu-d ilvv tsag orj irne.
+
+
+
+                    // Calculate how much time fits within daily limit
+
+
+
+                    // Add time within limit
+                    $checkedHoursSeconds += $maxDailySeconds;
+
+                    // dd($abu,$checkedHoursSeconds,$timeDiffSeconds);
+
+                    // Calculate late night hours (after 22:00)
+                    if ($departureTime > $dailyLimitTime) {
+                        // Calculate time between 22:00 and departure
+                        $currentShinyaSeconds = $departureTime->diffInSeconds($dailyLimitTime);
+                        $shinyaWeekends += $currentShinyaSeconds;
+
+                        // Remaining time goes to excess
+                        $excessHoursSeconds += $excessTime- $currentShinyaSeconds;
+                    } else {
+                        // If no work after 22:00, remaining time goes to excess
+                        $excessHoursSeconds += $excessTime;
+                    }
+                } else {
+                    // If total work time is within daily limit
+                    $checkedHoursSeconds  += $timeDiffSeconds;
+                }
+            }
+            elseif ($arrivalTime->isDayOfWeek(Carbon::SUNDAY)) {
+                // If total work time exceeds daily limit (7:40)
+                if ($timeDiffSeconds > $maxDailySeconds) {
+
+                    $excessTime2 =$timeDiffSeconds - $maxDailySeconds;
+                    //niit tsagaas - 7:40 abu-d ilvv tsag orj irne.
+
+
+
+                    // Calculate how much time fits within daily limit
+
+
+                    // Add time within limit
+                    $checkedHoursSeconds2 += $maxDailySeconds;
+                    // dd($checkedHoursSeconds,$maxDailySeconds);
+                    // dd($abu,$checkedHoursSeconds,$timeDiffSeconds);
+
+                    // Calculate late night hours (after 22:00)
+                    if ($departureTime > $dailyLimitTime) {
+                        // Calculate time between 22:00 and departure
+                        $currentShinyaSeconds = $departureTime->diffInSeconds($dailyLimitTime);
+                        $shinyaWeekends += $currentShinyaSeconds;
+
+                        // Remaining time goes to excess
+                        $excessHoursSeconds2 += $excessTime2  - $currentShinyaSeconds;
+                    } else {
+                        // If no work after 22:00, remaining time goes to excess
+                        $excessHoursSeconds2 += $excessTime2;
+                    }
+                } else {
+                    // If total work time is within daily limit
+                    $checkedHoursSeconds2  += $timeDiffSeconds;
+                }
+            }
+
+
+
+        }
+    //     dd(   $checkedHoursSeconds,
+    //     $checkedHours2Seconds,
+    //     $excessHoursSeconds,
+    //     $excess2HoursSeconds,
+    //     $shinyaWeekends,
+    // );
+
+
 
 
 
@@ -1103,6 +1296,16 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
         $formattedTotalWorkedTime = $this->formatSeconds($totalWorkedTime);
         $formattedLateSeconds = $this->formatSeconds($lateArrivalSeconds);
 
+        $totalCheckedHoursSeconds=$this->formatSeconds($checkedHoursSeconds);
+        $totalCheckedHoursSeconds2=$this->formatSeconds($checkedHoursSeconds2);
+
+
+        $totalexcessHoursSeconds=$this->formatSeconds($excessHoursSeconds);
+        $totalexcessHoursSeconds2=$this->formatSeconds($excessHoursSeconds2);
+        $totalShinyaWeekends=$this->formatSeconds($shinyaWeekends);
+
+        // dd($totalShinyaWeekends,$shinyaWeekends);
+
 
 
 // dump([
@@ -1120,6 +1323,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 
 
 // dd($halfDayVacationDates, $formattedTotalWorkedTime);
+// dd($checkedHours);
 
         return [
             'staff_number' => $user->employer_id,
@@ -1138,6 +1342,16 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
             'totalLateTime'=>$totalLateTime,
             'totalEarlyLeaveTime'=>$totalEarlyLeaveTime,
             'totalBreakTime'=>$totalBreakTime,
+
+            'totalWeekendOvertimeSaturday'=>$totalexcessHoursSeconds,
+            'totalWeekendOvertimeSunday'=>$totalexcessHoursSeconds2,
+
+            'totalShinyaWeekends'=>$totalShinyaWeekends,
+
+            'totalCheckboxTime'=>$totalCheckedHoursSeconds,
+            'totalCheckboxTime2'=>$totalCheckedHoursSeconds2,
+
+
         ];
 
 
@@ -1430,6 +1644,13 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
             '遅刻時間',
             '早退時間',
             '休憩時間',
+
+            '休日時間外（土・祝）',
+            '休日時間外（日）',
+            '休日深夜',
+            '支給時間１（土、公休）',
+            '支給時間２（日曜日のみ）'
+
         ];
 
         $encodedHeaders = array_map(function($header) {
@@ -1472,6 +1693,19 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
                 $values['totalLateTime'] =str_replace(':', '.', $values['totalLateTime']),
                 $values['totalEarlyLeaveTime'] =str_replace(':', '.', $values['totalEarlyLeaveTime']),
                 $values['totalBreakTime'] =str_replace(':', '.', $values['totalBreakTime']),
+
+
+
+
+
+
+
+                $values['totalWeekendOvertimeSaturday']=str_replace(':', '.', $values['totalWeekendOvertimeSaturday']),
+                $values['totalWeekendOvertimeSunday']=str_replace(':', '.', $values['totalWeekendOvertimeSunday']),
+                $values['totalShinyaWeekends']=str_replace(':', '.', $values['totalShinyaWeekends']),
+
+                $values['totalCheckboxTime']=str_replace(':', '.', $values['totalCheckboxTime']),
+                $values['totalCheckboxTime2']=str_replace(':', '.', $values['totalCheckboxTime2']),
 
             ]);
             // dd([

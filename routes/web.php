@@ -60,6 +60,7 @@ use App\Http\Controllers\CompanyScheduleController;
 use App\Http\Controllers\DepartureRecordController;
 use App\Http\Controllers\TestNotificationController;
 use App\Http\Controllers\AttendanceTypeRecordController;
+use App\Http\Controllers\CSVShowController;
 use App\Http\Controllers\PastExamplesCategoryController;
 use App\Http\Controllers\TimeOffRequestRecordController;
 
@@ -480,6 +481,23 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
 
     Route::delete('/admin/division/{division}', [DivisionController::class, 'destroy'])
         ->name('admin.division.destroy');
+
+
+    Route::get('/admin/csv', [CSVShowController::class, 'show'])
+    ->name('admin.csv.show');
+
+    Route::post('/admin/csv/filter', [CSVShowController::class, 'filter'])
+    ->name('admin.csv.filter');
+
+    Route::post('/admin/csv/save-checkbox-data', [CSVShowController::class, 'saveCheckboxData'])
+    ->name('checkbox.save');
+    Route::post('/admin/csv/uncheck-checkbox-data', [CSVShowController::class, 'uncheckData'])
+    ->name('checkbox.uncheck');
+
+
+
+
+
 }); //Admin Group route END
 
 

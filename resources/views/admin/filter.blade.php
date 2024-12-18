@@ -29,7 +29,7 @@ $currentDate = $startDate->copy();
 
         @foreach ($users as $user)
         <div class="p-3">
-                @include('admin.admin-calendar-table', ['user' => $user])
+                @include('admin.csv.table', ['user' => $user])
             </div>
         @endforeach
     </div>

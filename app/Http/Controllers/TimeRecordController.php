@@ -89,9 +89,9 @@ class TimeRecordController extends Controller
             $inputDate = \Carbon\Carbon::parse($data['recorded_at']);
             $user = $request->user();
 
-            if($inputDate->isWeekend()){
-                return redirect()->route('dashboard')->with('error','週末は勤怠記録できません。もし週末に働く必要がある場合はフォームに記入してください');
-            }
+            // if($inputDate->isWeekend()){
+            //     return redirect()->route('dashboard')->with('error','週末は勤怠記録できません。もし週末に働く必要がある場合はフォームに記入してください');
+            // }
 
 
 
