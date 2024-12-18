@@ -486,7 +486,8 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
     Route::get('/admin/csv', [CSVShowController::class, 'show'])
     ->name('admin.csv.show');
 
-    Route::post('/admin/csv/filter', [CSVShowController::class, 'filter'])
+
+    Route::match(['get','post'],'/admin/csv/filter', [CSVShowController::class, 'filter'])
     ->name('admin.csv.filter');
 
     Route::post('/admin/csv/save-checkbox-data', [CSVShowController::class, 'saveCheckboxData'])
