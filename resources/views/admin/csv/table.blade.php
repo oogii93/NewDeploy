@@ -455,7 +455,7 @@
 
                         <td class="{{ !$currentDate->isWeekend() ? 'bg-white' : 'flex justify-center py-4 bg-green-200' }} border-gray-600">
                             @php
-                                $checkboxData = \App\Models\CheckBoxData::where('user_id', $user->id)
+                                $checkboxData = \App\Models\CheckboxData::where('user_id', $user->id)
                                     ->where('date', $currentDate->format('Y-m-d'))
                                     ->first();
                             @endphp
