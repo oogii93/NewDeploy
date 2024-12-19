@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\ArrivalRecord;
 use App\Models\DepartureRecord;
 use App\Models\VacationCalendar;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\CSV;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -474,6 +475,7 @@ private function isValidTimeString($timeString)
 
 
 //end array zarlaad halfdate tooloh um shig bna
+//hednii udur hagas amralt awsan olj bna
         $halfDayVacationDates=[];
 
         foreach($vacationRecords as $record){
@@ -481,6 +483,31 @@ private function isValidTimeString($timeString)
                 $halfDayVacationDates[]=Carbon::parse($record->date)->format('Y-m-d');
             }
         }
+
+
+        $halfDayRecords = $user->userArrivalRecords()
+    ->whereIn(DB::raw('DATE(recorded_at)'), $halfDayVacationDates)
+    ->get()
+    ->map(function($record) {
+        $endTime = null;
+
+        // Get departure time either from arrivalDepartureRecords or DepartureRecord
+        if ($record->arrivalDepartureRecords->isNotEmpty()) {
+            $endTime = Carbon::parse($record->arrivalDepartureRecords->first()->recorded_at)->format('H:i');
+        } elseif ($record->DepartureRecord) {
+            $endTime = Carbon::parse($record->DepartureRecord->recorded_at)->format('H:i');
+        }
+
+        return [
+            'date' => Carbon::parse($record->recorded_at)->format('Y-m-d'),
+            'arrival_time' => Carbon::parse($record->recorded_at)->format('H:i'),
+            'departure_time' => $endTime
+        ];
+    });
+
+        // dd($halfDayRecords);
+
+
 
 
         //shineer zarlah gej vzej bna
@@ -538,6 +565,8 @@ private function isValidTimeString($timeString)
             if ($type === '半休') {
                 $halfDayCount += 0.5; // Count half day as 0.5
             }
+
+
 
 
             if (array_key_exists($type, $vacationRecordsCounts)) {
@@ -630,7 +659,6 @@ private function isValidTimeString($timeString)
         // Format the final value to two decimal places
 
 
-
         //variable zohiogood tendee haanaaas yaj awaad herhen toolohiin zaaj baina
         $holidayRecords = $this->getHolidays($user->office->corp_id, $user->office->id, $startDate, $endDate);
         $vacationRecordsCounts['公休'] = $holidayRecords->count() - $totalWorkedHoliday;
@@ -686,6 +714,8 @@ $totalOvertimeSecondsC = 0;
 $totalWeekendOvertimeSeconds = 0;
 $totalWorkedTime = 0;
 
+$totalhalfdayCalculation=0;
+
 
         foreach ($arrivalRecords as $date => $dailyRecords) {
 
@@ -702,6 +732,10 @@ $totalWorkedTime = 0;
             $dailyOvertimeSecondsA=0;
             $dailyOvertimeSecondsB=0;
             $morningOverTimeSeconds = 0;
+
+            //shine
+
+            $halfdayCalculation=0;
 
 
             foreach ($dailyRecords as $arrivalRecord) {
@@ -1429,28 +1463,43 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
         // $lunchTimeStartMinutes = $this->timeToMinutes("12:00");
         // $lunchTimeEndMinutes = $this->timeToMinutes("13:00");
 
-        // Formula 1
-        if ($endTime == "") {
-            $time1 = 0;
-        } else {
-            if ($departureMinutes == $IQ17) {
-                $time1 = $IQ20;
+
+
+
+
+
+            if ($endTime == "") {
+                $time1 = 0;
             } else {
-                if ($arrivalMinutes < $IQ6) {
-                    $arrivalAdjustment = $IQ6 - $arrivalMinutes;
+                if ($departureMinutes == $IQ17) {
+                    $time1 = $IQ20;
                 } else {
-                    $arrivalAdjustment = 0;
+                    if ($arrivalMinutes < $IQ6) {
+                        $arrivalAdjustment = $IQ6 - $arrivalMinutes;
+                    } else {
+                        $arrivalAdjustment = 0;
+                    }
+
+                    if ($departureMinutes <= $IQ6) {
+                        $departureAdjustment = $IQ6 - $departureMinutes;
+                    } else {
+                        $departureAdjustment = 0;
+                    }
+
+                    $time1 = $arrivalAdjustment - $departureAdjustment;
                 }
 
-                if ($departureMinutes <= $IQ6) {
-                    $departureAdjustment = $IQ6 - $departureMinutes;
-                } else {
-                    $departureAdjustment = 0;
-                }
-
-                $time1 = $arrivalAdjustment - $departureAdjustment;
             }
-        }
+
+
+
+
+
+
+
+
+        // Formula 1
+
 
         // Formula 2
         $arrivalTimeAdjusted = ($arrivalMinutes > $IQ7) ? $arrivalMinutes : $IQ7;

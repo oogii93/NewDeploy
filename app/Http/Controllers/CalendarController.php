@@ -16,31 +16,35 @@ class CalendarController extends Controller
     public function index(Request $request)
     {
         $corps = Corp::get();
-        $offices = collect();
+        $offices = Office::all();
         $selectedCorpId = $request->input('corps_id');
 
 
-        if ($selectedCorpId) {
-            $offices = Office::where('corp_id', $selectedCorpId)->get();
-            // dd($offices); // Add this line to inspect the data
-        } else {
-            $offices = Office::all();
-        }
+
 
         return view('admin.calendar.index', compact('corps', 'offices', 'selectedCorpId'));
     }
 
     public function store(Request $request)
     {
-        $corpId = $request->input('corps_id');
 
         $fromDate = $request->input('from_date');
         $toDate = $request->input('to_date');
         $weekdays = $request->input('weekdays', []);
+        $corpId=$request->input('corps_id');
 
+       if($corpId){
         $this->processVacationAndHolidays($corpId, $fromDate, $toDate, $weekdays);
+       }else{
+        $corps=Corp::all();
 
-        return redirect()->back()->with('success', 'Vacation and holidays have been saved.');
+        foreach ($corps as $corp)
+        {
+            $this->processVacationAndHolidays($corp->id, $fromDate, $toDate, $weekdays);
+        }
+       }
+
+        return redirect()->back()->with('success', '休日が保存されました。');
 
         // Redirect or return a response as needed
     }
@@ -80,18 +84,18 @@ class CalendarController extends Controller
         return $this->dateRange($start, $end);
     }
 
-    protected function dateRange($start, $end)
-    {
-        $dates = [];
-        $interval = $start->copy()->addDay();
+ protected function dateRange($start, $end)
+ {
+    $dates=[];
 
-        while ($interval <= $end) {
-            $dates[] = $interval->format('Y-m-d');
-            $interval->addDay();
-        }
+    $current=$start->copy();
 
-        return $dates;
+    while($current <= $end){
+        $dates[]=$current->format('Y-m-d');
+        $current->addDay();
     }
+    return $dates;
+ }
 
     protected function isWeekday($date, $weekdays)
 {
@@ -125,7 +129,7 @@ public function addHoliday(Request $request)
     }
 
     // Redirect back with a success message
-    return redirect()->back()->with('success', 'Holiday added successfully');
+    return redirect()->back()->with('success', '休日が正常に追加されました');
 }
 
 public function editHoliday(Request $request, $holidayId)
@@ -147,10 +151,10 @@ public function deleteHoliday(Request $request, $holidayId, $officeId,$corpId)
         $holiday->delete();
         // dd($holidayId, $officeId,$corpId,$holiday);
         // Redirect back with a success message
-        return redirect()->back()->with('success', 'Holiday deleted successfully');
+        return redirect()->back()->with('success', '休日が正常に削除されました');
     } else {
         // Redirect back with an error message
-        return redirect()->back()->with('error', 'Holiday not found');
+        return redirect()->back()->with('error', '休日が見つかりません');
     }
 }
 

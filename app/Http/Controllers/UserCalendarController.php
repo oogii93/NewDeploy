@@ -3,41 +3,27 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Corp;
-use App\Models\Office;
-use Illuminate\Http\Request;
 use App\Models\VacationCalendar;
+use Illuminate\Http\Request;
 
-class Calendar12Controller extends Controller
+class UserCalendarController extends Controller
 {
-
-    public function index()
+    public function index(Request $request)
     {
-        $corps = Corp::get();
-        $offices = Office::all();
-
-        return view('admin.calendar12.index', compact('corps', 'offices'));
-    }
-
-    public function show(Request $request)
-    {
-        $selectedCorpId = $request->input('corps_id');
+        // Get the authenticated user's corporation ID
+        $userCorpId = auth()->user()->corp_id;
         $selectedYear = $request->input('year', date('Y'));
 
-        if (!$selectedCorpId) {
-            return redirect()->route('admin.calendar12.index')->withErrors(['error' => '会社とオフィスを選択してください。']);
-        }
+        // Get the corporation details
+        $selectedCorp = auth()->user()->corp;
+        $calendar = $this->generateCalendar($userCorpId, $selectedYear);
 
-
-        $selectedCorp = Corp::find($selectedCorpId);
-        $calendar = $this->generateCalendar($selectedCorpId, $selectedYear, $selectedCorpId);
-
-        return view('admin.calendar12.show', compact('calendar', 'selectedYear', 'selectedCorpId','selectedCorp'));
+        return view('user.calendar', compact('calendar', 'selectedYear', 'selectedCorp'));
     }
 
-    private function generateCalendar($corpId, $year, $selectedCorpId)
+    private function generateCalendar($corpId, $year)
     {
-        // Fetch holidays for the selected corp, office, and year
+        // Fetch holidays for the user's corp and selected year
         $holidays = VacationCalendar::where('corp_id', $corpId)
             ->whereYear('vacation_date', $year)
             ->get()
@@ -47,7 +33,7 @@ class Calendar12Controller extends Controller
         // Generate the calendar data structure
         $calendar = [];
         for ($month = 1; $month <= 12; $month++) {
-            $calendar[$month] = $this->generateMonthCalendar($year, $month, $selectedCorpId, $holidays);
+            $calendar[$month] = $this->generateMonthCalendar($year, $month, $corpId, $holidays);
         }
 
         return $calendar;
@@ -71,11 +57,9 @@ class Calendar12Controller extends Controller
                 'date' => $date,
                 'dayOfWeek' => $dayOfWeek,
                 'isHoliday' => $holiday ? true : false,
-                'holiday' => $holiday, // Include the holiday instance if found
             ];
         }
 
         return $monthCalendar;
     }
-
 }

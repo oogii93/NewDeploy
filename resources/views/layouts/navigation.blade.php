@@ -224,6 +224,8 @@
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠入力</a>
                         <a href="{{ route('other') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">全員勤怠一覧</a>
+                        <a href="{{ route('user.calendar') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">年間公休カレンダー</a>
 
 
                     </div>
@@ -353,9 +355,9 @@
                             <div
                                 class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
                                 <a href="{{ route('applications.boss_index') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(上司)</a>
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">伺書の承認</a>
                                 <a href="{{ route('time_off_boss.index') }}"
-                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(上司)</a>
+                                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届の承認</a>
                             </div>
                     </div>
                     </li>
@@ -1222,6 +1224,12 @@
                 <button onclick="window.location.href='{{ route('dashboard') }}'"
                     class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
                    勤退入力
+                </button>
+            </li>
+            <li class="w-full">
+                <button onclick="window.location.href='{{ route('user.calendar') }}'"
+                    class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
+                  年間公休カレンダー
                 </button>
             </li>
             <li class="w-full">

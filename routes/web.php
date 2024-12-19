@@ -63,6 +63,7 @@ use App\Http\Controllers\AttendanceTypeRecordController;
 use App\Http\Controllers\CSVShowController;
 use App\Http\Controllers\PastExamplesCategoryController;
 use App\Http\Controllers\TimeOffRequestRecordController;
+use App\Http\Controllers\UserCalendarController;
 
 //Admin Group Route
 Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
@@ -1191,6 +1192,10 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                 ->name('products.auto-import');
 
                 Route::post('/products/export', [ProductController::class, 'export'])->name('products.export');
+
+
+
+                Route::get('/calendar', [UserCalendarController::class, 'index'])->name('user.calendar');
 
 
 
