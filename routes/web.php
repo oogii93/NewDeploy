@@ -496,6 +496,12 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
     ->name('checkbox.uncheck');
 
 
+    Route::post('/admin/time-records/update', [CSVShowController::class, 'updateTimeRecord'])
+    ->name('admin.time-records.update');
+Route::delete('/admin/time-records/delete', [CSVShowController::class, 'deleteTimeRecord'])
+    ->name('admin.time-records.delete');
+
+
 
 
 

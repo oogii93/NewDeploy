@@ -110,6 +110,24 @@
                         </div>
                     </td>
 
+                    @php
+
+                    $statusTranslations = [
+                        'pending' => '申請中',
+                        'approved' => '承認済み',
+                        'denied' => '拒否済み',
+                    ];
+
+                    //color
+
+                    $statusColors = [
+                        'pending' => 'bg-gray-300',
+                        'approved' => 'bg-green-200',
+                        'denied' => 'bg-rose-300',
+                    ];
+
+                @endphp
+
 
 
 
@@ -121,6 +139,10 @@
                         @if ($timeOffRecordForDay)
                         <span class="bg-sky-500 rounded-lg text-white px-2 py-1">
                             {{ $timeOffRecordForDay->attendanceTypeRecord->name }}
+
+                        </span>
+                        <span class="text-xs px-2 font-gray-600 rounded-md text-white font-medium {{ $timeOffRecordForDay->status === 'approved' ? 'bg-green-500' : ($timeOffRecordForDay->status === 'pending' ? 'bg-yellow-400': 'bg-rose-300') }}">
+                            {{ $statusTranslations[$timeOffRecordForDay->status] }}
 
                         </span>
                         @elseif ($isHoliday)
@@ -152,28 +174,56 @@
                     </td>
 
 
-
                     <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             $arrivalRecord = $user->userArrivalRecords()
                                 ->where('recorded_at', '>=', $currentDate->copy()->startOfDay())
                                 ->where('recorded_at', '<=', $currentDate->copy()->endOfDay())
                                 ->first();
-                            if ($arrivalRecord) {
-                                echo \Carbon\Carbon::parse($arrivalRecord->recorded_at)->format('H:i');
-                            } else {
-                                echo "";
-                            }
+                            $arrivalTime = $arrivalRecord ? \Carbon\Carbon::parse($arrivalRecord->recorded_at)->format('H:i') : '';
                         @endphp
+
+                        <div class="flex items-center justify-between rounded-lg ">
+                            <span class="text-sm font-medium text-gray-800">{{ $arrivalTime }}</span>
+                            <!-- Simple edit button -->
+                            <button
+                                type="button"
+                                onclick="openTimeModal('ArrivalRecord', {{ $user->id }}, '{{ $currentDate->format('Y-m-d') }}', '{{ $arrivalTime }}')"
+                              class="ml-4 text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-transform transform hover:scale-110"
+                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            </button>
+                        </div>
                     </td>
 
                     <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
-                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
-                                echo \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at)->format('H:i');
-                            }
+                            $departureTime = ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords->first())
+                                ? \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at)->format('H:i')
+                                : '';
                         @endphp
+
+                            <div class="flex items-center justify-between rounded-lg ">
+                                <span class="text-sm font-medium text-gray-800">{{ $departureTime }}</span>
+
+                                <button
+                                    type="button"
+                                    onclick="openTimeModal('DepartureRecord', {{ $user->id }}, '{{ $currentDate->format('Y-m-d') }}', '{{ $departureTime }}')"
+                                    class="ml-4 text-white bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-full w-10 h-10 flex items-center justify-center shadow-md transition-transform transform hover:scale-110"
+                                    title="Add Record"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </button>
+                            </div>
+
                     </td>
+
+
+
                     @if ($corpName === 'ユメヤ')
                     <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
@@ -453,7 +503,7 @@
 
                     {{-- <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300"> --}}
 
-                        <td class="{{ !$currentDate->isWeekend() ? 'bg-white' : 'flex justify-center py-4 bg-green-200' }} border-gray-600">
+                        <td class="{{ !$currentDate->isWeekend() ? 'bg-white' : 'flex justify-center py-7 bg-green-200' }} border-gray-600">
                             @php
                                 $checkboxData = \App\Models\CheckboxData::where('user_id', $user->id)
                                     ->where('date', $currentDate->format('Y-m-d'))
@@ -495,8 +545,69 @@
     </table>
 
 
+    <!--Add Modal-->
+
+<!-- Modal -->
+<!-- Modal Overlay -->
+<div id="timeEditModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <!-- Modal Container -->
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-blue-500 to-sky-500 text-white px-6 py-4 rounded-t-xl">
+            <h3 class="text-lg font-semibold">時間編集</h3>
+        </div>
+
+        <!-- Modal Content -->
+        <div class="p-6">
+            <form id="timeEditForm" method="POST">
+                @csrf
+                <input type="hidden" name="user_id" id="modal_user_id">
+                <input type="hidden" name="date" id="modal_date">
+                <input type="hidden" name="type" id="modal_type">
+
+                <!-- Time Input -->
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-gray-700">時間</label>
+                    <input type="time"
+                           name="time"
+                           id="modal_time"
+                           class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                           required>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between mt-6">
+                    <button type="button"
+                            onclick="deleteTimeRecord()"
+                            class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition">
+                        削除
+                    </button>
+                    <div class="flex space-x-2">
+                        <button type="button"
+                                onclick="closeTimeModal()"
+                                class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">
+                            キャンセル
+                        </button>
+                        <button type="submit"
+                                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- JavaScript -->
+
+
 
     <script>
+
+
+
         function saveCheckboxData(event) {
             const checkbox = event.target;
             const userId = checkbox.dataset.userId;
@@ -504,12 +615,12 @@
 
             const tdRow = checkbox.closest('tr');
 
-// Find the arrival and departure time cells
-const arrivalTimeCell = tdRow.querySelector('td:nth-child(4)'); // Adjust index based on your table structure
-const departureTimeCell = tdRow.querySelector('td:nth-child(5)'); // Adjust index based on your table structure
+            // Find the arrival and departure time cells
+            const arrivalTimeCell = tdRow.querySelector('td:nth-child(4)'); // Adjust index based on your table structure
+            const departureTimeCell = tdRow.querySelector('td:nth-child(5)'); // Adjust index based on your table structure
 
-const arrivalTime = arrivalTimeCell ? arrivalTimeCell.textContent.trim() : null;
-const departureTime = departureTimeCell ? departureTimeCell.textContent.trim() : null;
+            const arrivalTime = arrivalTimeCell ? arrivalTimeCell.textContent.trim() : null;
+            const departureTime = departureTimeCell ? departureTimeCell.textContent.trim() : null;
 
 
 
@@ -581,5 +692,131 @@ const departureTime = departureTimeCell ? departureTimeCell.textContent.trim() :
                 }
             });
         }
+
+
+        function openTimeModal(type, userId, date, currentTime) {
+    const modal = document.getElementById('timeEditModal');
+    if (!modal) {
+        console.error('Modal element not found');
+        return;
+    }
+
+    try {
+        modal.classList.remove('hidden');
+
+        // Safely set form values
+        const elements = {
+            'modal_user_id': userId,
+            'modal_date': date,
+            'modal_type': type,
+            'modal_time': currentTime
+        };
+
+        Object.entries(elements).forEach(([id, value]) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.value = value;
+            }
+        });
+
+        const form = document.getElementById('timeEditForm');
+        if (form) {
+            form.setAttribute('method', 'POST');
+            form.setAttribute('action', '/admin/time-records/update'); // Use absolute path
+
+            // Add CSRF token if not present
+            if (!form.querySelector('input[name="_token"]')) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = csrfToken;
+                form.appendChild(csrfInput);
+            }
+
+            form.removeEventListener('submit', handleSubmit);
+            form.addEventListener('submit', handleSubmit);
+        }
+    } catch (error) {
+        console.error('Error in openTimeModal:', error);
+    }
+}
+
+async function handleSubmit(e) {
+    e.preventDefault();
+
+    try {
+        const formData = new FormData(this);
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        if (!navigator.onLine) {
+            alert('インターネット接続を確認してください。');
+            return;
+        }
+
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            credentials: 'same-origin' // Include cookies
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            window.location.reload();
+        } else {
+            console.error('Update failed:', result);
+            alert(result.error || '更新に失敗しました。');
+        }
+    } catch (error) {
+        console.error('Error during update:', error);
+        alert('エラーが発生しました。インターネット接続を確認してください。');
+    }
+}
+
+
+function closeTimeModal() {
+    document.getElementById('timeEditModal').classList.add('hidden');
+}
+
+function deleteTimeRecord() {
+    if (!confirm('本当に削除しますか？')) {
+        return;
+    }
+
+    const userId = document.getElementById('modal_user_id').value;
+    const date = document.getElementById('modal_date').value;
+    const type = document.getElementById('modal_type').value;
+
+    console.log('Deleting record:', { userId, date, type });
+
+    fetch('{{ route('admin.time-records.delete') }}', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ user_id: userId, date, type })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Delete response:', result);
+        if (result.success) {
+            window.location.reload();
+        } else {
+            console.error('Delete failed:', result);
+            alert('削除に失敗しました。');
+        }
+    })
+    .catch(error => {
+        console.error('Error during delete:', error);
+        alert('エラーが発生しました。');
+    });
+}
+
+
         </script>
-</div>

@@ -105,7 +105,23 @@
 
 
 
+                    @php
 
+                    $statusTranslations = [
+                        'pending' => '申請中',
+                        'approved' => '承認済み',
+                        'denied' => '拒否済み',
+                    ];
+
+                    //color
+
+                    $statusColors = [
+                        'pending' => 'bg-gray-300',
+                        'approved' => 'bg-green-200',
+                        'denied' => 'bg-rose-300',
+                    ];
+
+                @endphp
                     <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
                             $timeOffRecordForDay = $user->timeOffRequestRecords->where('date', $currentDate->format('Y-m-d'))->first();
@@ -115,9 +131,19 @@
                         <span class="bg-sky-500 rounded-lg text-white px-2 py-1">
                             {{ $timeOffRecordForDay->attendanceTypeRecord->name }}
 
+
+
                         </span>
+                        {{-- <p class="mt-1 px-1 py-1 text-xs rounded-lg text-white font-semibold {{ $timeOffRecordForDay->status === 'approved' ? 'bg-green-500' : ($timeOffRecordForDay->status === 'pending' ? 'bg-yellow-400': 'bg-rose-300') }}"> --}}
+
+                       <span class="text-xs px-2 font-gray-600 rounded-md text-white font-medium {{ $timeOffRecordForDay->status === 'approved' ? 'bg-green-500' : ($timeOffRecordForDay->status === 'pending' ? 'bg-yellow-400': 'bg-rose-300') }}">
+                        {{ $statusTranslations[$timeOffRecordForDay->status] }}
+
+                    </span>
+
+                        {{-- </p> --}}
                         @elseif ($isHoliday)
-                        <span class="text-white bg-emerald-600 px-2 py-1 rounded-lg">公休</span>
+                        <span class="text-white bg-orange-300 px-2 py-1 rounded-lg">公休</span>
                         @endif
                     </td>
 

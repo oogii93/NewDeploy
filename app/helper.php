@@ -2,6 +2,8 @@
 
 use Carbon\Carbon;
 
+
+if (!function_exists('workTimeCalc')) {
 function workTimeCalc($startTime = '', $endTime = '')
 {
     $result = [
@@ -108,6 +110,7 @@ function workTimeCalc($startTime = '', $endTime = '')
 
 
     return $result;
+}
 }
 
 
