@@ -12,6 +12,8 @@ use App\Models\ArrivalRecord;
 use App\Models\DepartureRecord;
 use App\Rules\RecordedAtExistsRule;
 use App\Http\Controllers\Controller;
+use App\Models\AttendanceTypeRecord;
+use App\Models\TimeOffRequestRecord;
 
 
 class TimeRecordController extends Controller
@@ -605,6 +607,108 @@ public function destroy($id)
     }
 }
 
+
+
+public function validatePeriod()
+{
+    $user = auth()->user();
+
+    // Reuse the calculated date range from the index() method
+    $year = date('Y');
+    $month = date('m');
+    $givenDate = Carbon::parse("$year-$month-16");
+
+    if (Carbon::today()->day < 16) {
+        $startDate = $givenDate->copy()->subMonth()->startOfDay();
+        $endDate = $givenDate->copy()->subDay()->endOfDay();
+    } else {
+        $startDate = $givenDate->copy()->startOfDay();
+        $endDate = $givenDate->copy()->addMonth()->subDay()->endOfDay();
+    }
+
+    \Log::info("Start Date: $startDate, End Date: $endDate");
+
+    // Fetch records within the calculated range
+    $attendanceRecords = ArrivalRecord::where('user_id', $user->id)
+        ->whereBetween('recorded_at', [$startDate, $endDate])
+        ->with('arrivalDepartureRecords')
+        ->get();
+
+    $timeOffRecords = TimeOffRequestRecord::where('user_id', $user->id)
+        ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+        ->get();
+
+    $issues = [];
+    $warnings = [];
+    $currentDate = $startDate->copy();
+    $firstCheckMethod = null;
+
+    // Validate Records
+    while ($currentDate <= $endDate) {
+        if ($currentDate->isWeekend()) {
+            $holidayWork = $timeOffRecords->first(function ($record) use ($currentDate) {
+                return $record->date == $currentDate->format('Y-m-d') &&
+                    $record->attendance_type_records_id == AttendanceTypeRecord::where('name', '休日出勤')->first()->id;
+            });
+
+            if (!$holidayWork) {
+                $currentDate->addDay();
+                continue;
+            }
+        }
+
+        $dayAttendance = $attendanceRecords->first(fn($record) => Carbon::parse($record->recorded_at)->isSameDay($currentDate));
+        $dayTimeOff = $timeOffRecords->first(fn($record) => $record->date == $currentDate->format('Y-m-d'));
+        $displayDate = $currentDate->format('n/j');
+
+        if (!$dayAttendance && !$dayTimeOff) {
+            $issues[] = "{$displayDate}: 出勤記録または休暇申請がありません";
+        }
+
+        // if ($dayTimeOff && !in_array($dayTimeOff->status, ['approved', 'denied','pending'])) {
+        //     $warnings[] = "{$displayDate}: 休暇申請が承認待ち状態です";
+        // }
+        if($dayTimeOff){
+            if($dayTimeOff->status === 'pending'){
+                $issues[]="{$displayDate}:休暇申請が承認待ちです ";
+            }elseif(!in_array($dayTimeOff->status, ['approved', 'denied'])){
+                $issues[]="{$displayDate}: 休暇申請の状態が無効です";
+            }
+        }
+
+        if ($dayAttendance) {
+            $arrivalTime = Carbon::parse($dayAttendance->recorded_at);
+
+            $currentCheckMethod = $dayAttendance->check_in_method;
+            if ($firstCheckMethod === null && $currentCheckMethod) {
+                $firstCheckMethod = $currentCheckMethod;
+            } elseif ($firstCheckMethod && $currentCheckMethod && $firstCheckMethod !== $currentCheckMethod) {
+                $issues[] = "{$displayDate}: 打刻方法が統一されていません";
+            }
+
+            if (!$dayAttendance->arrivalDepartureRecords->count()) {
+                $issues[] = "{$displayDate}: 退社時間が記録されていません";
+            } else {
+                $departureTime = Carbon::parse($dayAttendance->arrivalDepartureRecords->first()->recorded_at);
+                if ($departureTime->lt($arrivalTime)) {
+                    $issues[] = "{$displayDate}: 退社時間が出勤時間より前になっています";
+                } elseif ($departureTime->eq($arrivalTime)) {
+                    $warnings[] = "{$displayDate}: 出勤時間と退社時間が同じです";
+                }
+            }
+        }
+
+        $currentDate->addDay();
+    }
+
+    return response()->json([
+        'isValid' => empty($issues),
+        'issues' => $issues,
+        'warnings' => $warnings,
+        'periodStart' => $startDate->format('Y/m/d'),
+        'periodEnd' => $endDate->format('Y/m/d'),
+    ]);
+}
 
 
 }

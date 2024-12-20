@@ -50,6 +50,50 @@ use App\Models\AttendanceTypeRecord;
     $totalMinutesForMonth = 0; // Initialize total hours for the month
 @endphp
 
+
+@php
+    $today = \Carbon\Carbon::today()->day;
+@endphp
+
+    <div class="flex justify-normal mb-2">
+
+        <div class="flex flex-col items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-amber-200">
+
+            {{-- @if($today >= 14 && $today <= 15) --}}
+
+
+
+
+                <button id="validateMonthBtn"
+                    class="items-center">
+
+                    <svg
+                    class="w-12 h-12"
+                    viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M622.4 682.453333l60.330667-60.309333 256.405333 256.405333-60.330667 60.309334z" fill="#616161"></path><path d="M426.666667 426.666667m-341.333334 0a341.333333 341.333333 0 1 0 682.666667 0 341.333333 341.333333 0 1 0-682.666667 0Z" fill="#616161"></path><path d="M692.266667 753.92l60.309333-60.330667 185.514667 185.514667-60.330667 60.330667z" fill="#37474F"></path><path d="M426.666667 426.666667m-277.333334 0a277.333333 277.333333 0 1 0 554.666667 0 277.333333 277.333333 0 1 0-554.666667 0Z" fill="#64B5F6"></path><path d="M573.866667 302.933333c-36.266667-42.666667-89.6-68.266667-147.2-68.266666s-110.933333 25.6-147.2 68.266666c-8.533333 8.533333-6.4 23.466667 2.133333 29.866667 8.533333 8.533333 23.466667 6.4 29.866667-2.133333C341.333333 296.533333 381.866667 277.333333 426.666667 277.333333s85.333333 19.2 115.2 53.333334c4.266667 4.266667 10.666667 8.533333 17.066666 8.533333 4.266667 0 10.666667-2.133333 12.8-4.266667 8.533333-8.533333 8.533333-23.466667 2.133334-32z" fill="#BBDEFB"></path></g></svg>
+                </button>
+            {{-- @endif --}}
+
+        </div>
+
+        <div class=" ml-4 flex items-center px-4 py-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200 shadow-sm">
+            <svg class="w-5 h-5 text-purple-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-sm text-gray-600 leading-relaxed">
+                毎月<span class="font-medium text-purple-700">14日</span>から<span class="font-medium text-purple-700">15日</span>の間でこのボタンを押して当月の入力したデータを確認してください。
+            </p>
+        </div>
+
+
+
+    </div>
+
+
+
+
+<div id="validationResults" class="hidden space-y-4 mt-4 mb-4"></div>
+
+
 @for ($i = 0; $i < $daysInPreviousMonth; $i++)
     @php
         $day = $previousMonthStart->copy()->addDays($i);
@@ -62,13 +106,15 @@ use App\Models\AttendanceTypeRecord;
     @endphp
 
 
+
+
     {{-- Your code here --}}
     <tr
-        class="hover:bg-stone-200 transition-colors duration-300 ease-in-out
- @if ($day->isSunday()) bg-red-50
- @elseif ($day->isSaturday()) bg-sky-50
- @else bg-slate-50 @endif
- border-b border-gray-200">
+                        class="hover:bg-stone-200 transition-colors duration-300 ease-in-out
+                @if ($day->isSunday()) bg-red-50
+                @elseif ($day->isSaturday()) bg-sky-50
+                @else bg-slate-50 @endif
+                border-b border-gray-200">
 
 
 
@@ -89,44 +135,7 @@ use App\Models\AttendanceTypeRecord;
             Responsive iin ynzlah
             -->
 
-        {{-- <td
-            class="px-1 sm:px-2 md:px-4 py-2 sm:py-3 border-r border-gray-300 shadow-sm text-xs sm:text-sm font-semibold">
-            @php
-                $timeOffRecordForDay = $user->timeOffRequestRecords->where('date', $day->format('Y-m-d'))->first();
 
-            @endphp
-
-            @if ($timeOffRecordForDay)
-                @php
-                    $bgColor = $statusColors[$timeOffRecordForDay->status] ?? '';
-                @endphp
-                <div class="rounded-full py-1 px-1 sm:px-2 {{ $bgColor }} text-center">
-                    <div class="truncate">
-                        {{ $timeOffRecordForDay->attendanceTypeRecord->name }}
-                    </div>
-                    <div class="truncate text-xs font-semibold">
-                        {{ $statusTranslations[$timeOffRecordForDay->status] ?? $timeOffRecordForDay->status }}
-                    </div>
-                </div>
-
-
-            @elseif ($isHoliday)
-                <span
-                    class="bg-yellow-100 text-yellow-700 px-1 sm:px-2 py-1 text-xs font-semibold rounded-full block text-center">公休</span>
-
-                    <button onclick="openModal2('{{ $day->format('Y-m-d') }}')"
-                        class=" bg-green-400 hover:bg-green-600 rounded-full text-white hover:underline text-xs font-semibold block w-full text-center  mt-2 px-2 py-1">
-                        休日出勤
-                    </button>
-            @else
-                <button onclick="openModal('{{ $day->format('Y-m-d') }}')"
-                    class="text-blue-500 hover:underline text-m block w-full text-center font-semibold">
-                    申請
-                </button>
-            @endif
-
-
-        </td> --}}
 
         <td class="px-1 sm:px-2 md:px-4 py-2 sm:py-3 border-r border-gray-300 shadow-sm text-xs sm:text-sm font-semibold">
             @php
@@ -313,86 +322,7 @@ use App\Models\AttendanceTypeRecord;
 
 
 
-<!--real time calculation-->
-        {{-- <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
 
-
-
-            @php
-                // Define constants for the workday, break, and lunch times
-                $regularStartTime = strtotime('08:30');
-                $breakStartTime1 = strtotime('11:00');
-                $breakEndTime1 = strtotime('11:10');
-                $lunchStartTime = strtotime('12:00');
-                $lunchEndTime = strtotime('13:00');
-                $breakStartTime2 = strtotime('13:00');
-                $breakEndTime2 = strtotime('13:10');
-                $breakStartTime3 = strtotime('17:30'); // Add the new break start time
-                $breakEndTime3 = strtotime('17:40'); // Add the new break end time
-                $regularEndTime = strtotime('17:30');
-
-                // Initialize total worked minutes for the day
-                $totalWorkedMinutes = 0;
-
-                // Calculate worked time if $arrivalTime and $departureTime are provided
-                if ($arrivalTime && $departureTime) {
-                    $workedStartTime = strtotime($arrivalTime->format('H:i'));
-                    $workedEndTime = strtotime($departureTime->format('H:i'));
-
-                    // Calculate worked time before lunch break
-                    $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                    $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
-
-                    // Subtract first break time if applicable
-                    if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
-                        $totalWorkedMinutes -= 10;
-                    }
-
-                    // Calculate worked time after lunch break
-                    $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
-                    $totalWorkedMinutes += $afterLunchWorkedTime / 60;
-
-                    // Subtract second break time if applicable
-                    if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
-                        $totalWorkedMinutes -= 10;
-                    }
-
-                    // Subtract the new break time if applicable
-                    if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
-                        $totalWorkedMinutes -= 10;
-                    }
-
-                    // end variable zarlaad shalgaad niit ajilsan miniutaas hasaj baina
-                    $actualBreakMinutes = isset($breaks[$day->format('Y-m-d')]) ? $breaks[$day->format('Y-m-d')] : 0;
-                    $totalWorkedMinutes -= $actualBreakMinutes;
-
-                    // Ensure total worked minutes doesn't go negative
-                    $totalWorkedMinutes = max(0, $totalWorkedMinutes);
-
-                    if (
-                        auth()->user()->office &&
-                        auth()->user()->office->corp &&
-                        auth()->user()->office->corp->corp_name === 'ユメヤ'
-                    ) {
-                        if ($arrivalSecondTime && $departureSecondTime) {
-                            $workedSecondStartTime = strtotime($arrivalSecondTime->format('H:i'));
-                            $workedSecondEndTime = strtotime($departureSecondTime->format('H:i'));
-                            if ($workedSecondEndTime - $workedSecondStartTime > 0) {
-                                $secondTotalWorkedMinutes = ($workedSecondEndTime - $workedSecondStartTime) / 60;
-                                $totalWorkedMinutes += $secondTotalWorkedMinutes;
-                            }
-                        }
-                    }
-
-                                // Print formatted total worked time for the day
-                                echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
-                            } else {
-                                echo '';
-                                            }
-                            @endphp
-        </td> --}}
-
-<!--new time calculation-->
 
 
 <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
@@ -501,61 +431,6 @@ use App\Models\AttendanceTypeRecord;
 </td>
 
 
-
-
-
-
-
-
-
-        {{-- <td class="px-6 py-4 whitespace-nowrap border border-gray-800">
-            <!-- Calculate and display total hours worked for the day -->
-            @php
-                if ($result) {
-                    $arrayWorkedMinutes = explode(':', $result['workedTime']);
-                    $totalMinutesForMonth += $arrayWorkedMinutes[0] * 60 + $arrayWorkedMinutes[1];
-
-                    // Format the time as H:i
-                    echo sprintf('%02d:%02d', $arrayWorkedMinutes[0], $arrayWorkedMinutes[1]);
-                } else {
-                    echo '';
-                }
-            @endphp
-        </td> --}}
-        {{-- <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
-            <!-- Calculate and display total hours overtime1 for the day -->
-            @php
-                if ($result) {
-                    $arrayOverTime1 = explode(':', $result['overTime1']);
-                    $totalMinutesForMonth += $arrayOverTime1[0] * 60 + $arrayOverTime1[1];
-
-                    // Format the time as H:i
-                    echo sprintf('%02d:%02d', $arrayOverTime1[0], $arrayOverTime1[1]);
-                } else {
-                    echo '';
-                }
-            @endphp
-        </td>
-
-
-        <td
-            class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm hidden md:table-cell">
-            <!-- Calculate and display total hours overtime2 for the day -->
-            @php
-                if ($result) {
-                    $arrayOverTime2 = explode(':', $result['overTime2']);
-                    $totalMinutesForMonth += $arrayOverTime2[0] * 60 + $arrayOverTime2[1];
-
-                    // Format the time as H:i
-                    echo sprintf('%02d:%02d', $arrayOverTime2[0], $arrayOverTime2[1]);
-                } else {
-                    echo '';
-                }
-            @endphp
-        </td> --}}
-
-        <!-- Overtime 1 TD -->
-
         <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
             @php
                 $isYumeya = auth()->user()->office &&
@@ -606,82 +481,7 @@ use App\Models\AttendanceTypeRecord;
     </tr>
 
 @endfor
-<!-- Modal -->
-{{-- <div id="attendanceModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
-    <div class="bg-white rounded-lg w-1/2 p-4">
-        <h2 class="text-lg font-bold mb-4 text-center">申請</h2>
 
-        <form id="attendanceForm" action="{{ route('admin.time_off.store') }}" method="POST">
-            @csrf
-            <input type="hidden" name="user_id" value="{{ $user->id }}">
-            <input type="hidden" name="date" id="modalDate" value="">
-
-
-
-            <div class="mt-4">
-
-                <label for="attendance_type_records_id" class="block mb-2">区分選択</label>
-                <select name="attendance_type_records_id" id="attendance_type_records_id"
-                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
-                    <option value="">選択</option>
-                    @foreach ($attendanceTypeRecords as $record)
-
-                    @if ($record->name !=='休日出勤')
-                    <option value="{{ $record->id }}">{{ $record->name }}</option>
-
-                    @endif
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="mt-4">
-
-                <label for="reason_select" class="block mb-2">理由選択</label>
-                <select name="reason_select" id="reason_select"
-                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
-                    <option value="">選択</option>
-                    <option value="私用の為">私用の為</option>
-                    <option value="通院の為">通院の為</option>
-                    <option value="計画有給休暇消化の為">計画有給休暇消化の為</option>
-                    <option value="体調不良の為">体調不良の為</option>
-
-                </select>
-
-            </div>
-
-            <div class="mt-4">
-                <input type="text" name="reason" id="reason"
-                    class="rounded block w-full px-4 py-2 border border-gray-500 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
-                    placeholder="リストにない理由については入力して下さい">
-            </div>
-
-            <div class="space-y-2">
-                <label for="boss_id" class="block text-sm font-medium text-gray-700">上司を選択</label>
-                <select name="boss_id" id="boss_id"
-                    class="block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                    required>
-                    <option value="">選択してください。</option>
-                    @foreach ($bosses as $boss)
-                        <option value="{{ $boss->id }}">{{ $boss->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-
-
-            <div
-                class="flex flex-col md:flex-row justify-between mt-5 items-center space-y-3 md:space-y-0 md:space-x-4 ">
-                <x-button purpose="default" onclick="closeModal()">
-                    キャンセル
-                </x-button>
-
-                <x-button purpose="search" type="submit">
-                    保存
-                </x-button>
-            </div>
-        </form>
-    </div>
-</div> --}}
 <div id="attendanceModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 hidden">
     <div class="bg-white rounded-lg w-4/5 md:w-1/2 p-6">
       <div class="flex items-center justify-between mb-4">
@@ -992,140 +792,6 @@ use App\Models\AttendanceTypeRecord;
 
 
 
-
-
-
-
-
-{{-- <script>
-    function openModal(date) {
-        document.getElementById('modalDate').value = date;
-        document.getElementById('attendanceModal').classList.remove('hidden');
-
-        //2
-
-    }
-
-    function closeModal() {
-        document.getElementById('attendanceModal').classList.add('hidden');
-    }
-
-    function openEditModal(id, date, attendanceTypeId, reasonSelect, reason, bossId) {
-        document.getElementById('editModalId').value = id;
-        document.getElementById('editModalDate').value = date;
-        document.getElementById('edit_attendance_type_records_id').value = attendanceTypeId;
-        document.getElementById('edit_boss_id').value = bossId;
-
-        // Set the selected value for reason_select
-        const reasonSelectElement = document.getElementById('edit_reason_select');
-        if (reasonSelectElement) {
-            reasonSelectElement.value = reasonSelect || '';
-        }
-
-        // Set the value for reason input
-        const reasonInput = document.getElementById('edit_reason');
-        if (reasonInput) {
-            reasonInput.value = reason || '';
-        }
-
-        document.getElementById('editAttendanceModal').classList.remove('hidden');
-
-        // Update the form action URL
-        const form = document.getElementById('editAttendanceForm');
-        form.action = "{{ route('admin.time_off.update', '') }}/" + id;
-    }
-
-    function closeEditModal() {
-        document.getElementById('editAttendanceModal').classList.add('hidden');
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Edit form submission
-        const editForm = document.getElementById('editAttendanceForm');
-        editForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            submitForm(this, 'POST'); // Using POST for Laravel's form method spoofing
-        });
-
-        function submitForm(form, method) {
-            const formData = new FormData(form);
-            formData.append('_method', 'PUT');
-
-            fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                            'content')
-                    },
-                    credentials: 'same-origin'
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        closeEditModal();
-                        window.location.reload();
-                    } else {
-                        alert(data.message || 'エラーが発生しました。もう一度お試しください。');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('エラーが発生しました。もう一度お試しください。');
-                });
-        }
-    });
-
-    function deleteTimeOff() {
-        if (confirm('本当に削除しますか？')) {
-            const id = document.getElementById('editModalId').value;
-            const deleteUrl = "{{ route('admin.time_off.destroy', '') }}/" + id;
-
-            fetch(deleteUrl, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        closeEditModal();
-                        window.location.reload();
-                    } else {
-                        alert(data.message || 'エラーが発生しました。もう一度お試しください。');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('エラーが発生しました。もう一度お試しください。');
-                });
-        }
-    }
-
-
-
-
-    function openModal2(date) {
-        document.getElementById('modalDate').value = date;
-        document.getElementById('holidayModal').classList.remove('hidden');
-
-        //2
-
-    }
-
-    function closeModal2() {
-        document.getElementById('holidayModal').classList.add('hidden');
-    }
-</script> --}}
-
-
 <script>
  document.addEventListener('DOMContentLoaded', function() {
     // First modal form submission
@@ -1382,6 +1048,113 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
     function closeEditModal() {
         document.getElementById('editAttendanceModal').classList.add('hidden');
     }
+
+
+
+    document.getElementById('validateMonthBtn').addEventListener('click', function() {
+    const button = this;
+    button.disabled = true;
+    button.textContent = '検証中...';
+
+    fetch(`/attendance/validate-period`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultsDiv = document.getElementById('validationResults');
+        resultsDiv.innerHTML = '';
+        resultsDiv.classList.remove('hidden');
+
+        // Common close button HTML
+        const closeButton = `
+            <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                    onclick="this.closest('.validation-message').remove()">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>`;
+
+        if (data.isValid) {
+            resultsDiv.innerHTML = `
+                <div class="validation-message relative bg-green-50 border border-green-200 rounded-lg p-4 shadow-sm transition-all duration-300 ease-in-out">
+                    ${closeButton}
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <p class="text-green-800 font-medium">すべての記録が正しく入力されています</p>
+                    </div>
+                    <p class="text-green-700 text-sm mt-2">検証期間: ${data.periodStart} から ${data.periodEnd}</p>
+                </div>`;
+        } else {
+            let issuesHtml = `
+                <div class="validation-message relative bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-sm space-y-2 transition-all duration-300 ease-in-out">
+                    ${closeButton}`;
+
+            issuesHtml += `<p class="text-gray-800 font-medium">検証期間: ${data.periodStart} から ${data.periodEnd}</p>`;
+
+            if (data.issues && data.issues.length > 0) {
+                issuesHtml += `
+                    <div class="mt-3">
+                        <p class="text-red-800 font-medium mb-2">以下の問題が見つかりました：</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1.5">`;
+
+                data.issues.forEach(issue => {
+                    issuesHtml += `<li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span>${issue}</span>
+                    </li>`;
+                });
+
+                issuesHtml += '</ul></div>';
+            }
+
+            issuesHtml += '</div>';
+
+            if (data.warnings && data.warnings.length > 0) {
+                issuesHtml += `
+                    <div class="validation-message relative bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-sm space-y-2 mt-4 transition-all duration-300 ease-in-out">
+                        ${closeButton}
+                        <p class="text-yellow-800 font-medium mb-2">警告：</p>
+                        <ul class="list-disc list-inside text-yellow-700 space-y-1.5">`;
+
+                data.warnings.forEach(warning => {
+                    issuesHtml += `<li class="flex items-start">
+                        <span class="mr-2">•</span>
+                        <span>${warning}</span>
+                    </li>`;
+                });
+
+                issuesHtml += '</ul></div>';
+            }
+
+            resultsDiv.innerHTML = issuesHtml;
+        }
+    })
+    .catch(error => {
+        const resultsDiv = document.getElementById('validationResults');
+        resultsDiv.innerHTML = `
+            <div class="validation-message relative bg-red-50 border border-red-200 rounded-lg p-4 shadow-sm transition-all duration-300 ease-in-out">
+                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                        onclick="this.closest('.validation-message').remove()">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+                <p class="text-red-800">エラーが発生しました。後でもう一度お試しください。</p>
+            </div>`;
+    })
+    .finally(() => {
+        button.disabled = false;
+        button.textContent = 'チェックのボタン';
+    });
+});
+
+
 
 
 

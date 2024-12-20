@@ -2,9 +2,13 @@
 
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
+use Illuminate\Support\Facades\Log;
 use Monolog\Handler\SyslogUdpHandler;
 
+
+
 return [
+
 
     /*
     |--------------------------------------------------------------------------

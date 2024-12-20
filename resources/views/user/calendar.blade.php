@@ -1,14 +1,14 @@
 <x-app-layout>
     <div class="min-h-screen bg-gray-50">
         <!-- Header Section -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <h1 class="text-2xl font-bold text-gray-900 text-center mb-6">{{ $selectedCorp->corp_name }}</h1>
 
             <!-- Year Selection -->
             <div class="flex justify-center mb-8">
                 <form action="{{ route('user.calendar') }}" method="GET" class="flex items-center gap-3">
                     <select name="year" class="block w-32 rounded-lg border-0 py-2.5 pl-4 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        @for ($i = date('Y'); $i <= date('Y') + 10; $i++)
+                        @for ($i = date('Y'); $i <= date('Y') + 5; $i++)
                             <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>
                                 {{ $i }}年
                             </option>

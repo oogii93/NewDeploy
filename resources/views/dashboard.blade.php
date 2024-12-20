@@ -255,6 +255,8 @@
 
     <div class="bg-white">
 
+
+
         <div class="table-responsive bg-white max-w-6xl mx-auto shadow-lg rounded-2xl overflow-hidden mb-10">
             <div class="overflow-y-auto">
                 <table class="min-w-full table-auto border border-slate-400 text-sm md:text-base">

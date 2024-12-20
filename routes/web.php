@@ -1197,8 +1197,8 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
                 Route::get('/calendar', [UserCalendarController::class, 'index'])->name('user.calendar');
 
-
-
+                Route::post('/attendance/validate-period', [TimeRecordController::class, 'validatePeriod'])
+                ->name('attendance.validate-period');
 
 
 
