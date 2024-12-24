@@ -70,9 +70,8 @@
                             </button>
                             @if($application->status === 'partially_approved' || $application->status === 'pending')
                                 <select name="division" id="division" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
-                                    <option value="">会社</option>
-                                    <option value="1" {{ $application->division_id == 1 ? 'selected' : '' }}>人事課</option>
-                                    <option value="2" {{ $application->division_id == 2 ? 'selected' : '' }}>経理課</option>
+
+                                    <option value="1" {{ $application->division_name === '経理課' ? 'selected' : '' }}>経理課</option>
                                 </select>
                             @endif
                         </form>

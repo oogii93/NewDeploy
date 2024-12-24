@@ -11,19 +11,19 @@ class HrController extends Controller
     // {
     //     $this->middleware(['auth', 'check.hr']);
     // }
-    public function __construct()
-    {
+    // public function __construct()
+    // {
 
 
-        \Log::info('HrController Constructor', [
-            'user' => auth()->user() ? auth()->user()->id : 'No User',
-            'corps' => auth()->user() && auth()->user()->corps
-                ? auth()->user()->corps->corp_name
-                : 'No Corps'
-        ]);
+    //     \Log::info('HrController Constructor', [
+    //         'user' => auth()->user() ? auth()->user()->id : 'No User',
+    //         'corps' => auth()->user() && auth()->user()->corps
+    //             ? auth()->user()->corps->corp_name
+    //             : 'No Corps'
+    //     ]);
 
-        $this->middleware(['auth', 'taisei']);
-    }
+    //     $this->middleware(['auth', 'taisei']);
+    // }
 
     // public function index()
     // {
@@ -33,10 +33,10 @@ class HrController extends Controller
 
     public function index(Request $request)
     {
-        $hrDivisionId = 1; // Assuming HR division has id 1
 
-        $query = Application::with('user')
-            ->where('division_id', $hrDivisionId);
+
+        $query = Application::with('user');
+
 
         if ($request->filled('search')) {
             $search = $request->get('search');
@@ -54,7 +54,7 @@ class HrController extends Controller
             $query->whereBetween('created_at', [$request->get('from_date'), $request->get('to_date')]);
         }
 
-        $applications = $query->paginate(20);
+        $applications = $query->latest()->paginate(20);
 
         if ($request->ajax()) {
             return view('hr.hr_dashboard', compact('applications'))->render();

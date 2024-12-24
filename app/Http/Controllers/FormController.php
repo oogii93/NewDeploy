@@ -29,6 +29,8 @@ use App\Models\ApplicationType6A2;
 use App\Models\ApplicationType6A3;
 use App\Models\ApplicationType6A4;
 use App\Models\ApplicationType6A5;
+use App\Models\ApplicationType5A;
+
 use League\CommonMark\Extension\DescriptionList\Node\Description;
 
 class FormController extends Controller
@@ -61,6 +63,11 @@ class FormController extends Controller
         '6A3' => ApplicationType6A3::class,
         '6A4' => ApplicationType6A4::class,
         '6A5' => ApplicationType6A5::class,
+
+
+
+
+        '5A' => ApplicationType5A::class,
 
 
         // Add future form types here
@@ -324,6 +331,11 @@ class FormController extends Controller
 
           // Define validation rules for each form type
     $validationRules = [
+
+        '5A' => [
+            // dd($request->all()),
+            // other rules for Form A
+        ],
         'A' => [
             'leave_type' => 'required|string',
             'reason' => 'nullable',

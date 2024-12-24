@@ -16,7 +16,7 @@
 
 
 
-    <form action="{{ route('forms.store', '5A') }}" method="POST">
+ <div>
 
             @csrf
 
@@ -34,7 +34,7 @@
                     readonly
                         id="corp"
                         name="corp"
-                        value="{{ Auth::user()->corp->corp_name ?? '' }}"
+                        value="{{ $form->corp }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     >
 
@@ -49,7 +49,7 @@
                     readonly
                         id="office"
                         name="office"
-                        value="{{ Auth::user()->office->office_name ?? '' }}"
+                        value="{{ $form->office }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     >
 
@@ -67,21 +67,24 @@
                         type="text"
                         id="name"
                         name="name"
-                        value="{{ Auth::user()->name ?? '' }}"
+                        value="{{ $form->name }}"
                         required
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         placeholder="Enter your full name"
                     >
                 </div>
 
+
                 <div>
                     <label for="occurrence_date" class="block text-sm font-medium text-gray-700 mb-2">
                  日付け
                     </label>
                     <input
+                    readonly
                     type="date"
                     id="applied_date"
                     name="applied_date"
+                    value="{{ $form->applied_date }}"
                         required
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     >
@@ -106,6 +109,8 @@
                             顧客コード
                         </label>
                         <input
+                        readonly
+                        value="{{ $form->customer_code }}"
                             id="customer_code"
                             name="customer_code"
                             value=""
@@ -121,6 +126,8 @@
                             IC-M 登録日
                         </label>
                         <input
+                        readonly
+                        value="{{ $form->icm_date }}"
                             type="date"
                             id="icm_date"
                             name="icm_date"
@@ -137,6 +144,8 @@
                             取引先名（フリガナ）
                         </label>
                         <input
+                        readonly
+                        value="{{ $form->client_name_furigana }}"
                             id="client_name_furigana"
                             name="client_name_furigana"
                             value=""
@@ -151,6 +160,9 @@
                             取引先名（漢字、商号）
                         </label>
                         <input
+
+                        readonly
+                        value="{{ $form->client_name }}"
                             type="text"
                             id="client_name"
                             name="client_name"
@@ -167,6 +179,9 @@
                            代表者名
                         </label>
                         <input
+
+                        readonly
+                        value="{{ $form->president_name }}"
                             id="president_name"
                             name="president_name"
                             value=""
@@ -181,6 +196,9 @@
                             代表者生年月日
                         </label>
                         <input
+
+                            readonly
+                            value="{{ $form->president_birthdate }}"
                             type="date"
                             id="president_birthdate"
                             name="president_birthdate"
@@ -198,6 +216,8 @@
                             〒
                         </label>
                         <input
+                        readonly
+                        value="{{ $form->postal_code }}"
                         type="number"
                             id="postal_code"
                             name="postal_code"
@@ -215,6 +235,8 @@
                            住所
                         </label>
                         <input
+                        readonly
+                        value="{{ $form->address }}"
                             id="address"
                             name="address"
                             value=""
@@ -238,6 +260,9 @@
                         </label>
                         <input
 
+                        readonly
+                        value="{{ $form->tel_number }}"
+
                         type="number"
                             id="tel_number"
                             name="tel_number"
@@ -253,6 +278,9 @@
                             FAX
                         </label>
                         <input
+
+                        value="{{ $form->fax_number }}"
+                        readonly
                             type="number"
                             id="fax_number"
                             name="fax_number"
@@ -269,25 +297,30 @@
                             事業内容
                         </label>
                         <textarea
+
+                        readonly
                             id="office_description"
                             name="office_description"
                             value=""
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                        >
+                        >{{ $form->office_description }}
 
 
                         </textarea>
                     </div>
+
+
                     <div>
                         <label for="main_supplier" class="block text-sm font-medium text-gray-700 mb-2 mt-2">
                             主要  仕入先
 
                         </label>
                         <input
+                        readonly
                             type="text"
                             id="main_supplier"
                             name="main_supplier"
-                            value=""
+                            value="{{ $form->main_supplier }}"
                             placeholder="IC-Mへの登録名称になるので正式名称で入力して下さい。"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
@@ -302,10 +335,12 @@
 
                         </label>
                         <input
+
+                        readonly
                         type="number"
                             id="annual_turnover"
                             name="annual_turnover"
-                            value=""
+                            value="{{ $form->annual_turnover }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
@@ -318,10 +353,11 @@
 
                         </label>
                         <input
+                        readonly
                              type="number"
                             id="capital"
                             name="capital"
-                            value=""
+                            value="{{ $form->capital }}"
                             placeholder=""
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
@@ -335,19 +371,20 @@
 
                         </label>
                         <select
+
                             id="company_type"
                             name="company_type"
                             value=""
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
-                        <option value="">リストから選択してください。</option>
-                        <option value="株式会社">株式会社</option>
-                        <option value="有限会社">有限会社</option>
-                        <option value="合同会社">合同会社</option>
-                        <option value="合弁会社">合弁会社</option>
-                        <option value="財団法人">財団法人</option>
-                        <option value="個人">個人</option>
-                        <option value="その他">その他</option>
+                        <option value=""disabled>リストから選択してください。</option>
+                        <option disabled value="株式会社" {{ $form->company_type === '株式会社' ? 'selected' : '' }}>株式会社</option>
+                        <option disabled value="有限会社"{{ $form->company_type === '有限会社' ? 'selected' : '' }}>有限会社</option>
+                        <option disabled value="合同会社"{{ $form->company_type === '合同会社' ? 'selected' : '' }}>合同会社</option>
+                        <option disabled value="合弁会社"{{ $form->company_type === '合弁会社' ? 'selected' : '' }}>合弁会社</option>
+                        <option disabled value="財団法人"{{ $form->company_type === '財団法人' ? 'selected' : '' }}>財団法人</option>
+                        <option disabled value="個人"{{ $form->company_type === '個人' ? 'selected' : '' }}>個人</option>
+                        <option disabled value="その他"{{ $form->company_type === 'その他' ? 'selected' : '' }}>その他</option>
 
 
                         </select>
@@ -365,9 +402,8 @@
                             placeholder=""
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
-                        <option value="">選択</option>
-                        <option value="加入">加入</option>
-                        <option value="未加入">未加入</option>
+                        <option value="加入" {{ $form->union === "加入" ? 'selected' : '' }} disabled>加入</option>
+                        <option value="未加入" {{ $form->union === '未加入' ? 'selected' : '' }} disabled>未加入</option>
 
 
                         </select>
@@ -378,10 +414,11 @@
 
                         </label>
                         <input
+                        readonly
                             type="number"
                             id="male_worker"
                             name="male_worker"
-                            value=""
+                            value="{{ $form->male_worker }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
@@ -394,10 +431,11 @@
 
                         </label>
                         <input
+                        readonly
                             type="number"
                             id="female_worker"
                             name="female_worker"
-                            value=""
+                            value="{{ $form->female_worker }}"
                             placeholder=""
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
@@ -412,9 +450,10 @@
                         </label>
                         <input
                         type="text"
+                        readonly
                             id="registration_number"
                             name="registration_number"
-                            value=""
+                            value="{{ $form->registration_number }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
@@ -429,11 +468,11 @@
                         <label for="" class="block text-gray-600 font-medium mb-2">店舗</label>
                         <div class="flex items-center space-x-4">
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="shop" value="賃借" class="form-radio text-blue-500">
+                                <input disabled type="radio" name="shop" value="賃借" class="form-radio text-blue-500" {{ $form->shop === '賃借' ? 'checked' : '' }}>
                                 <span>賃借</span>
                             </label>
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="shop" value="持ち家" class="form-radio text-blue-500">
+                                <input disabled type="radio" name="shop" value="持ち家" class="form-radio text-blue-500" {{ $form->shop === '持ち家' ? 'checked' : '' }}>
                                 <span>持ち家</span>
                             </label>
                         </div>
@@ -443,11 +482,11 @@
                             <label for="" class="block text-gray-600 font-medium mb-2">担保設定</label>
                             <div class="flex items-center space-x-4">
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="baritsaa" value="有" class="form-radio text-blue-500">
+                                    <input  disabled type="radio" name="baritsaa" value="有" class="form-radio text-blue-500" {{ $form->baritsaa === '有' ? 'checked' : '' }}>
                                     <span>有</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="baritsaa" value="無" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="baritsaa" value="無" class="form-radio text-blue-500" {{ $form->baritsaa === '無' ? 'checked' : '' }}>
                                     <span>無</span>
                                 </label>
                             </div>
@@ -456,15 +495,15 @@
                             <label for="" class="block text-gray-600 font-medium mb-2">担保設定状況</label>
                             <div class="flex items-center space-x-4">
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="baritsaa_status" value="銀行" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="baritsaa_status" value="銀行" class="form-radio text-blue-500" {{ $form->baritsaa_status === '銀行' ? 'checked' : '' }}>
                                     <span>銀行</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="baritsaa_status" value="ノンバンク" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="baritsaa_status" value="ノンバンク" class="form-radio text-blue-500" {{ $form->baritsaa_status === 'ノンバンク' ? 'checked' : '' }}>
                                     <span>ノンバンク</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="baritsaa_status" value="他" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="baritsaa_status" value="他" class="form-radio text-blue-500" {{$form->baritsaa_status === '他' ? 'checked' : '' }}>
                                     <span>他</span>
                                 </label>
                             </div>
@@ -480,11 +519,11 @@
                             <label for="" class="block text-gray-600 font-medium mb-2">社長自宅</label>
                             <div class="flex items-center space-x-4">
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_home" value="賃借" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="president_home" value="賃借" class="form-radio text-blue-500" {{ $form->president_home === '賃借' ? 'checked' : '' }}>
                                     <span>賃借</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_home" value="持ち家" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="president_home" value="持ち家" class="form-radio text-blue-500" {{ $form->president_home === '持ち家' ? 'checked' : '' }}>
                                     <span>持ち家</span>
                                 </label>
                             </div>
@@ -494,11 +533,11 @@
                             <label for="" class="block text-gray-600 font-medium mb-2">担保設定</label>
                             <div class="flex items-center space-x-2">
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_baritsaa" value="有" class="form-radio text-blue-500">
+                                    <input  disabled type="radio" name="president_baritsaa" value="有" class="form-radio text-blue-500" {{ $form->president_baritsaa === '有' ? 'checked' : '' }}>
                                     <span>有</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_baritsaa" value="無" class="form-radio text-blue-500">
+                                    <input  disabled type="radio" name="president_baritsaa" value="無" class="form-radio text-blue-500" {{ $form->president_baritsaa === '無' ? 'checked' : '' }}>
                                     <span>無</span>
                                 </label>
                             </div>
@@ -508,19 +547,19 @@
                             <label for="" class="block text-gray-600 font-medium mb-2">担保設定状況</label>
                             <div class="">
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_baritsaa_status" value="住宅ローン" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="president_baritsaa_status" value="住宅ローン" class="form-radio text-blue-500" {{ $form->president_baritsaa_status === '住宅ローン' ? 'checked' : '' }}>
                                     <span>住宅ローン</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_baritsaa_status" value="銀行" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="president_baritsaa_status" value="銀行" class="form-radio text-blue-500" {{ $form->president_baritsaa_status === '銀行' ? 'checked' : '' }}>
                                     <span>銀行</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_baritsaa_status" value="ノンバンク" class="form-radio text-blue-500">
+                                    <input disabled type="radio" name="president_baritsaa_status" value="ノンバンク" class="form-radio text-blue-500" {{ $form->president_baritsaa_status === 'ノンバンク' ? 'checked' : '' }}>
                                     <span>ノンバンク</span>
                                 </label>
                                 <label class="flex items-center space-x-2">
-                                    <input type="radio" name="president_baritsaa_status" value="他" class="form-radio text-blue-500">
+                                    <input  disabled type="radio" name="president_baritsaa_status" value="他" class="form-radio text-blue-500" {{$form->president_baritsaa_status === '他' ? 'checked' : '' }}>
                                     <span>他</span>
                                 </label>
                             </div>
@@ -551,15 +590,16 @@
                         </label>
                         <input
                         type="date"
+                        readonly
+
                             id="expire_date"
                             name="expire_date"
-                            value=""
+                            value="{{ $form->expire_date }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
 
                         </input>
-                        <span class="text-orange-400 mt-1 text-sm">月末締めの場合は末と入力してください。</span>
                     </div>
 
                     <div>
@@ -568,14 +608,16 @@
                         </label>
                         <select
 
+                        disabled
+                        readonly
                             id="payment_day"
                             name="payment_day"
-                            value=""
+
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
-                        <option value="">月選択</option>
-                        <option value="当月">当月</option>
-                        <option value="翌月">翌月</option>
+
+                        <option disabled value="当月" {{ $form->payment_day === '当月' ? 'selected' : '' }}>当月</option>
+                        <option disabled value="翌月" {{ $form->payment_day === '翌月' ? 'selected' : '' }}>翌月</option>
 
 
                         </select>
@@ -586,18 +628,17 @@
                         </label>
                         <input
 
-
+                            readonly
                             type="number"
                             id="payment_date"
                             name="payment_date"
-                            value=""
+                            value="{{ $form->payment_date }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
 
 
                         </input>
-                        <span class="text-orange-400 mt-1 text-sm">月末支払いは末と記入してください。30日払いではない</span>
                     </div>
 
 
@@ -609,9 +650,11 @@
                        その他
                     </label>
                     <input
+                    readonly
+
                         id="other_payment"
                         name="other_payment"
-                        value=""
+                        value="{{ $form->other_payment }}"
                     placeholder="支払いの条件が当月、翌月以外の場合は記入してください。"
 
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -634,14 +677,15 @@
                         </label>
                         <select
                         type=""
+                        disabled
                             id="collection_method"
                             name="collection_method"
                             value=""
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
-                        <option value="">選択</option>
-                        <option value="振込">振込</option>
-                        <option value="現金">現金</option>
+
+                        <option  disabled value="振込" {{ $form->collection_method === '振込' ? 'selected' : '' }}>振込</option>
+                        <option  disabled value="現金" {{ $form->collection_method === '現金' ? 'selected' : '' }}>現金</option>
 
 
 
@@ -655,17 +699,19 @@
                         </label>
                         <input
 
+                            readonly
                             id="cr_persent"
                             name="cr_persent"
                             placeholder="%"
-                            value=""
+                            value="{{ $form->cr_persent }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
 
 
-                        </い>
+                    </input>
                     </div>
+
                     <div>
                         <label for="office" class="block text-sm font-medium text-gray-700 mb-2 mt-2">
                             手形 (手形サイト)
@@ -674,13 +720,13 @@
                             type="number"
                             id="bill"
                             name="bill"
-                            value=""
+                            value="{{ $form->bill }}"
+                            readonly
                             placeholder="日 (締日起算)"
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
 
                         </input>
-                        <span class="text-orange-400 mt-1 text-sm">締日から手形の支払い日までの期間を記入してください。</span>
                     </div>
 
                     <div >
@@ -689,9 +735,11 @@
                            その他
                         </label>
                         <input
+
+                        readonly
                             id="collection_other"
                             name="collection_other"
-                            value=""
+                            value="{{ $form->collection_other }}"
                         placeholder=""
 
                             class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
@@ -706,24 +754,27 @@
                         <label for="" class="block text-gray-600 font-medium mb-2">専用伝票</label>
                         <div class="flex items-center space-x-4">
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="special" value="有" class="form-radio text-blue-500">
+                                <input type="radio" name="special" value="有" class="form-radio text-blue-500" {{ $form->special === '有' ? 'checked' : '' }} disabled>
                                 <span>有</span>
                             </label>
                             <label class="flex items-center space-x-2">
-                                <input type="radio" name="special" value="無" class="form-radio text-blue-500">
+                                <input type="radio" name="special" value="無" class="form-radio text-blue-500" {{ $form->special === '無' ? 'checked' : '' }} disabled>
                                 <span>無</span>
                             </label>
                         </div>
                     </div>
+
                     <div class="mt-4 mb-2">
                         <label for="" class="block text-gray-600 font-medium mb-2">取引契約書 取得（予定）日</label>
                         <div class="flex items-center space-x-4">
                             <label class="flex items-center space-x-2">
                                 <input
+
+                                readonly
                                 type="date"
                                 id="transaction_aggreement_date"
                                 name="transaction_aggreement_date"
-                                value=""
+                                value="{{ $form->transaction_aggreement_date }}"
                                 placeholder=""
                                 class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                             >
@@ -749,12 +800,15 @@
                         備考
                     </label>
                     <textarea
+
+                    readonly
                         id="remarks"
                         name="remarks"
                         rows="3"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         placeholder=""
-                    ></textarea>
+                    >
+                {{ $form->remarks }}</textarea>
                 </div>
             </div>
 
@@ -773,13 +827,13 @@
                     <label for="expected_sales" class="block text-sm font-medium text-gray-700 mb-2 mt-2">
                         売上予定額／月
                     </label>
-
                     <div class="relative">
                         <input
                             type="number"
+                            readonly
                             id="expected_sales"
                             name="expected_sales"
-
+                            value="{{ $form->expected_sales }}"
                             class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
                         <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -787,8 +841,6 @@
                         </div>
                     </div>
 
-
-                    </input>
                 </div>
                 <div class="mt-6">
 
@@ -801,16 +853,19 @@
                     <div class="relative">
                         <input
                             type="number"
+                            readonly
                             id="limit_amount"
                             name="limit_amount"
-
+                            value="{{ $form->limit_amount }}"
                             class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
                         <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
                             万円
                         </div>
                     </div>
-                    <span class="text-orange-400 mt-1 text-sm">審査の上売買契約書の第12条の連帯保証の金額欄に記入しますので必ず記入してください。</span>
+
+
+
 
                 </div>
 
@@ -819,11 +874,11 @@
                     <label for="" class="block text-gray-600 font-medium mb-2">連帯保証人(第三者)</label>
                     <div class="flex items-center space-x-4">
                         <label class="flex items-center space-x-2">
-                            <input type="radio" name="3rdPerson" value="有" class="form-radio text-blue-500" onchange="toggleInput()">
+                            <input disabled type="radio" name="3rdPerson" value="有" class="form-radio text-blue-500" onchange="toggleInput()" {{ $form['3rdPerson'] === '有' ? 'checked' : '' }}>
                             <span>有</span>
                         </label>
                         <label class="flex items-center space-x-2">
-                            <input type="radio" name="3rdPerson" value="無" class="form-radio text-blue-500" onchange="toggleInput()">
+                            <input disabled type="radio" name="3rdPerson" value="無" class="form-radio text-blue-500" onchange="toggleInput()" {{ $form['3rdPerson'] === '無' ? 'checked' : '' }}>
                             <span>無</span>
                         </label>
                     </div>
@@ -842,16 +897,17 @@
                     <div class="relative">
                         <input
                             type="number"
+                            readonly
                             id="decided_limit_amount"
                             name="decided_limit_amount"
-
+                            value="{{ $form->decided_limit_amount }}"
                             class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                         >
                         <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
                             万円
                         </div>
                     </div>
-                    <span class="text-orange-400 mt-1 text-sm">←本社記入</span>
+
 
                 </div>
 
@@ -861,75 +917,87 @@
                         信用度
                     </label>
                     <select
+                    readonly
+                    disabled
                         id="trust_rate"
                         name="trust_rate"
                         value=""
 
                         class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     >
-                    <option value="">選択</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="D">D</option>
+                    <option value="A" {{ $form->trust_rate === 'A' ? 'selected' : '' }}>A</option>
+                    <option value="B" {{ $form->trust_rate === 'B' ? 'selected' : '' }}>B</option>
+                    <option value="C" {{ $form->trust_rate === 'C' ? 'selected' : '' }}>C</option>
+                    <option value="D" {{ $form->trust_rate === 'D' ? 'selected' : '' }}>D</option>
 
 
                 </select>
 
 
                 </div>
+
+
                 <div class="mt-2">
 
                     <label for="guarantor1" class="block text-sm font-medium text-gray-700 mb-2">
                         代表者と連帯保証人の関係
                     </label>
+
+                    <label for="" class="block text-sm font-medium text-gray-700 mb-2">第一連帯保証人</label>
+
+
                     <select
                         id="guarantor1"
                         name="guarantor1"
                         value=""
+                        disabled
 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                    >
-                    <option value="">第一連帯保証人</option>
-                    <option value="本人">本人</option>
-                    <option value="親子">親子</option>
-                    <option value="親戚">親戚</option>
-                    <option value="配偶者">配偶者</option>
-                    <option value="兄弟">兄弟</option>
-                    <option value="友人知人">友人知人</option>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
 
-
-
+                    <option value="本人" {{ $form->guarantor1 === '本人' ? 'selected' : '' }}>本人</option>
+                    <option value="親子" {{ $form->guarantor1 === '親子' ? 'selected' : '' }}>親子</option>
+                    <option value="親戚" {{ $form->guarantor1 === '親戚' ? 'selected' : '' }}>親戚</option>
+                    <option value="配偶者" {{ $form->guarantor1 === '配偶者' ? 'selected' : '' }}>配偶者</option>
+                    <option value="兄弟" {{ $form->guarantor1 === '兄弟' ? 'selected' : '' }}>兄弟</option>
+                    <option value="友人知人" {{ $form->guarantor1 === '友人知人' ? 'selected' : '' }}>友人知人</option>
                 </select>
+
+
+
+
+                <label for="" class="block text-sm font-medium text-gray-700 mb-1 mt-2">第二連帯保証人</label>
                     <select
                         id="guarantor2"
                         name="guarantor2"
                         value=""
+                        disabled
 
                         class="mt-3 mb-3 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     >
-                    <option value="">第二連帯保証人</option>
-                    <option value="配偶者">配偶者</option>
-                    <option value="親子">親子</option>
-                    <option value="兄弟">兄弟</option>
-                    <option value="親戚">親戚</option>
-                    <option value="友人知人">友人知人</option>
+                    <option value="配偶者"{{ $form->guarantor2 === '配偶者' ? 'selected' : '' }} >配偶者</option>
+                    <option value="親子" {{ $form->guarantor2 === '親子' ? 'selected' : '' }}>親子</option>
+                    <option value="兄弟" {{ $form->guarantor2 === '兄弟' ? 'selected' : '' }}>兄弟</option>
+                    <option value="親戚" {{ $form->guarantor2 === '親戚' ? 'selected' : '' }}>親戚</option>
+                    <option value="友人知人" {{ $form->guarantor2 === '友人知人' ? 'selected' : '' }}>友人知人</option>
 
 
                 </select>
+
+                <label for="" class="block text-sm font-medium text-gray-700 mb-1 mt-2">第三連帯保証人</label>
+
                     <select
                         id="guarantor3"
                         name="guarantor3"
                         value=""
+                        disabled
 
                         class="mt-3 mb-3 w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     >
-                    <option value="">第三連帯保証人</option>
-                    <option value="配偶者">配偶者</option>
-                    <option value="親子">親子</option>
-                    <option value="兄弟">兄弟</option>
-                    <option value="親戚">親戚</option>
-                    <option value="友人知人">友人知人</option>
+                    <option value="配偶者" {{ $form->guarantor3 === '配偶者' ? 'selected' : '' }}>配偶者</option>
+                    <option value="親子" {{ $form->guarantor3 === '親子' ? 'selected' : '' }}>親子</option>
+                    <option value="兄弟" {{ $form->guarantor3 === '兄弟' ? 'selected' : '' }}>兄弟</option>
+                    <option value="親戚" {{ $form->guarantor3 === '親戚' ? 'selected' : '' }}>親戚</option>
+                    <option value="友人知人" {{ $form->guarantor3 === '友人知人' ? 'selected' : '' }}>友人知人</option>
 
 
                 </select>
@@ -947,12 +1015,14 @@
                     所長所見
                 </label>
                 <textarea
+                readonly
                     id="advantages"
                     name="advantages"
                     rows="3"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     placeholder=""
                 >
+                {{ $form->advantages }}
             </textarea>
             </div>
 
@@ -962,12 +1032,15 @@
                     取引開始経緯等
                 </label>
                 <textarea
+
+                    readonly
                     id="how_trading_began"
                     name="how_trading_began"
                     rows="3"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     placeholder=""
                 >
+                {{ $form->how_trading_began }}
             </textarea>
             </div>
 
@@ -977,26 +1050,23 @@
                     担当所見
                 </label>
                 <textarea
+
+                    readonly
+
                     id="comment_person_in_charge"
                     name="comment_person_in_charge"
                     rows="3"
                     class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                     placeholder=""
                 >
+                {{ $form->comment_person_in_charge }}
             </textarea>
             </div>
 
 
 
 
-            <div class="text-center mt-8 ">
-                <button
-                    type="submit"
-                    class="flex justify-start px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300"
-                >
-                  申請する
-                </button>
-            </div>
+
         </form>
     </div>
 

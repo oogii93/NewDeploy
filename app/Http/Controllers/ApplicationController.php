@@ -119,7 +119,8 @@ class ApplicationController extends Controller
         }
 
         $applications = $query->paginate(20);
-        $divisions = Division::whereIn('name', ['人事課', '経理課'])->get();
+        $divisions = Division::whereIn('name', ['経理課'])->get();
+        // '人事課',
 
         if ($request->ajax()) {
             return view('applications.boss_table', compact('applications', 'divisions'))->render();

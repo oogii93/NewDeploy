@@ -827,95 +827,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-                <!--HR-->
-
-
-                <!--KEIRI-->
-
-                @auth
-                    @if (auth()->user()->division && auth()->user()->division->name === '経理課')
-                        <li class="relative group">
-                            <a href="{{ route('ac.ac_dashboard') }}"
-                                class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
-                                <!-- Your SVG icon here -->
-
-                                <svg class="transition-transform duration-300 transform group-hover:-translate-y-1"
-                                    height="30px" width="30px" version="1.1" id="Layer_1"
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    viewBox="0 0 491.52 491.52" xml:space="preserve" fill="#000000">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <path style="fill:#64798A;"
-                                            d="M399.128,0H92.391c-8.827,0-15.984,7.155-15.984,15.984v459.553c0,8.827,7.156,15.984,15.984,15.984 h306.737c8.828,0,15.984-7.156,15.984-15.984V15.984C415.112,7.155,407.956,0,399.128,0z">
-                                        </path>
-                                        <path style="fill:#D15241;"
-                                            d="M221.828,185.954H119.992c-4.748,0-8.597,3.849-8.597,8.597v101.836c0,4.747,3.849,8.597,8.597,8.597 h101.836c4.748,0,8.596-3.85,8.596-8.597V194.551C230.424,189.803,226.575,185.954,221.828,185.954z">
-                                        </path>
-                                        <path style="fill:#31978C;"
-                                            d="M371.528,185.954H269.692c-4.748,0-8.596,3.849-8.596,8.597v101.836c0,4.747,3.848,8.597,8.596,8.597 h101.836c4.748,0,8.597-3.85,8.597-8.597V194.551C380.125,189.803,376.276,185.954,371.528,185.954z">
-                                        </path>
-                                        <path style="fill:#D5D6DB;"
-                                            d="M221.828,335.632H119.992c-4.748,0-8.597,3.848-8.597,8.596v101.836c0,4.748,3.849,8.597,8.597,8.597 h101.836c4.748,0,8.596-3.849,8.596-8.597V344.228C230.424,339.481,226.575,335.632,221.828,335.632z">
-                                        </path>
-                                        <path style="fill:#F6C358;"
-                                            d="M371.528,335.632H269.692c-4.748,0-8.596,3.848-8.596,8.596v101.836c0,4.748,3.848,8.597,8.596,8.597 h101.836c4.748,0,8.597-3.849,8.597-8.597V344.228C380.125,339.481,376.276,335.632,371.528,335.632z">
-                                        </path>
-                                        <rect x="111.396" y="38.052" style="fill:#FFFFFF;" width="268.749"
-                                            height="100.777"></rect>
-                                        <rect x="111.396" y="125.916" style="fill:#EBF0F3;" width="268.749"
-                                            height="12.913"></rect>
-                                        <path style="fill:#E56353;"
-                                            d="M221.828,176.385H119.992c-4.748,0-8.597,3.849-8.597,8.597v101.836c0,4.747,3.849,8.597,8.597,8.597 h101.836c4.748,0,8.596-3.85,8.596-8.597V184.982C230.424,180.234,226.575,176.385,221.828,176.385z">
-                                        </path>
-                                        <path style="fill:#44C4A1;"
-                                            d="M371.528,176.385H269.692c-4.748,0-8.596,3.849-8.596,8.597v101.836c0,4.747,3.848,8.597,8.596,8.597 h101.836c4.748,0,8.597-3.85,8.597-8.597V184.982C380.125,180.234,376.276,176.385,371.528,176.385z">
-                                        </path>
-                                        <path style="fill:#EBF0F3;"
-                                            d="M221.828,326.064H119.992c-4.748,0-8.597,3.848-8.597,8.596v101.836c0,4.748,3.849,8.597,8.597,8.597 h101.836c4.748,0,8.596-3.849,8.596-8.597V334.66C230.424,329.912,226.575,326.064,221.828,326.064z">
-                                        </path>
-                                        <path style="fill:#FCD462;"
-                                            d="M371.528,326.064H269.692c-4.748,0-8.596,3.848-8.596,8.596v101.836c0,4.748,3.848,8.597,8.596,8.597 h101.836c4.748,0,8.597-3.849,8.597-8.597V334.66C380.125,329.912,376.276,326.064,371.528,326.064z">
-                                        </path>
-                                        <g>
-                                            <polygon style="fill:#FFFFFF;"
-                                                points="208.658,231.431 175.381,231.431 175.381,198.146 166.445,198.146 166.445,231.431 133.158,231.431 133.158,240.369 166.445,240.369 166.445,273.655 175.381,273.655 175.381,240.369 208.658,240.369 ">
-                                            </polygon>
-                                            <polygon style="fill:#FFFFFF;"
-                                                points="344.141,206.051 320.61,229.581 297.074,206.044 290.755,212.364 314.291,235.9 290.755,259.437 297.074,265.756 320.61,242.22 344.147,265.756 350.466,259.437 326.929,235.9 350.46,212.37 ">
-                                            </polygon>
-                                        </g>
-                                        <rect x="133.171" y="381.133" style="fill:#3A556A;" width="75.5"
-                                            height="8.94"></rect>
-                                        <g>
-                                            <rect x="282.88" y="365.158" style="fill:#DC8744;" width="75.5"
-                                                height="8.94"></rect>
-                                            <rect x="282.88" y="397.056" style="fill:#DC8744;" width="75.5"
-                                                height="8.94"></rect>
-                                        </g>
-                                    </g>
-                                </svg>
-
-                                <span class="mr-2 mt-1 text-gray-800 text-[11px] font-medium">経理課</span></span>
-                            </a>
-                        </li>
-                    @endif
-                @endauth
-
-
-
-
-
-
                 <li class="relative group">
                     <a href="https://app.metalife.co.jp/spaces"
                         class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100"
@@ -1014,6 +925,7 @@
                 </li>
             @endif
 
+
             @auth
             @if (auth()->user()->division && auth()->user()->corp->corp_name === '太成HD')
                 <li class="relative group">
@@ -1039,8 +951,12 @@
                          @endphp --}}
 
 
-                        <a href="{{ route('hr.hr.dashboard') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a>
+                        <a href="{{ route('ac.dashboard') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(経理課)</a>
+
+                        {{-- <a href="{{ route('hr.hr.dashboard') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a> --}}
+
                         <a href="{{ route('Kintaihr') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
 
@@ -1353,7 +1269,7 @@
             @endif
             @if (auth()->user()->division && auth()->user()->division->name === '経理課')
                 <li class="w-full">
-                    <button onclick="window.location.href='{{ route('ac.ac_dashboard') }}'"
+                    <button onclick="window.location.href='{{ route('ac.dashboard') }}'"
                         class="w-full text-sm sm:text-base text-white py-3 px-6 bg-gray-700 hover:bg-sky-700 rounded-lg transition duration-300">
 
                         経理課</button>

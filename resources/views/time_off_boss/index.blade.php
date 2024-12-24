@@ -238,23 +238,23 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <form action="{{ route('time_off_boss.updateStatus', $record->id) }}" method="POST" class="space-y-2">
                                         @csrf
                                         <button type="submit" name="status" value="approved"
-                                            class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded {{ $record->status !== 'pending' ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                            {{ $record->status !== 'pending' ? 'disabled' : '' }}>
+                                            class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded "
+                                           >
                                             承認
                                         </button>
                                         <button type="submit" name="status" value="denied"
-                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded {{ $record->status !== 'pending' ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                            {{ $record->status !== 'pending' ? 'disabled' : '' }}>
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded "
+                                   >
                                             拒否
                                         </button>
-                                        @if($record->status === 'pending')
+                                        {{-- @if($record->status === 'pending') --}}
                                             <select name="division_id" id="division_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
-                                                <option value="">会社選択</option>
+                                                {{-- <option value="">会社選択</option> --}}
                                                 @foreach($divisions as $division)
                                                     <option value="{{ $division->id }}">{{ $division->name }}</option>
                                                 @endforeach
                                             </select>
-                                        @endif
+                                        {{-- @endif --}}
                                     </form>
                                 </td>
 

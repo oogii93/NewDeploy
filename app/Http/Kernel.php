@@ -71,10 +71,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
 
-        //Hr route middleware for protection
-        // 'check.hr' => \App\Http\Middleware\CheckHrDivision::class,
-        // 'check.ac' => \App\Http\Middleware\CheckAcDivision::class,
         'is_boss'=>\App\Http\Middleware\CheckIsBoss::class,
-        'taisei'=>\App\Http\Middleware\CheckTaiseiCorp::class,
+        'taisei' => \App\Http\Middleware\CheckTaiseiCorp::class,
     ];
 }

@@ -83,7 +83,7 @@ class TimeOffRequestRecordController extends Controller
         }
 
         $timeOffRequestRecords = $query->paginate(20);
-        $divisions = Division::whereIn('name', ['人事課', '経理課'])->get();
+        $divisions = Division::whereIn('name', ['人事課'])->get();
 
         return view('time_off_boss.index', compact('timeOffRequestRecords', 'divisions', 'searchQuery'));
     }

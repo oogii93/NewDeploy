@@ -26,6 +26,7 @@
         @include('hr.hr_table', ['applications' => $applications])
     </div>
 </div>
+</div>
     <script>
     function applicationSearch() {
         return {

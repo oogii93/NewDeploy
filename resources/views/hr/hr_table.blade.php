@@ -89,6 +89,8 @@
     </tbody>
 </table>
 {{ $applications->links() }}
+        </div>
+    </div>
 <script>
     function checkApplication(id) {
         const checkbox = document.getElementById(`checkbox_${id}`);

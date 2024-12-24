@@ -713,9 +713,10 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     ->name('applications.check');
 
     // Acountant
-    Route::get('/ac', [AccountantController::class, 'index'])
-        ->name('ac.ac_dashboard')
+    Route::get('/ac-dashboard', [AccountantController::class, 'index'])
+        ->name('ac.dashboard')
         ->middleware(['auth', 'taisei']);
+
     Route::post('/applications/{application}/check', [ApplicationController::class, 'checkApplication'])->name('applications.check');
 
 
