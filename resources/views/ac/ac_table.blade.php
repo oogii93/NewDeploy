@@ -70,13 +70,13 @@
 
                 <td class="border border-slate-300 px-4 py-2">
                     <span id="checked_by_{{ $application->id }}">
-                        {{ $application->checked_by ? \App\Models\User::find($application->checked_by)->name : 'Not checked' }}
+                        {{ $application->checked_by ? \App\Models\User::find($application->checked_by)->name : 'N/A' }}
                     </span>
                 </td>
 
                 <td class="border border-slate-300 px-4 py-2 whitespace-nowrap hidden md:table-cell">
                     <span id="checked_date_{{ $application->id }}">
-                        {{ $application->checked_at ? $application->checked_at->format('Y-m-d H:i') : 'Not checked' }}
+                        {{ $application->checked_at ? $application->checked_at->format('Y-m-d H:i') : 'N/A' }}
                     </span>
                 </td>
 
