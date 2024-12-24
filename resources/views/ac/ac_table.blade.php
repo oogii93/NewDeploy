@@ -70,7 +70,8 @@
 
                 <td class="border border-slate-300 px-4 py-2">
                     <span id="checked_by_{{ $application->id }}">
-                        {{ $application->checked_by ? \App\Models\User::find($application->checked_by)->name : 'N/A' }}
+                        {{-- {{ $application->checked_by ? \App\Models\User::find($application->checked_by)->name : 'N/A' }} --}}
+                        {{ $application->checked_by ? $application->checked_by : 'N/A' }}
                     </span>
                 </td>
 
