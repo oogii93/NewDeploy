@@ -153,14 +153,14 @@ use App\Models\AttendanceTypeRecord;
                     </div>
                 </div>
 
-                {{-- @if (!in_array($timeOffRecordForDay->status, ['approved', 'denied'])) --}}
+                @if (!in_array($timeOffRecordForDay->status, ['approved']))
                     <button
                         onclick="openEditModal('{{ $timeOffRecordForDay->id }}', '{{ $day->format('Y-m-d') }}', '{{ $timeOffRecordForDay->attendance_type_records_id }}', '{{ $timeOffRecordForDay->reason_select }}', '{{ $timeOffRecordForDay->reason }}', '{{ $timeOffRecordForDay->boss_id }}')"
                         class="text-blue-500 hover:underline text-m font-semibold mt-1 block w-full text-center">
                         編集
                     </button>
 
-                {{-- @endif --}}
+                @endif
 
             @elseif ($compensatoryRestDay)
                 <div class="rounded-full py-1 px-1 sm:px-2 bg-yellow-100 text-center">
