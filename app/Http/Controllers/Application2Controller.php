@@ -30,7 +30,7 @@ class Application2Controller extends Controller
                     })
                     ->get();
 
-                    // dump($users);
+                    // dd($users);
 
 
         return view('applications2.index', compact('application2', 'users'));

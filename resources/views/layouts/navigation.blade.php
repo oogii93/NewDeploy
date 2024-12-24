@@ -1032,13 +1032,25 @@
 
                     <div
                         class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
+
+                        {{-- @php
+                        $newOrdersCount = \App\Models\Application::where('is_read', false)->count();
+                        // Add other counts as needed
+                         @endphp --}}
+
+
                         <a href="{{ route('hr.hr.dashboard') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a>
                         <a href="{{ route('Kintaihr') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
 
-                        <a href="{{ route('applications2.index') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文</a>
+                            <a href="{{ route('applications2.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文
+
+                            {{-- @if($newOrdersCount > 0)
+                            <span class="absolute right-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></span>
+                             @endif --}}
+                        </a>
 
                         <a href="{{ route('car.index') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">車管理</a>

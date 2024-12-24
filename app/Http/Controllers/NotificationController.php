@@ -43,4 +43,35 @@ class NotificationController extends Controller
 
         return back()->with('success', 'Notification marked as read');
     }
+
+
+
+
+    public function checkNotifications()
+    {
+        $notification=[
+            'newOrders'=>Application::where('is_read', false)->count(),
+        ];
+
+        return response()->json($notification);
+
+    }
+
+
+    public function markAsRead2($type, $id)
+    {
+        switch($type){
+            case 'order':
+                Application::where('id', $id)
+                        ->update([
+                            'is_read'=>true,
+                            'read_at'=>now()
+                        ]);
+
+                        break;
+
+        }
+
+        return response()->json(['success'=>true]);
+    }
 }

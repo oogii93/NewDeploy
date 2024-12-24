@@ -57,7 +57,7 @@ use App\Models\AttendanceTypeRecord;
 
     <div class="flex justify-normal mb-2">
 
-        <div class="flex flex-col items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-50 to-amber-100 hover:from-amber-100 hover:to-amber-200 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-amber-200">
+        <div class="flex flex-col items-center justify-center w-20 h-20 bg-gradient-to-br hover:text-white from-green-100 to-green-300 hover:from-green-400 hover:to-green-500 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 border border-amber-200">
 
             {{-- @if($today >= 14 && $today <= 15) --}}
 
@@ -65,24 +65,17 @@ use App\Models\AttendanceTypeRecord;
 
 
                 <button id="validateMonthBtn"
-                    class="items-center">
+                    class="text-sm font-semibold">
 
-                    <svg
-                    class="w-12 h-12"
-                    viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M622.4 682.453333l60.330667-60.309333 256.405333 256.405333-60.330667 60.309334z" fill="#616161"></path><path d="M426.666667 426.666667m-341.333334 0a341.333333 341.333333 0 1 0 682.666667 0 341.333333 341.333333 0 1 0-682.666667 0Z" fill="#616161"></path><path d="M692.266667 753.92l60.309333-60.330667 185.514667 185.514667-60.330667 60.330667z" fill="#37474F"></path><path d="M426.666667 426.666667m-277.333334 0a277.333333 277.333333 0 1 0 554.666667 0 277.333333 277.333333 0 1 0-554.666667 0Z" fill="#64B5F6"></path><path d="M573.866667 302.933333c-36.266667-42.666667-89.6-68.266667-147.2-68.266666s-110.933333 25.6-147.2 68.266666c-8.533333 8.533333-6.4 23.466667 2.133333 29.866667 8.533333 8.533333 23.466667 6.4 29.866667-2.133333C341.333333 296.533333 381.866667 277.333333 426.666667 277.333333s85.333333 19.2 115.2 53.333334c4.266667 4.266667 10.666667 8.533333 17.066666 8.533333 4.266667 0 10.666667-2.133333 12.8-4.266667 8.533333-8.533333 8.533333-23.466667 2.133334-32z" fill="#BBDEFB"></path></g></svg>
+
+                    当月の勤怠確定処理
                 </button>
+
+
             {{-- @endif --}}
 
         </div>
 
-        <div class=" ml-4 flex items-center px-4 py-3 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200 shadow-sm">
-            <svg class="w-5 h-5 text-purple-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            <p class="text-sm text-gray-600 leading-relaxed">
-                毎月<span class="font-medium text-purple-700">14日</span>から<span class="font-medium text-purple-700">15日</span>の間でこのボタンを押して当月の入力したデータを確認してください。
-            </p>
-        </div>
 
 
 
@@ -160,14 +153,14 @@ use App\Models\AttendanceTypeRecord;
                     </div>
                 </div>
 
-                @if (!in_array($timeOffRecordForDay->status, ['approved', 'denied']))
+                {{-- @if (!in_array($timeOffRecordForDay->status, ['approved', 'denied'])) --}}
                     <button
                         onclick="openEditModal('{{ $timeOffRecordForDay->id }}', '{{ $day->format('Y-m-d') }}', '{{ $timeOffRecordForDay->attendance_type_records_id }}', '{{ $timeOffRecordForDay->reason_select }}', '{{ $timeOffRecordForDay->reason }}', '{{ $timeOffRecordForDay->boss_id }}')"
                         class="text-blue-500 hover:underline text-m font-semibold mt-1 block w-full text-center">
                         編集
                     </button>
 
-                @endif
+                {{-- @endif --}}
 
             @elseif ($compensatoryRestDay)
                 <div class="rounded-full py-1 px-1 sm:px-2 bg-yellow-100 text-center">
@@ -1150,7 +1143,7 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
     })
     .finally(() => {
         button.disabled = false;
-        button.textContent = 'チェックのボタン';
+        button.textContent = '当月の勤怠確定処理';
     });
 });
 

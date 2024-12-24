@@ -80,6 +80,9 @@ class FormController extends Controller
         // ];
         // return view('forms.index', compact('formTypes'));
         $formGroups = [
+            '新規取引伺書' => [
+                '5A' => ['title' => '新規取引伺書', 'type' => 'Type5A'],
+            ],
             '取引関係' => [
                 // 'B' => ['title' => '営業費使用伺書', 'type' => 'TypeB'],
             ],

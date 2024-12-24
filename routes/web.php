@@ -1201,6 +1201,16 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                 ->name('attendance.validate-period');
 
 
+                Route::get('/check-notifications',[NotificationController::class, 'checkNotifications'])
+                ->name('check.notifications');
+
+
+                Route::post('/mark-as-read/{type}/{id}', [NotificationController::class, 'markAsRead2'])
+                 ->name('mark.as.read');
+
+
+
+
 
 
 
