@@ -30,10 +30,10 @@ class KintaiHRController extends Controller
 
     public function index(Request $request)
 {
-    $hrDivisionId=6;
+    $hrDivisionIds=[6,9];
     $query=TimeOffRequestRecord::with(['user', 'user.office', 'user.office.corp','attendanceTypeRecord','boss']);
 
-    $query->where('division_id', $hrDivisionId);
+    $query->where('division_id', $hrDivisionIds);
 
     if($request->has('search') && !empty($request->input('search'))){
         $search=$request->input('search');
