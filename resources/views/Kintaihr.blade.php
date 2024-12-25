@@ -50,16 +50,13 @@
             <h1 class="text-2xl font-bold mb-4 text-left py-4 px-2">勤怠届一覧</h1>
 
             <div class="w-full overflow-x-auto px-2">
-
                 <form action="{{ route('Kintaihr') }}" method="GET" class="mb-4">
                     <div class="flex flex-wrap items-center gap-2">
                         <input type="text" name="search" value="{{ request()->input('search') }}"
                             class="border border-gray-300 rounded px-3 py-2 flex-grow" placeholder="社員検索">
-
                         <x-button type="submit" purpose="default">
                             検索
                         </x-button>
-
                     </div>
                 </form>
             </div>
@@ -68,7 +65,9 @@
 
         </div>
 
-        <div class="table-responsive mt-10 mb-10">
+
+
+        <div class="w-full overflow-x-auto mt-5">
             <table class="min-w-full table-auto bg-white shadow-lg rounded-lg overflow-hidden border border-slate-400">
                 <thead class="bg-blue-200 text-gray-700">
                     <tr>
@@ -157,10 +156,11 @@
                         </tr>
                     @endforeach
                     </tbody>
-                    <div class="mt-4">
-                        {{ $records->appends(request()->query())->links() }}
-                    </div>
+
                 </table>
+                <div class="mt-4">
+                    {{ $records->appends(request()->query())->links() }}
+                </div>
             </div>
         </div>
 

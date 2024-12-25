@@ -63,7 +63,7 @@ class KintaiHRController extends Controller
             });
         }
 
-        $records = $query->paginate(10);
+        $records = $query->latest()->paginate(15);
 
 
         if(auth()->user()->division_id== [6,9]){
