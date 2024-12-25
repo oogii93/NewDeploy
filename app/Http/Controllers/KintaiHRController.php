@@ -34,7 +34,7 @@ class KintaiHRController extends Controller
         $hrDivisionIds = [6, 9];
         $query = TimeOffRequestRecord::with(['user', 'user.office', 'user.office.corp', 'attendanceTypeRecord', 'boss']);
 
-        $query->where('division_id', $hrDivisionIds);
+        $query->whereIn('division_id', $hrDivisionIds);
 
         if ($request->has('search') && !empty($request->input('search'))) {
             $search = $request->input('search');
@@ -66,10 +66,15 @@ class KintaiHRController extends Controller
         $records = $query->latest()->paginate(15);
 
 
-        if(auth()->user()->division_id== [6,9]){
-            TimeOffRequestRecord::uncheckedHrNotifications()
-            ->update(['hr_checked' => true, 'hr_checked_by' => auth()->id(), 'hr_checked_at' => now()]);
-        }
+     // Fix the division id check
+     if(in_array(auth()->user()->division_id, [6,9])){
+        TimeOffRequestRecord::uncheckedHrNotifications()
+            ->update([
+                'hr_checked' => true,
+                'hr_checked_by' => auth()->id(),
+                'hr_checked_at' => now()
+            ]);
+    }
 
         return view('Kintaihr', compact('records'));
     }
