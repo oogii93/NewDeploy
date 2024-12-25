@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Office;
-use App\Models\Application;
 use App\Models\Division;
+use App\Models\Application;
 use App\Models\Forms\FormA;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
@@ -24,12 +25,16 @@ class ApplicationController extends Controller
                 'is_checked' => true,
                 'checked_by' => auth()->id(),
                 'checked_at' => now(),
+                'hr_checked' => true,
+
             ]);
 
             return response()->json([
                 'success' => true,
                 'checked_by' => auth()->user()->name,
                 'checked_at' => now()->format('Y-m-d H:i'),
+                'hr_checked' => true,
+
             ]);
         }
 
@@ -60,6 +65,8 @@ class ApplicationController extends Controller
         }
 
         $applications = $query->paginate(20);
+
+
 
         if ($request->ajax()) {
             return view('applications.table', compact('applications'))->render();
@@ -185,8 +192,14 @@ class ApplicationController extends Controller
         $application->user_id = auth()->id();
         $application->status = "pending";
         $application->boss_id = $validatedData['boss_id'];
+        $application->hr_checked = false;
         $application->applicationable()->associate($form);
         $application->save();
+
+        Log::info('Creating new application', [
+            'hr_checked' => false,
+            'status' => 'pending'
+        ]);
 
         return redirect()->route('applications.show', $application->id);
     }

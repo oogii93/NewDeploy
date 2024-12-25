@@ -203,6 +203,10 @@
 
                 // Disable the checkbox
                 checkbox.disabled = true;
+
+
+                checkNotificationCount();
+
             } else {
                 alert('Failed to update the record. Please try again.');
             }
@@ -211,6 +215,20 @@
             console.error('Error:', error);
             alert('An error occurred. Please try again.');
         });
+    }
+
+    function checkNotificationCount(){
+        fetch('/check-unckecked-notifications')
+            .then(response =>response.json())
+            .then(data =>{
+                const notificationDot=document.querySelector('[href="{{ route("Kintaihr") }}"] span');
+                if(notificationDot){
+                    if(data.uncheckedCount === 0){
+                        notificationDot.style.display='none';
+                    }
+                }
+            })
+            .catch(error=> console.error('Error:', error));
     }
 
     // Attach the checkApplication function to all buttons

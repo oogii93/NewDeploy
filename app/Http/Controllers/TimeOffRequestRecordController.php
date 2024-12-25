@@ -31,10 +31,18 @@ class TimeOffRequestRecordController extends Controller
                 'checked_at' => now(),
             ]);
 
+            if($timeOffRequestRecord->division_id ==6 || $timeOffRequestRecord->division_id == 9)
+            {
+                $updateData=['hr_checked'=>true];
+            }
+
+            $timeOffRequestRecord->update($updateData);
+
             return response()->json([
                 'success' => true,
                 'checked_by' => auth()->user()->name,
                 'checked_at' => now()->format('Y-m-d H:i'),
+                'hr_checked' => $timeOffRequestRecord->hr_checked,
             ]);
         }
 
@@ -88,43 +96,53 @@ class TimeOffRequestRecordController extends Controller
         return view('time_off_boss.index', compact('timeOffRequestRecords', 'divisions', 'searchQuery'));
     }
 
-
     public function updateStatus(Request $request, $id)
-    {
-        $timeOffRequest = TimeOffRequestRecord::findOrFail($id);
+{
 
-        $validatedData = $request->validate([
-            'status' => 'required|in:approved,denied',
-            'division_id' => 'required_if:status,approved|exists:divisions,id',
-        ]);
 
+    $timeOffRequest = TimeOffRequestRecord::findOrFail($id);
+
+    $validatedData = $request->validate([
+        'status' => 'required|in:approved,denied',
+        'division_id' => 'required_if:status,approved|exists:divisions,id',
+    ]);
+
+
+
+    if ($validatedData['status'] === 'approved') {
         $timeOffRequest->status = $validatedData['status'];
-
-        if ($validatedData['status'] === 'approved') {
-            $timeOffRequest->division_id = $validatedData['division_id'];
+        $timeOffRequest->division_id = $validatedData['division_id'];
 
 
 
-            if($timeOffRequest->attendanceTypeRecord->name==='休日出勤')
-            {
-              $timeOffRequest->is_checked=true;
-              $timeOffRequest->checked_by=auth()->id();
-            //   $timeOffRequest->checked_at();
-            }
+        if($validatedData['division_id'] == 6) {
+            $timeOffRequest->hr_checked = false;
 
-            //Notify HR users if approved
-            if($validatedData['division_id'] ==6){
-                $hrUsers=User::where('division_id', 6)->get();
 
-                foreach($hrUsers as $hrUser){
-                    $hrUser->notify(new TimeOffRequestHumanResourcedNotification($timeOffRequest));
-                }
-            }
+
+            $hrUsers = User::where('division_id', 6)->get();
+
         }
 
-        $timeOffRequest->save();
+        if($timeOffRequest->attendanceTypeRecord->name === '休日出勤') {
+            $timeOffRequest->is_checked = true;
+            $timeOffRequest->checked_by = auth()->id();
+        }
+    }
 
-           // Notify the user about the status change
+    $timeOffRequest->save();
+
+
+
+    // Add this temporary check right after saving
+    $verifyRecord = TimeOffRequestRecord::find($id);
+
+
+    // Before returning, let's check if there are any unchecked notifications
+    $uncheckedCount = TimeOffRequestRecord::uncheckedHrNotifications()->count();
+    //   Notify the user about the status change
+
+
         $timeOffRequest->user->notify(new TimeOffRequestStatusChangedNotification($timeOffRequest));
 
 
@@ -133,7 +151,81 @@ class TimeOffRequestRecordController extends Controller
             : '勤怠届が拒否されました。';
 
         return redirect()->route('time_off_boss.index')->with('success', $message);
-    }
+
+
+    // Rest of your code...
+}
+
+
+    // public function updateStatus(Request $request, $id)
+    // {
+
+
+
+    //     $timeOffRequest = TimeOffRequestRecord::findOrFail($id);
+
+    //     $validatedData = $request->validate([
+    //         'status' => 'required|in:approved,denied',
+    //         'division_id' => 'required_if:status,approved|exists:divisions,id',
+    //     ]);
+
+    //     $timeOffRequest->status = $validatedData['status'];
+
+
+    //     if ($validatedData['status'] === 'approved') {
+    //         $timeOffRequest->division_id = $validatedData['division_id'];
+
+
+
+    //         if($timeOffRequest->attendanceTypeRecord->name==='休日出勤')
+    //         {
+    //           $timeOffRequest->is_checked=true;
+    //           $timeOffRequest->checked_by=auth()->id();
+    //         //   $timeOffRequest->checked_at();
+    //         }
+
+    //         if($validatedData['division_id'] == [6,9]) {
+    //             $timeOffRequest->hr_checked = false;
+
+    //             \Log::info('Before setting HR checked', [
+    //                 'request_id' => $timeOffRequest->id,
+    //                 'current_hr_checked' => $timeOffRequest->hr_checked,
+    //                 'division_id' => $validatedData['division_id']
+    //             ]);
+
+    //             $hrUsers = User::where('division_id', 6)->get();
+    //             foreach($hrUsers as $hrUser) {
+    //                 $hrUser->notify(new TimeOffRequestHumanResourcedNotification($timeOffRequest));
+    //             }
+    //         }
+
+
+
+
+
+
+    //         //Notify HR users if approved
+    //         if($validatedData['division_id'] ==6){
+    //             $hrUsers=User::where('division_id', 6)->get();
+
+    //             foreach($hrUsers as $hrUser){
+    //                 $hrUser->notify(new TimeOffRequestHumanResourcedNotification($timeOffRequest));
+    //             }
+    //         }
+    //     }
+
+    //     $timeOffRequest->save();
+
+    //        // Notify the user about the status change
+    //     $timeOffRequest->user->notify(new TimeOffRequestStatusChangedNotification($timeOffRequest));
+
+
+    //     $message = $validatedData['status'] === 'approved'
+    //         ? '勤怠届が承認されました。'
+    //         : '勤怠届が拒否されました。';
+
+    //     return redirect()->route('time_off_boss.index')->with('success', $message);
+    // }
 
 
 
@@ -291,4 +383,7 @@ class TimeOffRequestRecordController extends Controller
             'message' => '勤怠届が正常に消去されました。'
         ]);
     }
+
+
+
 }

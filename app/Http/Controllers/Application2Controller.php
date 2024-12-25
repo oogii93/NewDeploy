@@ -53,6 +53,17 @@ class Application2Controller extends Controller
                                                 })
                                                 ->get();
 
+
+
+
+
+                    if(auth()->user()->division_id== [6,9]){
+                        Application2::uncheckedHrNotifications()
+                        ->update(['hr_checked' => true, 'hr_checked_by' => auth()->id(), 'hr_checked_at' => now()]);
+                    }
+
+                    // \Log::info($application2);
+
                 return view('applications2.computer', compact('application2','users'));
 
             }
@@ -94,6 +105,7 @@ class Application2Controller extends Controller
             'is_checked' => true,
             'checked_by' => $request->checker_id,
             'checked_at' => now(),
+            'hr_checked' => true,
         ]);
 
         DB::commit();
@@ -101,7 +113,8 @@ class Application2Controller extends Controller
         return response()->json([
             'success' => true,
             'checker_name' => User::find($request->checker_id)->name,
-            'checked_at' => $application2->checked_at->format('Y-m-d H:i:s')
+            'checked_at' => $application2->checked_at->format('Y-m-d H:i:s'),
+            'hr_checked' => $application2->hr_checked,
         ]);
 
     } catch (\Exception $e) {

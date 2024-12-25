@@ -929,9 +929,32 @@
             @auth
             @if (auth()->user()->division && auth()->user()->corp->corp_name === '太成HD')
                 <li class="relative group">
+                    @php
+                        $timeOffCount =\App\Models\TimeOffRequestRecord::where('status', 'approved')
+
+                                ->whereIn('division_id', [6, 9])
+                                ->where('hr_checked', false)
+                                ->count();
+
+                        $uncheckedComputerCount =\App\Models\Application2::uncheckedHrNotifications()->count();
+                        $uncheckedNonComputerCount=\App\Models\Application2::uncheckedNonComputerNotifications()->count();
+                        $uncheckedCount = \App\Models\Application::UncheckedHrNotifications()->count();
+
+                        $totalNotifications=$timeOffCount+$uncheckedComputerCount + $uncheckedNonComputerCount + $uncheckedCount;
+
+                    @endphp
+
+
+
                     <a href=""
                         class="flex flex-col items-center justify-center w-24 h-16 cursor-pointer bg-white border border-gray-200 hover:bg-gray-100">
 
+
+
+                        @if ($totalNotifications >0)
+
+                        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                        @endif
                         <img src="{{ asset('logo22.png') }}"
                         alt=""
                         class="w-8 h-8 transition-transform duration-300 transform group-hover:-translate-y-1 mt-1"
@@ -942,37 +965,104 @@
                     </a>
 
 
-                    <div
-                        class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
-
-                        {{-- @php
-                        $newOrdersCount = \App\Models\Application::where('is_read', false)->count();
-                        // Add other counts as needed
-                         @endphp --}}
+                    <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block top-full left-0">
 
 
-                        <a href="{{ route('ac.dashboard') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(経理課)</a>
+                        {{-- <a href="{{ route('ac.dashboard') }}"
+                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300 relative">
+                         申請書(経理課)
+
+                     </a> --}}
+                <a href="{{ route('ac.dashboard') }}"
+                     class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300 relative">
+                     申請書(経理課)
+                     @auth
+                         @php
+                             $uncheckedCount = \App\Models\Application::where('status', 'pending')
+                                 ->where('hr_checked', false)
+                                 ->count();
+
+                            //  Log::info('Unchecked notifications count', [
+                            //      'count' => $uncheckedCount,
+
+                            //      'hr_checked' => false
+                            //  ]);
+                         @endphp
+
+                         @if ($uncheckedCount > 0)
+                             <span class="absolute top-2 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                         @endif
+                     @endauth
+                 </a>
 
                         {{-- <a href="{{ route('hr.hr.dashboard') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">申請書(人事)</a> --}}
 
-                        <a href="{{ route('Kintaihr') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a>
 
+                    <a href="{{ route('Kintaihr') }}"
+                    class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300 relative"
+                    >
+                    勤怠届(人事)
+                    @auth
+                        @if (auth()->user()->division && auth()->user()->corp->corp_name === '太成HD')
+                        @php
+                        $uncheckedCount=\App\Models\TimeOffRequestRecord::where('status','approved')
+                                ->where('division_id', [6,9])
+                                ->where('hr_checked', false)
+                                ->count();
+                        @endphp
+
+                        @if ($uncheckedCount > 0)
+                        <span class="absolute top-2 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                        @endif
+
+                        @endif
+                    @endauth
+
+                </a>
+                        {{-- <a href="{{ route('Kintaihr') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">勤怠届(人事)</a> --}}
+
+                            {{-- For 社内注文 (non-computer forms) --}}
                             <a href="{{ route('applications2.index') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内注文
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300 relative">
+                             社内注文
+                             @php
+                                 $uncheckedNonComputerCount = \App\Models\Application2::uncheckedNonComputerNotifications()->count();
+                             @endphp
 
-                            {{-- @if($newOrdersCount > 0)
-                            <span class="absolute right-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full"></span>
-                             @endif --}}
-                        </a>
+                             @if($uncheckedNonComputerCount > 0)
+                                 <span class="absolute top-1/2 right-2 -translate-y-1/2 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                             @endif
+                         </a>
+
+
 
                         <a href="{{ route('car.index') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">車管理</a>
 
+
+
+                            {{-- For パソコン問い合わせ (computer forms) --}}
                         <a href="{{ route('applications2.computer') }}"
-                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">パソコン問い合わせ</a>
+                        class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300 relative"
+                        >
+                        パソコン問い合わせ
+                        @auth
+
+                            @php
+                                $uncheckedHrCount = \App\Models\Application2::uncheckedHrNotifications()->count();
+                            @endphp
+
+                            @if ($uncheckedHrCount > 0)
+                                <span class="absolute top-2 right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+                            @endif
+
+
+                        @endauth
+                    </a>
+                            {{-- <a href="{{ route('applications2.computer') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">パソコン問い合わせ</a> --}}
 
                         <a href="{{ route('past-examples.index') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">問い合わせ事例管理</a>

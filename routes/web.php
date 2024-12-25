@@ -1209,6 +1209,19 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                 Route::post('/mark-as-read/{type}/{id}', [NotificationController::class, 'markAsRead2'])
                  ->name('mark.as.read');
 
+                 // Add this to your routes/web.php
+                 Route::get('/check-unchecked-notifications', function () {
+                    return response()->json([
+                        'uncheckedCount' => \App\Models\TimeOffRequestRecord::where('status', 'approved')
+                            ->whereIn('division_id', [6, 9])
+                            ->where('hr_checked', false)
+                            ->count()
+                    ]);
+                })->middleware('auth');
+
+
+
+
 
 
 

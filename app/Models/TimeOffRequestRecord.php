@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\AttendanceTypeRecord;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -22,8 +23,28 @@ class TimeOffRequestRecord extends Model
         'checked_at',
         'division_id',
         'date2',
-        'is_first_approval'
+        'is_first_approval',
+
+        'hr_checked',
+        'hr_checked_by',
+        'hr_checked_at',
+
     ];
+
+    public function scopeUncheckedHrNotifications(Builder $query)
+    {
+        $result = $query->where('status', 'approved')
+                       ->whereIn('division_id', [6, 9])
+                       ->where('hr_checked', false);
+
+        // \Log::info('Unchecked HR Notifications Query', [
+        //     'sql' => $result->toSql(),
+        //     'bindings' => $result->getBindings(),
+        //     'count' => $result->count()
+        // ]);
+
+        return $result;
+    }
 
     protected $casts = [
         'checked_at' => 'datetime',

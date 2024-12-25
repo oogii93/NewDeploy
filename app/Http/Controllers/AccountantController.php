@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AccountantController extends Controller
 {
@@ -20,6 +21,8 @@ class AccountantController extends Controller
 
     public function index(Request $request)
 {
+
+
     $query = Application::with('user');
 
 
@@ -45,7 +48,22 @@ class AccountantController extends Controller
         ]);
     }
 
+
+    if(in_array(auth()->user()->divisionm ,[6,9]))
+    {
+        update([
+            'hr_checked' => true,
+            'hr_checked_by' => auth()->id(),
+            'hr_checked_at' => now()
+        ]);
+    }
+
     $applications = $query->latest()->paginate(20);
+
+
+
+
+
 
     if ($request->ajax()) {
         return view('ac.ac_dashboard', compact('applications'))->render();

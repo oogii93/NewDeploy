@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Notifications\NewApplication2Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+use Illuminate\Database\Eloquent\Builder;
+
+
 class Application2 extends Model
 {
     use SoftDeletes;
@@ -17,8 +20,28 @@ class Application2 extends Model
         'is_checked',
         'checked_by',
         'checked_at',
-        'comment'
+        'comment',
+
+        'hr_checked',
+        'hr_checked_by',
+        'hr_checked_at',
     ];
+
+
+    public function scopeUncheckedNonComputerNotifications(Builder $query)
+    {
+        return $query->where('status','pending')
+        // ->whereIn('division_id', [6, 9])
+        ->where('hr_checked', false)
+        ->where('applicationable2_type', '!=', 'App\Models\ComputerFormType01Z');
+    }
+    public function scopeUncheckedHrNotifications(Builder $query)
+    {
+        return $query->where('status','pending')
+        // ->whereIn('division_id', [6, 9])
+        ->where('hr_checked', false)
+        ->where('applicationable2_type', 'App\Models\ComputerFormType01Z');
+    }
 
     public function pastExample()
 {
