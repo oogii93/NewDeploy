@@ -220,7 +220,7 @@
                 <div class="space-y-6">
                     @foreach ($posts as $post)
                         <div
-                            class="flex flex-col sm:flex-row items-start group hover:bg-gray-50 p-3 rounded-md transition duration-150 ease-in-out">
+                            class="flex flex-col sm:flex-row items-start group bg-yellow-100 hover:bg-yellow-200 p-3 rounded-md transition duration-150 ease-in-out">
                             <span
                                 class="text-gray-400 font-normal text-sm mb-1 sm:mb-0 sm:mr-6 w-full sm:w-40 flex-shrink-0">
                                 {{ $post->created_at->translatedFormat('Y年n月j日') }}
@@ -230,10 +230,34 @@
                                 {{ $post->title }}
                             </a>
                         </div>
-                        @if (!$loop->last)
-                            <hr class="border-gray-200">
-                        @endif
+
                     @endforeach
+
+
+               @foreach ($innerNews as $news)
+                        <div class="flex flex-col sm:flex-row items-start group bg-sky-200 hover:bg-sky-300 p-3 rounded-md transition duration-150 ease-in-out">
+
+
+                            <span
+                            class="text-gray-400 font-normal text-sm mb-1 sm:mb-0 sm:mr-6 w-full sm:w-40 flex-shrink-0">
+                            {{ $news->created_at->translatedFormat('Y年n月j日') }}
+                        </span>
+                        <p class="font-semibold text-gray-600">社 内 回 覧</p>
+
+                        <a href="{{ route('inner-news.show', $news->id) }}"
+                            class="text-gray-700 group-hover:text-black group-hover:underline ml-5">
+                            {{ $news->title }}
+                        </a>
+
+                        </div>
+                        @if (!$loop->last)
+                        <hr class="border-gray-200">
+                    @endif
+
+               @endforeach
+                </div>
+                <div class="mt-6">
+                    {{ $posts->links() }}
                 </div>
 
             </div>

@@ -1066,6 +1066,16 @@
 
                         <a href="{{ route('past-examples.index') }}"
                             class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">問い合わせ事例管理</a>
+
+
+                        <a href="{{ route('inner-news.index') }}"
+                            class="block px-4 py-2 w-48 hover:bg-sky-500 hover:text-white transition duration-300">社内回覧管理</a>
+
+
+
+
+
+
                     </div>
 
                 </li>

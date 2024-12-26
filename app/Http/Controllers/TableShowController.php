@@ -9,6 +9,7 @@ use App\Models\Breaks;
 use Illuminate\Http\Request;
 use App\Models\VacationCalendar;
 use App\Models\AttendanceTypeRecord;
+use App\Models\InnerNews;
 use Illuminate\Support\Facades\Auth;
 
 class TableShowController extends Controller
@@ -419,6 +420,7 @@ class TableShowController extends Controller
 
         $userCorpId=Auth::user()->corp_id;
 
+
         $posts = Post::where(function($query) use ($userCorpId) {
             $query->doesntHave('corps') // Posts visible to all
                   ->orWhereHas('corps', function($q) use ($userCorpId) {
@@ -427,8 +429,9 @@ class TableShowController extends Controller
         })
         ->latest()
         ->paginate(10);
+        $innerNews = InnerNews::latest()->take(5)->get(); // Fetch the 5 latest inner news
 
-        return view('home', compact('posts'));
+        return view('home', compact('posts','innerNews'));
     }
 
 

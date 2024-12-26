@@ -11,6 +11,7 @@ use App\Models\VacationCalendar;
 use App\Models\AttendanceTypeRecord;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TableShowController;
+use App\Models\InnerNews;
 
 class TableShowController extends Controller
 {
@@ -418,8 +419,10 @@ class TableShowController extends Controller
 
     public function home()
     {
+
+        $innerNews=InnerNews::latest();
         $posts = Post::latest()->paginate(10);
-        return view('home', compact('posts'));
+        return view('home', compact('posts','innerNews'));
     }
 
 

@@ -2,6 +2,7 @@
 
 use App\Models\Post;
 use App\Models\PastExample;
+use App\Models\NewsCategory;
 use App\Http\Controllers\Calendar;
 use App\Http\Controllers\Calculation;
 use Illuminate\Support\Facades\Route;
@@ -21,8 +22,9 @@ use App\Http\Controllers\Form2Controller;
 use App\Http\Controllers\FilterController;
 use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\OfficeController;
-use App\Http\Controllers\CommentController;
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CSVShowController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
@@ -31,7 +33,9 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\KintaiHRController;
 use App\Http\Controllers\NameCardController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\WorkCardController;
+use App\Http\Controllers\InnerNewsController;
 use App\Http\Controllers\TableShowController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\WebSocketController;
@@ -46,9 +50,12 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\CalculationController;
 use App\Http\Controllers\PastExampleController;
 use App\Http\Controllers\Application2Controller;
+use App\Http\Controllers\InternalNewsController;
+use App\Http\Controllers\NewsCategoryController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoomScheduleController;
 use App\Http\Controllers\TesseractOcrController;
+use App\Http\Controllers\UserCalendarController;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use App\Http\Controllers\ArrivalRecordController;
 use App\Http\Controllers\SuggestionBoxController;
@@ -60,10 +67,8 @@ use App\Http\Controllers\CompanyScheduleController;
 use App\Http\Controllers\DepartureRecordController;
 use App\Http\Controllers\TestNotificationController;
 use App\Http\Controllers\AttendanceTypeRecordController;
-use App\Http\Controllers\CSVShowController;
 use App\Http\Controllers\PastExamplesCategoryController;
 use App\Http\Controllers\TimeOffRequestRecordController;
-use App\Http\Controllers\UserCalendarController;
 
 //Admin Group Route
 Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
@@ -1218,6 +1223,64 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
                             ->count()
                     ]);
                 })->middleware('auth');
+
+
+
+
+                //internal news route
+                // routes/web.php
+
+
+                Route::get('/inner-news', [InnerNewsController::class, 'index'])
+                    ->name('inner-news.index');
+
+                Route::get('/inner-news/create', [InnerNewsController::class, 'create'])
+                    ->name('inner-news.create');
+
+                Route::post('/inner-news', [InnerNewsController::class, 'store'])
+                ->name('inner-news.store');
+
+                Route::get('/inner-news/{id}', [InnerNewsController::class, 'show'])
+                    ->name('inner-news.show');
+
+                Route::get('/inner-news/{id}/edit', [InnerNewsController::class, 'edit'])
+                ->name('inner-news.edit');
+                Route::put('/inner-news/{id}', [InnerNewsController::class, 'update'])
+                    ->name('inner-news.update');
+
+                Route::delete('/inner-news/{id}', [InnerNewsController::class, 'destroy'])
+                    ->name('inner-news.destroy');
+
+
+
+
+            //NewsCategories
+
+                Route::get('/news-category', [NewsCategoryController::class, 'index'])
+                    ->name('inner-news.news-category.index');
+
+                Route::get('/news-category/create', [NewsCategoryController::class, 'create'])
+                ->name('inner-news.news-category.create');
+
+                Route::post('/news-category', [NewsCategoryController::class, 'store'])
+                ->name('inner-news.news-category.store');
+
+                Route::get('/news-category/{category}', [NewsCategoryController::class, 'show'])
+                ->name('inner-news.news-category.show');
+
+                Route::get('/news-category/{category}/edit', [NewsCategoryController::class, 'edit'])
+                ->name('inner-news.news-category.edit');
+
+                Route::put('/news-category/{category}', [NewsCategoryController::class, 'update'])
+                ->name('inner-news.news-category.update');
+
+                Route::delete('/news-category/{category}', [NewsCategoryController::class, 'destroy'])
+                ->name('inner-news.news-category.destroy');
+
+
+
+
+
 
 
 
