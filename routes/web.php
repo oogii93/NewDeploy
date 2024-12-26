@@ -1040,24 +1040,34 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
 
 
-
+//Applicaton2 route
     Route::get('/applications2/index', [Application2Controller::class, 'index'])
-    ->name('applications2.index');
+    ->name('applications2.index')
+    ->middleware(['auth', 'taisei']);
+    ;
 
 
 
 
     Route::get('/applications2/{id}', [Application2Controller::class, 'show'])
-    ->name('applications2.show');
+    ->name('applications2.show')
+    ->middleware(['auth', 'taisei']);
+    ;
 
-    Route::post('/applications2/{application2}/check', [Application2Controller::class, 'check'])->name('applications2.check');
+    Route::post('/applications2/{application2}/check', [Application2Controller::class, 'check'])->name('applications2.check')
+    ->middleware(['auth', 'taisei']);
+    ;
 
-    Route::post('/applications2/{application2}/update-comment', [Application2Controller::class, 'updateComment']);
+    Route::post('/applications2/{application2}/update-comment', [Application2Controller::class, 'updateComment'])
+    ->middleware(['auth', 'taisei']);
+    ;
 
     //Computer Q and A route
 
     Route::get('/applications2', [Application2Controller::class, 'computer'])
-    ->name('applications2.computer');
+    ->name('applications2.computer')
+    ->middleware(['auth', 'taisei']);
+    ;
 
 
                 //python name card
@@ -1091,52 +1101,77 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
             //Holdingsing middleware endees ajilah esoti
                 // CAR Crud
                 Route::get('/car', [CarController::class, 'index'])
-                ->name('car.index');
+                ->name('car.index')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::get('/car/create', [CarController::class, 'create'])
-                ->name('car.create');
+                ->name('car.create')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::post('/car', [CarController::class, 'store'])
-                ->name('car.store');
+                ->name('car.store')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::get('/car/{car}', [CarController::class, 'show'])
-                ->name('car.show');
+                ->name('car.show')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::get('/car/{car}/edit', [CarController::class, 'edit'])
-                ->name('car.edit');
+                ->name('car.edit')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::put('/car/{car}', [CarController::class, 'update'])
-                ->name('car.update');
+                ->name('car.update')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::delete('/car/{car}', [CarController::class, 'destroy'])
-                ->name('car.destroy');
+                ->name('car.destroy')
+                ->middleware(['auth', 'taisei']);
+
 
 
                   // Past Examples
                 Route::get('/past-examples', [PastExampleController::class, 'index'])
-                ->name('past-examples.index');
+                ->name('past-examples.index')
+                ->middleware(['auth', 'taisei']);
+
 
             Route::get('/past-examples/create', [PastExampleController::class, 'create'])
-                ->name('past-examples.create');
+                ->name('past-examples.create')
+                ->middleware(['auth', 'taisei']);
+
 
             Route::post('/past-examples', [PastExampleController::class, 'store'])
-                ->name('past-examples.store');
+                ->name('past-examples.store')
+                ->middleware(['auth', 'taisei']);
 
+//users haragdah baih bolohgui bol butsaachihnaa
                 Route::get('/past-examples/{pastExample}', [PastExampleController::class, 'show'])
                 ->name('past-examples.show');
 
 
 
             Route::get('/past-examples/{pastExample}/edit', [PastExampleController::class, 'edit'])
-                ->name('past-examples.edit');
+                ->name('past-examples.edit')
+                ->middleware(['auth', 'taisei']);
 
                 Route::put('/past-examples/{pastExample}', [PastExampleController::class, 'update'])
-                ->name('past-examples.update');
+                ->name('past-examples.update')
+                ->middleware(['auth', 'taisei']);
 
             Route::delete('/past-examples/{pastExample}', [PastExampleController::class, 'destroy'])
-                ->name('past-examples.destroy');
+                ->name('past-examples.destroy')
+                ->middleware(['auth', 'taisei']);
+
                 Route::post('/past-examples/upload-image', [PastExampleController::class, 'uploadImage'])
-                ->name('past-examples.upload-image');
+                ->name('past-examples.upload-image')
+                ->middleware(['auth', 'taisei']);
 
 
                 //past Examples Category
@@ -1144,13 +1179,18 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
                   // Past Examples
                   Route::get('/past-examples-category', [PastExamplesCategoryController::class, 'index'])
-                  ->name('past-examples-category.index');
+                  ->name('past-examples-category.index')
+                ->middleware(['auth', 'taisei']);
+
 
               Route::get('/past-examples-category/create', [PastExamplesCategoryController::class, 'create'])
-                  ->name('past-examples-category.create');
+                  ->name('past-examples-category.create')
+                ->middleware(['auth', 'taisei']);
+
 
               Route::post('/past-examples-category', [PastExamplesCategoryController::class, 'store'])
-                  ->name('past-examples-category.store');
+                  ->name('past-examples-category.store')
+                  ->middleware(['auth', 'taisei']);
 
                 //   Route::get('/past-examples/{pastExample}', [PastExamplesCategoryController::class, 'show'])
                 //   ->name('past-examples.show');
@@ -1158,12 +1198,16 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
 
             Route::put('/past-examples-category/{pastExamplesCategory}', [PastExamplesCategoryController::class, 'update'])
-             ->name('past-examples-category.update');
+             ->name('past-examples-category.update')
+             ->middleware(['auth', 'taisei']);
+
             Route::get('/past-examples-category/{pastExamplesCategory}/edit', [PastExamplesCategoryController::class, 'edit'])
-                ->name('past-examples-category.edit');
+                ->name('past-examples-category.edit')
+                ->middleware(['auth', 'taisei']);
 
               Route::delete('/past-examples-category/{pastExamplesCategory}', [PastExamplesCategoryController::class, 'destroy'])
-                  ->name('past-examples-category.destroy');
+                  ->name('past-examples-category.destroy')
+                  ->middleware(['auth', 'taisei']);
 
 
 
@@ -1232,24 +1276,33 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
 
 
                 Route::get('/inner-news', [InnerNewsController::class, 'index'])
-                    ->name('inner-news.index');
+                    ->name('inner-news.index')
+                    ->middleware(['auth', 'taisei']);
 
                 Route::get('/inner-news/create', [InnerNewsController::class, 'create'])
-                    ->name('inner-news.create');
+                    ->name('inner-news.create')
+                    ->middleware(['auth', 'taisei']);
 
                 Route::post('/inner-news', [InnerNewsController::class, 'store'])
-                ->name('inner-news.store');
+                ->name('inner-news.store')
+                ->middleware(['auth', 'taisei']);
 
+
+                //users vzegdeh
                 Route::get('/inner-news/{id}', [InnerNewsController::class, 'show'])
                     ->name('inner-news.show');
 
                 Route::get('/inner-news/{id}/edit', [InnerNewsController::class, 'edit'])
-                ->name('inner-news.edit');
+                ->name('inner-news.edit')
+                ->middleware(['auth', 'taisei']);
+
                 Route::put('/inner-news/{id}', [InnerNewsController::class, 'update'])
-                    ->name('inner-news.update');
+                    ->name('inner-news.update')
+                    ->middleware(['auth', 'taisei']);
 
                 Route::delete('/inner-news/{id}', [InnerNewsController::class, 'destroy'])
-                    ->name('inner-news.destroy');
+                    ->name('inner-news.destroy')
+                    ->middleware(['auth', 'taisei']);
 
 
 
@@ -1257,25 +1310,38 @@ Route::post('/admin/time-off/holiday', [TimeOffRequestRecordController::class, '
             //NewsCategories
 
                 Route::get('/news-category', [NewsCategoryController::class, 'index'])
-                    ->name('inner-news.news-category.index');
+                    ->name('inner-news.news-category.index')
+                    ->middleware(['auth', 'taisei']);
 
                 Route::get('/news-category/create', [NewsCategoryController::class, 'create'])
-                ->name('inner-news.news-category.create');
+                ->name('inner-news.news-category.create')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::post('/news-category', [NewsCategoryController::class, 'store'])
-                ->name('inner-news.news-category.store');
+                ->name('inner-news.news-category.store')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::get('/news-category/{category}', [NewsCategoryController::class, 'show'])
-                ->name('inner-news.news-category.show');
+                ->name('inner-news.news-category.show')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::get('/news-category/{category}/edit', [NewsCategoryController::class, 'edit'])
-                ->name('inner-news.news-category.edit');
+                ->name('inner-news.news-category.edit')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::put('/news-category/{category}', [NewsCategoryController::class, 'update'])
-                ->name('inner-news.news-category.update');
+                ->name('inner-news.news-category.update')
+                ->middleware(['auth', 'taisei']);
+
 
                 Route::delete('/news-category/{category}', [NewsCategoryController::class, 'destroy'])
-                ->name('inner-news.news-category.destroy');
+                ->name('inner-news.news-category.destroy')
+                ->middleware(['auth', 'taisei']);
+
 
 
 
