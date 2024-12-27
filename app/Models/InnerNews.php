@@ -9,7 +9,7 @@ class InnerNews extends Model
 {
     use HasFactory;
 
-protected $fillable = ['title', 'content','categories_data'];
+protected $fillable = ['categories_data'];
 
         protected $casts=[
             'categories_data'=>'array'

@@ -8,6 +8,21 @@ use Illuminate\Http\Request;
 
 class InnerNewsController extends Controller
 {
+
+
+    // public function index(Request $request)
+    // {
+    //     $query=InnerNews::query();
+
+    //     if($request->filled('search')){
+    //         $query->where('title', 'like','%' . $request->search . '%')
+    //             ->orWhere('content', 'like', '%' . $request->search . '%');
+    //     }
+
+    //     if($request->filled('category_id')){
+    //         $query->whereRaw('JSON_CONTAINS(categories_data, \'{"category_id": ' . $request->category_id . '}\', "$[*]")');
+    //     }
+    // }
     public function index(){
 
         $innerNews = InnerNews::all();
@@ -24,8 +39,7 @@ class InnerNewsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required',
-            'content' => 'nullable',
+
             'categories_data' => 'required|array'
         ]);
 
@@ -43,8 +57,7 @@ class InnerNewsController extends Controller
             }
 
             $innerNews = InnerNews::create([
-                'title' => $request->title,
-                'content' => $request->content,
+
                 'categories_data' => $categoriesData
             ]);
 
@@ -73,8 +86,7 @@ class InnerNewsController extends Controller
  public function update(Request $request, $id)
  {
      $request->validate([
-         'title' => 'required',
-         'content' => 'nullable',
+
          'categories_data' => 'required|array'
      ]);
 
@@ -95,8 +107,7 @@ class InnerNewsController extends Controller
 
          // Ensure we're storing as JSON
          $innerNews->update([
-             'title' => $request->title,
-             'content' => $request->content,
+
              'categories_data' => json_encode($categoriesData)
          ]);
 

@@ -208,8 +208,8 @@
                                 <thead class="bg-sky-50 border-b">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">番号</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">実例タイトル</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日付け</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">内容</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">作成日付</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">動作</th>
                                     </tr>
                                 </thead>
@@ -219,12 +219,18 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $index + 1 }}
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {{ $record->title }}
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {{-- {{ json_encode($record->categories_data) }} --}}
+
+                                                @foreach($record->categories_data as $categoryData)
+                                                {{ \App\Models\NewsCategory::find($categoryData['category_id'])->name ?? 'N/A' }}
+                                                    @if(!$loop->last), @endif
+                                                @endforeach
+
                                             </td>
 
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {{ $record->created_at }}
+                                                {{ $record->created_at->translatedFormat('Y年n月j日') }}
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                 <div class="flex items-center space-x-4">

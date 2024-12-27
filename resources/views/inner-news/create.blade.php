@@ -13,26 +13,9 @@
                     <form action="{{ route('inner-news.store') }}" method="POST" class="space-y-6">
                         @csrf
 
-                        <div>
-                            <label for="title" class="block text-sm font-medium text-gray-700">タイトル</label>
-                            <input type="text" name="title" id="title" value="{{ old('title') }}"
-                                   class="mt-1 block w-full rounded-md border-gray-400 shadow-sm focus:border-sky-500 focus:ring-sky-500">
-                            @error('title')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
 
-                        <div>
-                            <label for="content" class="block text-sm font-medium text-gray-700">内容</label>
-                            <textarea name="content" id="content" rows="4"
-                                       class="mt-1 block w-full rounded-md border-gray-400 shadow-sm focus:border-sky-500 focus:ring-sky-500"
 
-                                      placeholder=""
-                                       >{{ old('content') }}</textarea>
-                            @error('content')
-                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+
 
                         <div id="categories-container" class="space-y-4">
                             <div class="flex justify-between items-center">

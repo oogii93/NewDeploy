@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('inner_news', function (Blueprint $table) {
             $table->id();
 
-            $table->string('title');
-            $table->longText('content')->nullable();
-
+            // $table->string('title');
+            // $table->longText('content')->nullable();
+            $table->json('categories_data')->nullable();
 
 
             $table->timestamps();

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('inner_news', function (Blueprint $table) {
 
 
-            $table->json('categories_data')->nullable();
+            // $table->json('categories_data')->nullable();
         });
     }
 

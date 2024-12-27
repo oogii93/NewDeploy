@@ -84,16 +84,7 @@
 
                 <div class="p-6">
                     <!-- News Content -->
-                    <div class="mb-8">
-                        <div class="prose max-w-none text-2xl font-semibold text-center text-gray-800">
-                            {!! nl2br(e($innerNews->title)) !!}
-                        </div>
-                    </div>
-                    <div class="mb-8">
-                        <div class="prose max-w-none text-xl font-md">
-                            {!! nl2br(e($innerNews->content)) !!}
-                        </div>
-                    </div>
+
 
                     <div class="flex justify-end mb-2">
                         {{ $innerNews->created_at->translatedFormat('Y年n月j日') }}

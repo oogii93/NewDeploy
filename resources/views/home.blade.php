@@ -245,8 +245,8 @@
                         <p class="font-semibold text-gray-600">社 内 回 覧</p>
 
                         <a href="{{ route('inner-news.show', $news->id) }}"
-                            class="text-gray-700 group-hover:text-black group-hover:underline ml-5">
-                            {{ $news->title }}
+                            class="text-gray-700 group-hover:text-black group-hover:underline ml-5 text-xs py-1">
+                            詳しくは
                         </a>
 
                         </div>
