@@ -108,12 +108,19 @@ class CalendarController extends Controller
 
 public function addHoliday(Request $request)
 {
+
+    try{
+
     $date = $request->input('date');
     $corpId = $request->input('corp_id');
 
     if (!$corpId) {
         // Handle the case where corp_id is missing or null
-        return redirect()->back()->withErrors(['error' => 'Corp ID is required']);
+        // return redirect()->back()->withErrors(['error' => 'Corp ID is required']);
+        return response()->json([
+            'success'=>false,
+            'message'=>'Corp ID is required'
+        ]);
     }
 
     // Get all the offices for the selected corp_id
@@ -129,7 +136,18 @@ public function addHoliday(Request $request)
     }
 
     // Redirect back with a success message
-    return redirect()->back()->with('success', '休日が正常に追加されました');
+    // return redirect()->back()->with('success', '休日が正常に追加されました');
+    return response()->json([
+        'success'=>true,
+        'message'=>'休日が正常に追加されました'
+    ]);
+}catch(\Exception $e){
+    return response()->json([
+        'success' => false,
+        'message' => 'エラーが発生しました: ' . $e->getMessage()
+    ]);
+}
+
 }
 
 public function editHoliday(Request $request, $holidayId)
@@ -140,23 +158,51 @@ public function editHoliday(Request $request, $holidayId)
     return response()->json(['success' => true]);
 }
 
-public function deleteHoliday(Request $request, $holidayId, $officeId,$corpId)
+public function deleteHoliday($holidayId, $officeId, $corpId)
 {
-    $holiday = VacationCalendar::where('id', $holidayId)
-        ->where('corp_id', $corpId)
-        ->where('office_id', $officeId)
-        ->first();
+    try{
+        $holiday=VacationCalendar::where('id', $holidayId)
+            ->where('corp_id', $corpId)
+            ->where('office_id',$officeId)
+            ->first();
 
-    if ($holiday) {
-        $holiday->delete();
-        // dd($holidayId, $officeId,$corpId,$holiday);
-        // Redirect back with a success message
-        return redirect()->back()->with('success', '休日が正常に削除されました');
-    } else {
-        // Redirect back with an error message
-        return redirect()->back()->with('error', '休日が見つかりません');
+            $holiday->delete();
+
+            return response()->json(
+                [
+                    'success'=>true,
+                    'message'=>'休日が正常に削除されました'
+                ]
+            );
+
+
     }
+    catch(\Exception $e){
+        return response()->json([
+            'success'=>false,
+            'message' => 'エラーが発生しました: ' . $e->getMessage()
+        ]);
+    }
+
 }
+
+// public function deleteHoliday(Request $request, $holidayId, $officeId,$corpId)
+// {
+//     $holiday = VacationCalendar::where('id', $holidayId)
+//         ->where('corp_id', $corpId)
+//         ->where('office_id', $officeId)
+//         ->first();
+
+//     if ($holiday) {
+//         $holiday->delete();
+//         // dd($holidayId, $officeId,$corpId,$holiday);
+//         // Redirect back with a success message
+//         return redirect()->back()->with('success', '休日が正常に削除されました');
+//     } else {
+//         // Redirect back with an error message
+//         return redirect()->back()->with('error', '休日が見つかりません');
+//     }
+// }
 
 public function getHolidayData($holidayId)
 {
