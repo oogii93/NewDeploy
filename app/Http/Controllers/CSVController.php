@@ -616,6 +616,8 @@ private function isValidTimeString($timeString)
         $totalVacationDays += $totalWorkedHoliday;
 
 
+
+
         // Calculate the real total worked days
         // Энэ хэсэгт хэрэглэгчийн бүртгэл байгаа эсэхийг шалгаж, $daysOfMonth-д зохих утгыг онооно.
 
@@ -1292,7 +1294,10 @@ private function isValidTimeString($timeString)
 
             // Subtract the number of holidays from the total days
 
-            $daysInMonth -= $vacationRecordsCounts['公休'];
+
+
+
+            // dd($vacationRecordsCounts['公休']);
 
 
             //     dd([
@@ -1309,10 +1314,24 @@ private function isValidTimeString($timeString)
                 $totalWorkedHoliday++;
                 if ($dailyWorkedSeconds > ($workDayMinutes * 60)) {
                     $weekendOvertimeSeconds += ($dailyWorkedSeconds - ($workDayMinutes * 60));
+
                 }
+
+
             } else {
                 // $countWorkedDay = $daysInMonth;
+
             }
+
+
+
+
+
+// dd([
+//     'amraltin udur'=>$vacationRecordsCounts['公休'],
+//     'niit ajilsan amraltin  udur'=>(int)$totalWorkedHoliday
+// ]);
+
             // dd($daysInMonth);
 
             // $totalOverWorkedTimeA
@@ -1346,12 +1365,21 @@ private function isValidTimeString($timeString)
 // ]);
 // $totalLateTime=$this->formatSeconds($countLateTime);
 
-// dd($totalLateTime);
 
+
+$daysInMonth -= $vacationRecordsCounts['公休'];
 
 
 
         }
+
+        // $vacationRecordsCounts['公休']-=$totalWorkedHoliday;
+        $vacationRecordsCounts['公休'] -= $totalWorkedHoliday;
+
+        // dd([
+        //     'amraltin udur' => $vacationRecordsCounts['公休'],
+        //     'niit ajilsan amraltin udur' => (int)$totalWorkedHoliday
+        // ]);
 
 
        // Debug dump after the loop
