@@ -482,7 +482,7 @@ class FormController extends Controller
         // dd($selectedBoss);
         // TODO: Implement sending logic here
 
-        return redirect('applications')->with('success', 'Form submitted successfully and sent to the selected boss!');
+        return redirect('applications')->with('success', 'フォームは正常に送信され、選択した上司に送信されました。');
     }
 
     public function update(Request $request, $type, $id = null)

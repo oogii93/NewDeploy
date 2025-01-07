@@ -1,34 +1,38 @@
-<div class="overflow-x-auto w-full">
-    <div class="md:px-10 py-8 w-full">
-        <div class="shadow overflow-hidden rounded border-b border-gray-200">
+<div class="overflow-x-auto px-5 mt-3 ">
+    <table class="border-collapse border border-slate-400 min-w-full bg-white mb-2">
+        <!-- Table header -->
 
-<table class="border-collapse border border-slate-400 min-w-full bg-white table-auto">
-    <thead class="bg-gray-800 text-white">
-        <tr>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm">申請ID</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm">送信人</th>
+        <!--asdafds-->
 
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm whitespace-nowrap hidden md:table-cell">Application ID</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm whitespace-nowrap hidden md:table-cell">日付け</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm">状態</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm">上司</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm">動作</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm">確認した人</th>
-            <th class="border border-slate-300 text-left py-2 px-2 md:py-3 md:px-4 uppercase font-semibold text-xs md:text-sm whitespace-nowrap hidden md:table-cell">確認した日付け</th>
+        <div class="bg-white shadow-md rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-sky-200">
+                        <tr class="">
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">申請ID</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">送信人</th>
+
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Application ID</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日付け</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状態</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上司</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">動作</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">確認した人</th>
+            <th class="border border-gray-300 px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">確認した日付け</th>
         </tr>
     </thead>
     <tbody class="text-gray-700">
         @foreach ($applications as $application)
             <tr class="border-b border-gray-200 hover:bg-gray-200">
-                <td class="border border-slate-300 px-4 py-2">{{ $application->id }}</td>
+                <td class="border border-gray-300 px-4 py-4">{{ $application->id }}</td>
 
-                <td class="border border-slate-300 px-4 py-2">{{ $application->user->name ?? 'N/A' }}</td>
+                <td class="border border-gray-300 px-4 py-4">{{ $application->user->name ?? 'N/A' }}</td>
 
 
-                <td class="border border-slate-300 px-4 py-2 whitespace-nowrap hidden md:table-cell">{{ $application->applicationable_id }}</td>
-                <td class="border border-slate-300 px-4 py-2 whitespace-nowrap hidden md:table-cell">{{ $application->created_at }}</td>
+                <td class="border border-gray-300 px-4 py-4">{{ $application->applicationable_id }}</td>
+                <td class="border border-gray-300 px-4 py-4">{{ $application->created_at }}</td>
 
-                <td class="border border-slate-300 px-4 py-2">
+                <td class="border border-gray-300 px-4 py-4">
                     @if ($application->status == 'approved')
                         <div class="flex items-center">
                             <span>{{ $application->status }}</span>
@@ -44,14 +48,14 @@
                     @endif
                 </td>
 
-                <td class="border border-slate-300 px-4 py-2">
+                <td class="border border-gray-300 px-4 py-4">
                     {{ $application->boss ? $application->boss->name : 'No boss assigned' }}
                 </td>
 
 
 
 
-                <td class="border border-slate-300 px-4 py-2">
+                <td class="border border-gray-300 px-4 py-4">
                     <a href="{{ route('applications.show', $application) }}"
                         class="text-blue-500 hover:underline">View</a>
 
@@ -68,14 +72,14 @@
                         </button>
                 </td>
 
-                <td class="border border-slate-300 px-4 py-2">
+                <td class="border border-gray-300 px-4 py-4">
                     <span id="checked_by_{{ $application->id }}">
                         {{-- {{ $application->checked_by ? \App\Models\User::find($application->checked_by)->name : 'N/A' }} --}}
                         {{ $application->checked_by ? $application->checked_by : 'N/A' }}
                     </span>
                 </td>
 
-                <td class="border border-slate-300 px-4 py-2 whitespace-nowrap hidden md:table-cell">
+                <td class="border border-gray-300 px-4 py-4">
                     <span id="checked_date_{{ $application->id }}">
                         {{ $application->checked_at ? $application->checked_at->format('Y-m-d H:i') : 'N/A' }}
                     </span>

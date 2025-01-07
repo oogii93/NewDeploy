@@ -142,6 +142,7 @@ use App\Models\AttendanceTypeRecord;
 
             @if ($timeOffRecordForDay)
                 @php
+
                     $bgColor = $statusColors[$timeOffRecordForDay->status] ?? '';
                 @endphp
                 <div class="rounded-full py-1 px-1 sm:px-2 {{ $bgColor }} text-center">

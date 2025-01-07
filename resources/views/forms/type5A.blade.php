@@ -986,6 +986,18 @@
             </textarea>
             </div>
 
+            <div class="space-y-2">
+                <label for="boss_id" class="block text-sm font-medium text-gray-700">上司を選択</label>
+                <select name="boss_id" id="boss_id"
+                    class="block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    required>
+                    <option value="">選択して下さい。</option>
+                    @foreach ($bosses as $boss)
+                        <option value="{{ $boss->id }}">{{ $boss->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
 
 
 

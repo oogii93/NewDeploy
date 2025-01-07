@@ -1061,13 +1061,56 @@
                 >
                 {{ $form->comment_person_in_charge }}
             </textarea>
+
             </div>
+
+            <div class=" mt-5 h-[3px] bg-orange-300"></div>
+            <div class="text-center font-semibold text-gray-600 text-xl relative mt-3">
+                <label for="" class="">経理課入力</label>
+
+            </div>
+        </body>
+        </div>
+
+        <div class="bg-sky-100 p-4 rounded-md">
+            <div class="w-2/5 mb-4 mt-5">
+                <label for="comment_person_in_charge" class="block text-lg px-2 font-md text-gray-800 mb-2">
+                    TSR確認
+                </label>
+                <select name="" id="options" class="w-full p-2 border border-gray-300 rounded-md">
+                    <option value="">選択</option>
+                    <option value="yes">有</option>
+                    <option value="no">無し</option>
+                </select>
+            </div>
+
+            <div id="additional-fields" class="hidden mt-4">
+                <label for="input1" class="block mb-2 mt-2">評点</label>
+                <input type="text" id="input1" name="input1" class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
+
+                <label for="input2" class="block mb-2 mt-2">直近の売上</label>
+                <input type="text" id="input2" name="input2" class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
+
+                <label for="input2" class="block mb-2 mt-2">利益</label>
+                <input type="text" id="input3" name="input3" class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
+
+                <label for="input2" class="block mb-2 mt-2">自己資本比率</label>
+                <input type="text" id="input4" name="input4" class="w-full px-4 py-2 pr-12 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300">
+
+            </div>
+        </div>
+
+
+
 
 
 
 
 
         </form>
+
+
+
     </div>
 
     <script>
@@ -1086,12 +1129,22 @@ function toggleInput() {
 }
 
 
+document.getElementById('options').addEventListener('change', function (){
+    const additionalFields=document.getElementById('additional-fields');
+        if(this.value === 'yes'){
+            additionalFields.classList.remove('hidden');
+        }else{
+            additionalFields.classList.add('hidden');
+        }
+});
+
+
 
 
     </script>
-</body>
 
-</div>
+
+
 </x-app-layout>
 
 

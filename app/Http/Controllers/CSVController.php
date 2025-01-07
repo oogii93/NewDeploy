@@ -19,6 +19,7 @@ use App\Models\VacationCalendar;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\CSV;
 use Illuminate\Support\Facades\Log;
+use App\Models\TimeOffRequestRecord;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Support\Facades\Response as FileResponse;
 
@@ -336,6 +337,7 @@ private function isValidTimeString($timeString)
             }
             $timeDiffSeconds -=$breakSeconds;
 
+
             // if(!$isYumeyaCorp){
             //     $timeDiffSeconds -= $breakSeconds;
             // }
@@ -486,10 +488,10 @@ private function isValidTimeString($timeString)
 
 
         $halfDayRecords = $user->userArrivalRecords()
-    ->whereIn(DB::raw('DATE(recorded_at)'), $halfDayVacationDates)
-    ->get()
-    ->map(function($record) {
-        $endTime = null;
+            ->whereIn(DB::raw('DATE(recorded_at)'), $halfDayVacationDates)
+            ->get()
+            ->map(function($record) {
+                $endTime = null;
 
         // Get departure time either from arrivalDepartureRecords or DepartureRecord
         if ($record->arrivalDepartureRecords->isNotEmpty()) {
@@ -597,7 +599,7 @@ private function isValidTimeString($timeString)
                     $vacationRecordsCounts['有休+半休']++;
                     $vacationRecordsCounts['有休日数'] = number_format($vacationRecordsCounts['有休日数'] + 0.5, 2);
                 } else {
-                    Log::info('User ' . $user->name . ': Vacation type "' . $type . '" is not being counted.');
+                    // Log::info('User ' . $user->name . ': Vacation type "' . $type . '" is not being counted.');
                 }
             }
         }
@@ -708,13 +710,13 @@ private function isValidTimeString($timeString)
 
 
         // Initialize variables outside the loop
-$totalOvertimeSecondsA = 0;
-$totalOvertimeSecondsB = 0;
-$totalOvertimeSecondsC = 0;
-$totalWeekendOvertimeSeconds = 0;
-$totalWorkedTime = 0;
+        $totalOvertimeSecondsA = 0;
+        $totalOvertimeSecondsB = 0;
+        $totalOvertimeSecondsC = 0;
+        $totalWeekendOvertimeSeconds = 0;
+        $totalWorkedTime = 0;
 
-$totalhalfdayCalculation=0;
+        $totalhalfdayCalculation=0;
 
 
         foreach ($arrivalRecords as $date => $dailyRecords) {
@@ -740,7 +742,7 @@ $totalhalfdayCalculation=0;
 
             foreach ($dailyRecords as $arrivalRecord) {
 
-                $startTime = Carbon::parse($arrivalRecord->recorded_at)->format('H:i');
+                $startTime = Carbon::parse($arrivalRecord->recorded_at)->format('H:i');//startTime recorded time
                 $startTimeCarbon = Carbon::parse($startTime);
 
 
@@ -787,6 +789,7 @@ $totalhalfdayCalculation=0;
 
 
                     if ($startTimeCarbon->between($morningOvertimeStart, $morningOvertimeEnd, true)) {
+
                         $overlapStart = max($startTimeCarbon, $morningOvertimeStart);
                         $overlapEnd = min($endTimeCarbon, $morningOvertimeEnd);
                         $morningOverTimeSeconds = $overlapEnd->diffInSeconds($overlapStart, true);
@@ -815,6 +818,11 @@ $totalhalfdayCalculation=0;
                         $overtimeSecondsB += $overlapEnd->diffInSeconds($overlapStart, true);
 
                         $overTimeSeconds = $overlapEnd->diffInSeconds($overlapStart, true);
+
+
+
+
+
 
                         // dd([
                         //     'overB'=>$overtimeSecondsB,
@@ -849,6 +857,9 @@ $totalhalfdayCalculation=0;
                         return $record->attendanceTypeRecord->name ==='半休'
                         && Carbon::parse($record->date)->format('Y-m-d')===$date;
                     });
+
+
+
 
 // Formula 1 - For overtimeSecondsA
 
@@ -1001,9 +1012,43 @@ $totalhalfdayCalculation=0;
                     ){
                 $earlyLeave++;
 
+                $breakSeconds=0;
 
-                $earlyLeaveHours +=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+                $lunchStartTime=Carbon::parse($date . '12:00:00');
+                $lunchEndTime=Carbon::parse($date . '13:00:00');
+
+                if($endTimeCarbon <= $lunchEndTime && Carbon ::parse($workEndDay) >= $lunchStartTime){
+                    $breakSeconds=3600;
+                }
+
+                 {
+                    $break1Start = Carbon::parse($date . ' 11:00:00');
+                    $break1End = Carbon::parse($date . ' 11:10:00');
+
+                    if ($endTimeCarbon <= $break1End && Carbon::parse($workEndDay) >= $break1Start) {
+                        $breakSeconds += 600;
+                    }
+
+                    $break2Start = Carbon::parse($date . ' 15:00:00');
+                    $break2End = Carbon::parse($date . ' 15:10:00');
+
+                    if ($endTimeCarbon <= $break2End && Carbon::parse($workEndDay) >= $break2Start) {
+                        $breakSeconds += 600;
+                    }
+                }
+
+
+
+
+
+                $totalEarlySeconds=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+
+
+                // $earlyLeaveHours +=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+                $earlyLeaveHours += max(0, $totalEarlySeconds -$breakSeconds);
+                // dd($earlyLeaveHours);
             }
+
 
 
             if(!empty($breakTimeInSeconds) || $lateArrivalSeconds > 0) {
@@ -1068,7 +1113,7 @@ $totalhalfdayCalculation=0;
                 $dailyOvertimeSecondsB += $overTimeSeconds;
             }
 
-            // dd($dailyOvertimeSecondsB);
+            // dd($dailyOvertimeSecondsB );
 
 
 
@@ -1080,11 +1125,14 @@ $totalhalfdayCalculation=0;
 
             // ]);
 
+
                     if ($startTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true) || $endTimeCarbon->between(Carbon::parse($morning), Carbon::parse($workEndDay), true)) {
                         $workedTimeInSeconds = $this->calculateWorkedTime($startTime, $endTime,$calculations,  $breakTimeInMinutes * 60);
                         $dailyWorkedSeconds += $workedTimeInSeconds;
 
                     }
+
+
 
                     if (
                         $arrivalRecord->user->office &&
@@ -1103,6 +1151,7 @@ $totalhalfdayCalculation=0;
                                 )->setTimezone(config('app.timezone'))
                                 : null;
 
+
                         if ($arrivalSecondTime && $departureSecondTime) {
                             $result = workTimeCalc($arrivalSecondTime->format('H:i'), $departureSecondTime->format('H:i'));
                         } else {
@@ -1116,18 +1165,100 @@ $totalhalfdayCalculation=0;
                                 $dailyWorkedSeconds += $secondTotalWorkedMinutes;
                             }
                         }
+
                     }
+
                 }
             }
 
 
 
+
+
        // Accumulate daily totals to overall totals
 
+    //    if($hasHalfDayOff){
 
-    $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
-    $totalOvertimeSecondsB += $dailyOvertimeSecondsB + $morningOverTimeSeconds;
+    //     $workEndDay='12:30';
+
+
+    //     $earlyLeaveHours +=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+
+    //     // dd($earlyLeaveHours);
+
+    //     $totalOvertimeSecondsA += $dailyOvertimeSecondsA + $morningOverTimeSeconds+$overTimeSeconds;
+    //     // $totalOvertimeSecondsB += $dailyOvertimeSecondsB;
+    //     $dailyWorkedSeconds-=$overTimeSeconds;
+    //     // dd($dailyWorkedSeconds);
+    //    }
+    //    else{
+
+    //      $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
+    //      $totalOvertimeSecondsB += $dailyOvertimeSecondsB+$morningOverTimeSeconds;
+
+    //    }
+    //      $totalWorkedTime +=$dailyWorkedSeconds;
+    if($hasHalfDayOff) {
+        $startTimeObj=Carbon::parse($startTime);
+        $morningShiftStart=Carbon::parse('06:00');
+        $morningShiftEnd=Carbon::parse('11:00');
+        $afternoonShiftStart=Carbon::parse('13:00');
+        $afternoonShiftEnd=Carbon::parse('15:00');
+
+        if($startTimeObj ->between($morningShiftStart, $morningShiftEnd)){
+            $workEndDay='12:30';
+        }elseif($startTimeObj->between($afternoonShiftStart, $afternoonShiftEnd)){
+            $workEndDay='17:30';
+        }
+
+
+        // dd($workEndDay);
+
+
+
+
+
+
+
+
+
+        $earlyLeaveHours += $endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+
+        // Convert 3 hours and 50 minutes to seconds
+        $maxOvertimeA = (3 * 3600) + (50 * 60); // 3:50 in seconds
+
+        $currentOvertimeA = $dailyOvertimeSecondsA + $morningOverTimeSeconds + $overTimeSeconds;
+
+        if($currentOvertimeA > $maxOvertimeA) {
+            // If overtime exceeds 3:50, split it
+            $excessOvertime = $currentOvertimeA - $maxOvertimeA;
+            $totalOvertimeSecondsA = $maxOvertimeA;
+            $totalOvertimeSecondsB += $excessOvertime;
+        } else {
+            // If overtime is less than or equal to 3:50, keep it all in A
+            $totalOvertimeSecondsA += $currentOvertimeA;
+        }
+
+        $dailyWorkedSeconds -= $overTimeSeconds;
+    } else {
+        // For normal days, apply the same logic
+
+
+              $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
+         $totalOvertimeSecondsB += $dailyOvertimeSecondsB+$morningOverTimeSeconds;
+    }
+
     $totalWorkedTime += $dailyWorkedSeconds;
+
+
+
+
+
+
+
+    // $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
+    // $totalOvertimeSecondsB += $dailyOvertimeSecondsB+$morningOverTimeSeconds;
+    // $totalWorkedTime += $dailyWorkedSeconds;
 
 
 
@@ -1327,6 +1458,7 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
 
 
 
+
         $formattedTotalWorkedTime = $this->formatSeconds($totalWorkedTime);
         $formattedLateSeconds = $this->formatSeconds($lateArrivalSeconds);
 
@@ -1430,6 +1562,25 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
     private function calculateWorkedTime($startTime, $endTime, $calculations, $breakTimeInSeconds = 0)
     {
 
+         // Assume $currentUser is passed or accessible
+    // $currentUser = auth()->user();
+    // $date = \Carbon\Carbon::parse($startTime)->format('Y-m-d');
+
+    // // Check if the user has a TimeOffRequestRecord for this date with 'halfday' (半休)
+    // $timeOffRequest = TimeOffRequestRecord::where('user_id', $currentUser->id)
+    //     ->whereDate('date', $date)
+    //     ->whereHas('attendanceTypeRecord', function ($query) {
+    //         $query->where('name', '半休');
+    //     })
+    //     ->first();
+
+    //     // dd($timeOffRequest);
+
+    // // Skip logic if a halfday TimeOffRequestRecord exists
+    // if ($timeOffRequest) {
+    //     return 0; // or null, or any default value you'd like to indicate skipped logic
+    // }
+
 
     $IQ6 = $this->timeToMinutes($this->getCalculationValue($calculations, '9'));
     $IQ7 = $this->timeToMinutes($this->getCalculationValue($calculations, '10'));
@@ -1446,24 +1597,6 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
     $arrivalMinutes = $this->timeToMinutes($startTime);
     $lunchTimeStartMinutes = $this->timeToMinutes($this->getCalculationValue($calculations, '17'));//12:00
     $lunchTimeEndMinutes = $this->timeToMinutes($this->getCalculationValue($calculations, '18'));//13:00
-
-
-
-        // $IQ6 = $this->timeToMinutes("11:50");
-        // $IQ7 = $this->timeToMinutes("12:00");
-        // $IQ8 = $this->timeToMinutes("13:00");
-        // $IQ10 = $this->timeToMinutes("17:30");
-        // $IQ11 = $this->timeToMinutes("17:40");
-        // $IQ12 = 10;
-        // $IQ17 = $this->timeToMinutes("12:30");
-        // $IQ20 = 230;
-
-        // $departureMinutes = $this->timeToMinutes($endTime);
-        // $arrivalMinutes = $this->timeToMinutes($startTime);
-        // $lunchTimeStartMinutes = $this->timeToMinutes("12:00");
-        // $lunchTimeEndMinutes = $this->timeToMinutes("13:00");
-
-
 
 
 
@@ -1490,6 +1623,8 @@ $totalBreakTime=$this->formatSeconds($allBreakTime);
                 }
 
             }
+
+            // dd($time1);
 
 
 

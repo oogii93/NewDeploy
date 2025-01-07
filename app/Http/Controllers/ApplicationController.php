@@ -192,16 +192,16 @@ class ApplicationController extends Controller
         $application->user_id = auth()->id();
         $application->status = "pending";
         $application->boss_id = $validatedData['boss_id'];
-        $application->hr_checked = false;
+        // $application->hr_checked = false;
         $application->applicationable()->associate($form);
         $application->save();
 
-        Log::info('Creating new application', [
-            'hr_checked' => false,
-            'status' => 'pending'
-        ]);
+        // Log::info('Creating new application', [
+        //     'hr_checked' => false,
+        //     'status' => 'pending'
+        // ]);
 
-        return redirect()->route('applications.show', $application->id);
+        return redirect()->route('applications.show', $application->id)->with('success', 'done');
     }
     public function updateStatus(Request $request, $id)
     {

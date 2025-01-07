@@ -20,6 +20,8 @@ class TimeRecordController extends Controller
 {
 
 
+
+
     public function checkRecord(Request $request, $recordType)
     {
         $user = $request->user();
@@ -45,7 +47,7 @@ class TimeRecordController extends Controller
                     ->exists();
                 break;
 
-            // DepartureRecord and SecondDepartureRecord will be handled in the frontend
+                // DepartureRecord and SecondDepartureRecord will be handled in the frontend
         }
 
         return response()->json(['exists' => $check == 0 ? $exists : 2]);
@@ -80,57 +82,136 @@ class TimeRecordController extends Controller
 
 
 
+    // public function record_manual(Request $request)
+    // {
+
+    //         $data = $request->validate([
+    //             'recorded_at' => ['required', 'date'],
+    //             'button' => ['required', 'string', 'in:ArrivalRecord,DepartureRecord,SecondArrivalRecord,SecondDepartureRecord'],
+    //         ]);
+
+    //         $inputDate = \Carbon\Carbon::parse($data['recorded_at']);
+    //         $user = $request->user();
+
+    //         // if($inputDate->isWeekend()){
+    //         //     return redirect()->route('dashboard')->with('error','週末は勤怠記録できません。もし週末に働く必要がある場合はフォームに記入してください');
+    //         // }
+
+
+
+    //         // Check if the user belongs to 'ユメヤ'
+    //         $isYumeya = $user->office && $user->office->corp ? $user->office->corp->corp_name === 'ユメヤ' : false;
+
+
+
+
+    //         // Logic for handling button clicks
+
+    //         if ($data['button'] === 'SecondArrivalRecord') {
+    //             // Check if both ArrivalRecord and DepartureRecord exist before allowing SecondArrivalRecord
+    //             if (!$this->hasArrivalAndDepartureRecords($user, $inputDate)) {
+    //                 return redirect()->route('dashboard')->with('error', '先に出勤と退社の記録を入れてください。');
+    //             }
+    //         }
+
+    //         if ($data['button'] === 'SecondDepartureRecord') {
+    //             // Check if SecondArrivalRecord exists before allowing SecondDepartureRecord
+    //             if (!$this->hasSecondArrivalRecord($user, $inputDate)) {
+    //                 return redirect()->route('dashboard')->with('error', '先に二回出勤の記録を入れてください。');
+    //             }
+    //         }
+
+    //         // Handle Arrival and Departure records
+    //         if (in_array($data['button'], ['ArrivalRecord', 'SecondArrivalRecord'])) {
+    //             $this->handleArrivalRecord($user, $inputDate, $data['button'], $isYumeya);
+    //         } else {
+    //             $this->handleDepartureRecord($user, $inputDate, $data['button']);
+    //         }
+
+    //         // Success message
+    //         $message = $this->getSuccessMessage($data['button'], $inputDate);
+    //         return redirect()->route('dashboard')->with('status', $message);
+
+
+    // }
+
+
+
     public function record_manual(Request $request)
     {
+        $data = $request->validate([
 
-            $data = $request->validate([
-                'recorded_at' => ['required', 'date'],
-                'button' => ['required', 'string', 'in:ArrivalRecord,DepartureRecord,SecondArrivalRecord,SecondDepartureRecord'],
-            ]);
+            'recorded_at' => ['required', 'date'],
+            'button' => ['required', 'string', 'in:ArrivalRecord,DepartureRecord,SecondArrivalRecord,SecondDepartureRecord'],
+        ]);
 
-            $inputDate = \Carbon\Carbon::parse($data['recorded_at']);
-            $user = $request->user();
+        $inputDate = \Carbon\Carbon::parse($data['recorded_at']);
+        $user = $request->user();
 
-            // if($inputDate->isWeekend()){
-            //     return redirect()->route('dashboard')->with('error','週末は勤怠記録できません。もし週末に働く必要がある場合はフォームに記入してください');
-            // }
+        $isYumeya = $user->office && $user->office->corp_id ? $user->office->corp->corp_name === 'ユメヤ' : false;
 
-
-
-            // Check if the user belongs to 'ユメヤ'
-            $isYumeya = $user->office && $user->office->corp ? $user->office->corp->corp_name === 'ユメヤ' : false;
-
-
+        $timeOffRequest = TimeOffRequestRecord::where('user_id', $user->id)
+            ->whereDate('date', $inputDate->format('Y-m-d'))
+            ->whereHas('attendanceTypeRecord', function ($query) {
+                $query->where('name', '半休');
+            })
+            ->first();
 
 
-            // Logic for handling button clicks
+        if ($timeOffRequest) {
+            $timeLimit = $isYumeya ? 9 : 8;
+            $minuteLimit = $isYumeya ? 0 : 30;
 
-            if ($data['button'] === 'SecondArrivalRecord') {
-                // Check if both ArrivalRecord and DepartureRecord exist before allowing SecondArrivalRecord
-                if (!$this->hasArrivalAndDepartureRecords($user, $inputDate)) {
-                    return redirect()->route('dashboard')->with('error', '先に出勤と退社の記録を入れてください。');
-                }
+
+
+            if ($data['button'] === 'ArrivalRecord') {
+                // Set DepartureRecord to 13:00 for Yumeya users, 12:30 otherwise
+                if ($inputDate->hour <= $timeLimit && ($inputDate->hour < $timeLimit || $inputDate->minute <= $minuteLimit)) {
+                    $this->handleArrivalRecord($user, $inputDate, 'ArrivalRecord', false);
+                    $departureTime = $inputDate->copy()->setTime($isYumeya ? 13 : 12, 30);
+                    $this->handleDepartureRecord($user, $departureTime, 'DepartureRecord');
+
+                return redirect()->route('dashboard')->with('status', '出勤時間と半日退勤時間を記録しました。');
+            }else if($inputDate->hour >12){
+                $inputDate->setTime(13, 30);
+                $this->handleArrivalRecord($user, $inputDate, 'ArrivalRecord', false);
+                return redirect()->route('dashboard')->with('success', '午後半日出勤時間を記録しました。');
             }
 
-            if ($data['button'] === 'SecondDepartureRecord') {
-                // Check if SecondArrivalRecord exists before allowing SecondDepartureRecord
-                if (!$this->hasSecondArrivalRecord($user, $inputDate)) {
-                    return redirect()->route('dashboard')->with('error', '先に二回出勤の記録を入れてください。');
-                }
+            else{
+
+
+                  // Return error if time is after the limit
+                  return redirect()->route('dashboard')->with('error', $isYumeya ?
+                  '午前半休の場合、出勤時間は9:00までです。' :
+                  '午前半休の場合、出勤時間は8:30までです。');
             }
+        }
 
-            // Handle Arrival and Departure records
-            if (in_array($data['button'], ['ArrivalRecord', 'SecondArrivalRecord'])) {
-                $this->handleArrivalRecord($user, $inputDate, $data['button'], $isYumeya);
-            } else {
-                $this->handleDepartureRecord($user, $inputDate, $data['button']);
+
+        }
+
+        // Proceed with normal logic if not 半休
+        if ($data['button'] === 'SecondArrivalRecord') {
+            if (!$this->hasArrivalAndDepartureRecords($user, $inputDate)) {
+                return redirect()->route('dashboard')->with('error', '先に出勤と退社の記録を入れてください。');
             }
+        }
 
-            // Success message
-            $message = $this->getSuccessMessage($data['button'], $inputDate);
-            return redirect()->route('dashboard')->with('status', $message);
+        if ($data['button'] === 'SecondDepartureRecord') {
+            if (!$this->hasSecondArrivalRecord($user, $inputDate)) {
+                return redirect()->route('dashboard')->with('error', '先に二回出勤の記録を入れてください。');
+            }
+        }
 
+        if (in_array($data['button'], ['ArrivalRecord', 'SecondArrivalRecord'])) {
+            $this->handleArrivalRecord($user, $inputDate, $data['button'], false);
+        } else {
+            $this->handleDepartureRecord($user, $inputDate, $data['button']);
+        }
 
+        $message = $this->getSuccessMessage($data['button'], $inputDate);
+        return redirect()->route('dashboard')->with('status', $message);
     }
 
 
@@ -159,104 +240,94 @@ class TimeRecordController extends Controller
 
     private function handleDepartureRecord($user, $inputDate, $buttonType)
     {
-        if($inputDate->hour < 8){
+
+        if ($inputDate->hour < 8) {
             $inputDate->subDay();
         }
 
-        $exist=ArrivalRecord::where('user_id', $user->id)
+        $exist = ArrivalRecord::where('user_id', $user->id)
+            ->whereDate('recorded_at', $inputDate->format('Y-m-d'))
+            ->first();
+
+        if ($exist) {
+            $columnName = $buttonType === 'DepartureRecord' ? 'recorded_at' : 'second_recorded_at';
+            $departureExist = $exist
+                ->arrivalDepartureRecords()
                 ->whereDate('recorded_at', $inputDate->format('Y-m-d'))
                 ->first();
 
-        if($exist)
-        {
-            $columnName=$buttonType === 'DepartureRecord' ? 'recorded_at' : 'second_recorded_at';
-
-            $departureExist=$exist->arrivalDepartureRecords()->whereDate('recorded_at', $inputDate->format('Y-m-d'))->first();
-
-            if($departureExist){
-                $departureExist->update([$columnName=>$inputDate]);
-            }else{
-                $exist->arrivalDepartureRecords()->create([
-                    'recorded_at'=>$buttonType === 'DepartureRecord' ? $inputDate :null,
-                    'second_recorded_at'=>$buttonType === 'SecondDepartureRecord' ? $inputDate : null,
-                ]);
+            if ($user->office && $user->office->corp->corp_name === 'ユメヤ') {
+                $inputDate->setTime(13, 0);
             }
 
-        }
-        else{
-            $arrival=$user->userArrivalRecords()->create(['recorded_at'=>$inputDate]);
-            $arrival->arrivalDepartureRecords()->create(['recorded_at'=>$inputDate]);
-
+            if ($departureExist) {
+                $departureExist->update([$columnName => $inputDate]);
+            } else {
+                $exist->arrivalDepartureRecords()->create([
+                    'recorded_at' => $buttonType === 'DepartureRecord' ? $inputDate : null,
+                    'second_recorded_at' => $buttonType === 'SecondDepartureRecord' ? $inputDate : null,
+                ]);
+            }
+        } else {
+            $arrival = $user->userArrivalRecords()->create(['recorded_at' => $inputDate]);
+            $arrival->arrivalDepartureRecords()->create(['recorded_at' => $inputDate]);
         }
     }
 
     private function checkIfArrivalAndDepartureExist($user, $date)
-{
-    $record = ArrivalRecord::where('user_id', $user->id)
-        ->whereDate('recorded_at', $date->format('Y-m-d'))
-        ->first();
+    {
+        $record = ArrivalRecord::where('user_id', $user->id)
+            ->whereDate('recorded_at', $date->format('Y-m-d'))
+            ->first();
 
-    if ($record && $record->arrivalDepartureRecords()->exists()) {
-        return true;
+        if ($record && $record->arrivalDepartureRecords()->exists()) {
+            return true;
+        }
+
+        return false;
     }
 
-    return false;
-}
 
 
 
+    private function checkIfSecondArrivalExists($user, $date)
+    {
+        $record = ArrivalRecord::where('user_id', $user->id)
+            ->whereDate('second_recorded_at', $date->format('Y-m-d'))
+            ->first();
 
-private function checkIfSecondArrivalExists($user, $date)
-{
-    $record = ArrivalRecord::where('user_id', $user->id)
-        ->whereDate('second_recorded_at', $date->format('Y-m-d'))
-        ->first();
-
-    return $record ? true : false;
-}
+        return $record ? true : false;
+    }
 
 
 
     private function adjustArrivalTime($inputDate, $isYumeya)
     {
-        $workStartTime= $inputDate->copy()->setTime($isYumeya ? 9 :8, $isYumeya ? 0 :30, 0);
-        $earliestAllowedTime=$workStartTime->copy()->setTime(5,31,0);
-        $earlyArrivalCutoff= $workStartTime->copy()->subMinutes(29);
-        $sixCheck = $workStartTime->copy()->setTime(6,00,0);
-        $sixThirtyCheck=$workStartTime->copy()->setTime(6,30,0);
-        $sevenCheck=$workStartTime->copy()->setTime(7,00,0);
-        $sevenThirtyCheck=$workStartTime->copy()->setTime(7,30,00);
-        $eightCheck=$workStartTime->copy()->setTime(8,00,0);
-        $eightThirtyCheck=$workStartTime->copy()->setTime(8,30,0);
+        $workStartTime = $inputDate->copy()->setTime($isYumeya ? 9 : 8, $isYumeya ? 0 : 30, 0);
+        $earliestAllowedTime = $workStartTime->copy()->setTime(5, 31, 0);
+        $earlyArrivalCutoff = $workStartTime->copy()->subMinutes(29);
+        $sixCheck = $workStartTime->copy()->setTime(6, 00, 0);
+        $sixThirtyCheck = $workStartTime->copy()->setTime(6, 30, 0);
+        $sevenCheck = $workStartTime->copy()->setTime(7, 00, 0);
+        $sevenThirtyCheck = $workStartTime->copy()->setTime(7, 30, 00);
+        $eightCheck = $workStartTime->copy()->setTime(8, 00, 0);
+        $eightThirtyCheck = $workStartTime->copy()->setTime(8, 30, 0);
 
-        if($inputDate->between($earliestAllowedTime, $sixCheck)){
+        if ($inputDate->between($earliestAllowedTime, $sixCheck)) {
 
-                return $sixCheck;
-            }
-            elseif($inputDate->between($sixCheck, $sixThirtyCheck)){
-                return $sixThirtyCheck;
-
-            }
-            elseif($inputDate->between($sixThirtyCheck, $sevenCheck)){
-                return $sevenCheck;
-
-            }
-            elseif($inputDate->between($sevenCheck, $sevenThirtyCheck))
-            {
-                return $sevenThirtyCheck;
-            }
-
-            elseif($inputDate->between($sevenThirtyCheck, $eightCheck))
-            {
-                return $eightCheck;
-            }
-            elseif($isYumeya && $inputDate->between($eightCheck->addMinute(), $eightThirtyCheck)){
-                return $eightThirtyCheck;
-            }
-
-        elseif($inputDate->between($earlyArrivalCutoff, $workStartTime)){
+            return $sixCheck;
+        } elseif ($inputDate->between($sixCheck, $sixThirtyCheck)) {
+            return $sixThirtyCheck;
+        } elseif ($inputDate->between($sixThirtyCheck, $sevenCheck)) {
+            return $sevenCheck;
+        } elseif ($inputDate->between($sevenCheck, $sevenThirtyCheck)) {
+            return $sevenThirtyCheck;
+        } elseif ($inputDate->between($sevenThirtyCheck, $eightCheck)) {
+            return $eightCheck;
+        } elseif ($isYumeya && $inputDate->between($eightCheck->addMinute(), $eightThirtyCheck)) {
+            return $eightThirtyCheck;
+        } elseif ($inputDate->between($earlyArrivalCutoff, $workStartTime)) {
             return $workStartTime;
-
         } elseif ($inputDate->lt($earliestAllowedTime)) {
             return $earliestAllowedTime;
         }
@@ -315,7 +386,6 @@ private function checkIfSecondArrivalExists($user, $date)
             $break->start_time2 = $startTime;
             $break->save();
             return redirect()->route('dashboard')->with('status', "2回目の休憩開始時間が登録されました。$startTime");
-
         } elseif ($break->end_time2 && $break->start_time3 === null) {
             $break->start_time3 = $startTime;
             $break->save();
@@ -346,17 +416,14 @@ private function checkIfSecondArrivalExists($user, $date)
             $break->end_time = $endTime;
             $breakDuration = $this->calculateBreakDuration($break->start_time, $break->end_time);
             $message = "1回目の休憩終了時間が登録されました。$endTime";
-
         } elseif ($break->end_time2 === null && $break->start_time2 !== null) {
             $break->end_time2 = $endTime;
             $breakDuration = $this->calculateBreakDuration($break->start_time2, $break->end_time2);
             $message = "2回目の休憩終了時間が登録されました。$endTime";
-
         } elseif ($break->end_time3 === null && $break->start_time3 !== null) {
             $break->end_time3 = $endTime;
             $breakDuration = $this->calculateBreakDuration($break->start_time3, $break->end_time3);
             $message = "3回目の休憩終了時間が登録されました。$endTime";
-
         } else {
             return redirect()->route('dashboard')->with('status', '全ての休憩が既に終了しています。');
         }
@@ -416,299 +483,296 @@ private function checkIfSecondArrivalExists($user, $date)
     }
 
     public function checkBreakCount(Request $request)
-{
-    $user = $request->user();
-    $date = $request->query('date');
+    {
+        $user = $request->user();
+        $date = $request->query('date');
 
-    $break = Breaks::where('user_id', $user->id)
-        ->whereDate('start_time', \Carbon\Carbon::parse($date)->toDateString())
-        ->first();
+        $break = Breaks::where('user_id', $user->id)
+            ->whereDate('start_time', \Carbon\Carbon::parse($date)->toDateString())
+            ->first();
 
-    $count = 0;
-    if ($break) {
-        $count = 1 + ($break->start_time2 !== null ? 1 : 0) + ($break->start_time3 !== null ? 1 : 0);
+        $count = 0;
+        if ($break) {
+            $count = 1 + ($break->start_time2 !== null ? 1 : 0) + ($break->start_time3 !== null ? 1 : 0);
+        }
+
+        return response()->json(['count' => $count]);
     }
 
-    return response()->json(['count' => $count]);
-}
 
+    // public function destroy($id)
+    // {
+    //     try{
+    //         $arrivalRecord=ArrivalRecord::findOrFail($id);
+    //         //
+    //         if(auth()->user()->id !==$arrivalRecord->user_id){
+    //             return redirect()->back()->with('error', '権限がありません。');
+    //         }
+    //            // Begin transaction to ensure all related records are deleted properly
+    //            \DB::beginTransaction();
 
-// public function destroy($id)
-// {
-//     try{
-//         $arrivalRecord=ArrivalRecord::findOrFail($id);
-//         //
-//         if(auth()->user()->id !==$arrivalRecord->user_id){
-//             return redirect()->back()->with('error', '権限がありません。');
-//         }
-//            // Begin transaction to ensure all related records are deleted properly
-//            \DB::beginTransaction();
+    //         if($arrivalRecord->arrivalDepartureRecords){
+    //             $arrivalRecord->arrivalDepartureRecords()->delete();
+    //         }
 
-//         if($arrivalRecord->arrivalDepartureRecords){
-//             $arrivalRecord->arrivalDepartureRecords()->delete();
-//         }
+    //         $arrivalRecord->delete();
 
-//         $arrivalRecord->delete();
+    //         \DB::commit();
 
-//         \DB::commit();
-
-//         return redirect()->back()->with('status', '記録が削除されました。');
+    //         return redirect()->back()->with('status', '記録が削除されました。');
 
 
 
-//     }catch(\Exception $e){
-//         DB::rollBack();
+    //     }catch(\Exception $e){
+    //         DB::rollBack();
 
-//         return redirect()->back()->with('error','記録の削除に失敗しました。');
-//     }
-// }
+    //         return redirect()->back()->with('error','記録の削除に失敗しました。');
+    //     }
+    // }
 
-// public function destroy($id)
-// {
-//     try {
-//         $arrivalRecord = ArrivalRecord::findOrFail($id);
+    // public function destroy($id)
+    // {
+    //     try {
+    //         $arrivalRecord = ArrivalRecord::findOrFail($id);
 
-//         // Check authorization
-//         if (auth()->user()->id !== $arrivalRecord->user_id) {
-//             return redirect()->back()->with('error', '権限がありません。');
-//         }
+    //         // Check authorization
+    //         if (auth()->user()->id !== $arrivalRecord->user_id) {
+    //             return redirect()->back()->with('error', '権限がありません。');
+    //         }
 
-//         $recordDate = $arrivalRecord->arrival_time
-//     ? \Carbon\Carbon::parse($arrivalRecord->arrival_time)->format('Y-m-d')
-//     : \Carbon\Carbon::parse($arrivalRecord->created_at)->format('Y-m-d');
+    //         $recordDate = $arrivalRecord->arrival_time
+    //     ? \Carbon\Carbon::parse($arrivalRecord->arrival_time)->format('Y-m-d')
+    //     : \Carbon\Carbon::parse($arrivalRecord->created_at)->format('Y-m-d');
 
-// // dd([
-// //     'arrival_record' => [
-// //         'id' => $arrivalRecord->id,
-// //         'arrival_time' => $arrivalRecord->arrival_time,
-// //         'created_at' => $arrivalRecord->created_at,
-// //         'user_id' => $arrivalRecord->user_id
-// //     ],
-// //     'record_date' => $recordDate,
-// //     'breaks' => Breaks::where('user_id', $arrivalRecord->user_id)
-// //         ->where(function($query) use ($recordDate) {
-// //             $query->whereDate('start_time', $recordDate)
-// //                   ->orWhereDate('created_at', $recordDate);
-// //         })
-// //         ->get()
-// //         ->map(function($break) {
-// //             return [
-// //                 'id' => $break->id,
-// //                 'start_time' => $break->start_time,
-// //                 'created_at' => $break->created_at
-// //             ];
-// //         })
-// // ]);
+    // // dd([
+    // //     'arrival_record' => [
+    // //         'id' => $arrivalRecord->id,
+    // //         'arrival_time' => $arrivalRecord->arrival_time,
+    // //         'created_at' => $arrivalRecord->created_at,
+    // //         'user_id' => $arrivalRecord->user_id
+    // //     ],
+    // //     'record_date' => $recordDate,
+    // //     'breaks' => Breaks::where('user_id', $arrivalRecord->user_id)
+    // //         ->where(function($query) use ($recordDate) {
+    // //             $query->whereDate('start_time', $recordDate)
+    // //                   ->orWhereDate('created_at', $recordDate);
+    // //         })
+    // //         ->get()
+    // //         ->map(function($break) {
+    // //             return [
+    // //                 'id' => $break->id,
+    // //                 'start_time' => $break->start_time,
+    // //                 'created_at' => $break->created_at
+    // //             ];
+    // //         })
+    // // ]);
 
-//         // Begin transaction
-//         \DB::beginTransaction();
+    //         // Begin transaction
+    //         \DB::beginTransaction();
 
-//         // Get the date - use created_at if arrival_time is null
-//         $recordDate = $arrivalRecord->arrival_time
-//             ? \Carbon\Carbon::parse($arrivalRecord->arrival_time)->format('Y-m-d')
-//             : \Carbon\Carbon::parse($arrivalRecord->created_at)->format('Y-m-d');
+    //         // Get the date - use created_at if arrival_time is null
+    //         $recordDate = $arrivalRecord->arrival_time
+    //             ? \Carbon\Carbon::parse($arrivalRecord->arrival_time)->format('Y-m-d')
+    //             : \Carbon\Carbon::parse($arrivalRecord->created_at)->format('Y-m-d');
 
-//         // Delete breaks matching either start_time date or created_at date
-//         $breaks = Breaks::where('user_id', $arrivalRecord->user_id)
-//             ->where(function($query) use ($recordDate) {
-//                 $query->whereDate('start_time', $recordDate)
-//                       ->orWhereDate('created_at', $recordDate);
-//             })
-//             ->delete();
+    //         // Delete breaks matching either start_time date or created_at date
+    //         $breaks = Breaks::where('user_id', $arrivalRecord->user_id)
+    //             ->where(function($query) use ($recordDate) {
+    //                 $query->whereDate('start_time', $recordDate)
+    //                       ->orWhereDate('created_at', $recordDate);
+    //             })
+    //             ->delete();
 
-//         // Log what's being deleted
-//         \Log::info('Deleting records:', [
-//             'user_id' => $arrivalRecord->user_id,
-//             'date' => $recordDate,
-//             'arrival_id' => $id,
-//             'breaks_deleted' => $breaks
-//         ]);
+    //         // Log what's being deleted
+    //         \Log::info('Deleting records:', [
+    //             'user_id' => $arrivalRecord->user_id,
+    //             'date' => $recordDate,
+    //             'arrival_id' => $id,
+    //             'breaks_deleted' => $breaks
+    //         ]);
 
-//         // Delete arrival departure records
-//         $arrivalRecord->arrivalDepartureRecords()->delete();
+    //         // Delete arrival departure records
+    //         $arrivalRecord->arrivalDepartureRecords()->delete();
 
-//         // Delete the arrival record
-//         $arrivalRecord->delete();
+    //         // Delete the arrival record
+    //         $arrivalRecord->delete();
 
-//         \DB::commit();
+    //         \DB::commit();
 
-//         return redirect()->back()->with('status', '記録と関連する記録が削除されました。');
+    //         return redirect()->back()->with('status', '記録と関連する記録が削除されました。');
 
-//     } catch (\Exception $e) {
-//         \DB::rollBack();
-//         \Log::error('Delete error:', [
-//             'message' => $e->getMessage(),
-//             'trace' => $e->getTraceAsString()
-//         ]);
-//         return redirect()->back()->with('error', '記録の削除に失敗しました。');
-//     }
-// }
+    //     } catch (\Exception $e) {
+    //         \DB::rollBack();
+    //         \Log::error('Delete error:', [
+    //             'message' => $e->getMessage(),
+    //             'trace' => $e->getTraceAsString()
+    //         ]);
+    //         return redirect()->back()->with('error', '記録の削除に失敗しました。');
+    //     }
+    // }
 
-public function destroy($id)
-{
-    try {
-        $arrivalRecord = ArrivalRecord::findOrFail($id);
+    public function destroy($id)
+    {
+        try {
+            $arrivalRecord = ArrivalRecord::findOrFail($id);
 
-        // Authorization check
-        if (auth()->user()->id !== $arrivalRecord->user_id) {
-            return redirect()->back()->with('error', '権限がありません。');
+            // Authorization check
+            if (auth()->user()->id !== $arrivalRecord->user_id) {
+                return redirect()->back()->with('error', '権限がありません。');
+            }
+
+            // Begin transaction
+            \DB::beginTransaction();
+
+            // Get arrival and departure times
+            $arrivalTime = $arrivalRecord->arrival_time
+                ? Carbon::parse($arrivalRecord->arrival_time)
+                : Carbon::parse($arrivalRecord->created_at);
+
+            $departureTime = $arrivalRecord->arrivalDepartureRecords->first()
+                ? Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at)
+                : $arrivalTime->copy()->endOfDay();
+
+            // Delete only breaks that fall within this arrival-departure period
+            $breaks = Breaks::where('user_id', $arrivalRecord->user_id)
+                ->where(function ($query) use ($arrivalTime, $departureTime) {
+                    $query->whereBetween('start_time', [$arrivalTime, $departureTime])
+                        ->orWhereBetween('end_time', [$arrivalTime, $departureTime])
+                        ->orWhere(function ($q) use ($arrivalTime, $departureTime) {
+                            $q->where('start_time', '<=', $arrivalTime)
+                                ->where('end_time', '>=', $departureTime);
+                        });
+                })
+                ->delete();
+
+            // Log the deletion details
+            \Log::info('Deleting specific records:', [
+                'user_id' => $arrivalRecord->user_id,
+                'arrival_time' => $arrivalTime,
+                'departure_time' => $departureTime,
+                'arrival_id' => $id,
+                'breaks_deleted' => $breaks
+            ]);
+
+            // Delete arrival departure records
+            $arrivalRecord->arrivalDepartureRecords()->delete();
+
+            // Delete the arrival record
+            $arrivalRecord->delete();
+
+            \DB::commit();
+
+            return redirect()->back()->with('status', '記録と関連する記録が削除されました。');
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            \Log::error('Delete error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->with('error', '記録の削除に失敗しました。');
         }
-
-        // Begin transaction
-        \DB::beginTransaction();
-
-        // Get arrival and departure times
-        $arrivalTime = $arrivalRecord->arrival_time
-            ? Carbon::parse($arrivalRecord->arrival_time)
-            : Carbon::parse($arrivalRecord->created_at);
-
-        $departureTime = $arrivalRecord->arrivalDepartureRecords->first()
-            ? Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at)
-            : $arrivalTime->copy()->endOfDay();
-
-        // Delete only breaks that fall within this arrival-departure period
-        $breaks = Breaks::where('user_id', $arrivalRecord->user_id)
-            ->where(function($query) use ($arrivalTime, $departureTime) {
-                $query->whereBetween('start_time', [$arrivalTime, $departureTime])
-                      ->orWhereBetween('end_time', [$arrivalTime, $departureTime])
-                      ->orWhere(function($q) use ($arrivalTime, $departureTime) {
-                          $q->where('start_time', '<=', $arrivalTime)
-                            ->where('end_time', '>=', $departureTime);
-                      });
-            })
-            ->delete();
-
-        // Log the deletion details
-        \Log::info('Deleting specific records:', [
-            'user_id' => $arrivalRecord->user_id,
-            'arrival_time' => $arrivalTime,
-            'departure_time' => $departureTime,
-            'arrival_id' => $id,
-            'breaks_deleted' => $breaks
-        ]);
-
-        // Delete arrival departure records
-        $arrivalRecord->arrivalDepartureRecords()->delete();
-
-        // Delete the arrival record
-        $arrivalRecord->delete();
-
-        \DB::commit();
-
-        return redirect()->back()->with('status', '記録と関連する記録が削除されました。');
-
-    } catch (\Exception $e) {
-        \DB::rollBack();
-        \Log::error('Delete error:', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return redirect()->back()->with('error', '記録の削除に失敗しました。');
-    }
-}
-
-
-
-public function validatePeriod()
-{
-    $user = auth()->user();
-
-    // Reuse the calculated date range from the index() method
-    $year = date('Y');
-    $month = date('m');
-    $givenDate = Carbon::parse("$year-$month-16");
-
-    if (Carbon::today()->day < 16) {
-        $startDate = $givenDate->copy()->subMonth()->startOfDay();
-        $endDate = $givenDate->copy()->subDay()->endOfDay();
-    } else {
-        $startDate = $givenDate->copy()->startOfDay();
-        $endDate = $givenDate->copy()->addMonth()->subDay()->endOfDay();
     }
 
-    \Log::info("Start Date: $startDate, End Date: $endDate");
 
-    // Fetch records within the calculated range
-    $attendanceRecords = ArrivalRecord::where('user_id', $user->id)
-        ->whereBetween('recorded_at', [$startDate, $endDate])
-        ->with('arrivalDepartureRecords')
-        ->get();
 
-    $timeOffRecords = TimeOffRequestRecord::where('user_id', $user->id)
-        ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-        ->get();
+    public function validatePeriod()
+    {
+        $user = auth()->user();
 
-    $issues = [];
-    $warnings = [];
-    $currentDate = $startDate->copy();
-    $firstCheckMethod = null;
+        // Reuse the calculated date range from the index() method
+        $year = date('Y');
+        $month = date('m');
+        $givenDate = Carbon::parse("$year-$month-16");
 
-    // Validate Records
-    while ($currentDate <= $endDate) {
-        if ($currentDate->isWeekend()) {
-            $holidayWork = $timeOffRecords->first(function ($record) use ($currentDate) {
-                return $record->date == $currentDate->format('Y-m-d') &&
-                    $record->attendance_type_records_id == AttendanceTypeRecord::where('name', '休日出勤')->first()->id;
-            });
-
-            if (!$holidayWork) {
-                $currentDate->addDay();
-                continue;
-            }
+        if (Carbon::today()->day < 16) {
+            $startDate = $givenDate->copy()->subMonth()->startOfDay();
+            $endDate = $givenDate->copy()->subDay()->endOfDay();
+        } else {
+            $startDate = $givenDate->copy()->startOfDay();
+            $endDate = $givenDate->copy()->addMonth()->subDay()->endOfDay();
         }
 
-        $dayAttendance = $attendanceRecords->first(fn($record) => Carbon::parse($record->recorded_at)->isSameDay($currentDate));
-        $dayTimeOff = $timeOffRecords->first(fn($record) => $record->date == $currentDate->format('Y-m-d'));
-        $displayDate = $currentDate->format('n/j');
+        \Log::info("Start Date: $startDate, End Date: $endDate");
 
-        if (!$dayAttendance && !$dayTimeOff) {
-            $issues[] = "{$displayDate}: 出勤記録または休暇申請がありません";
-        }
+        // Fetch records within the calculated range
+        $attendanceRecords = ArrivalRecord::where('user_id', $user->id)
+            ->whereBetween('recorded_at', [$startDate, $endDate])
+            ->with('arrivalDepartureRecords')
+            ->get();
 
-        // if ($dayTimeOff && !in_array($dayTimeOff->status, ['approved', 'denied','pending'])) {
-        //     $warnings[] = "{$displayDate}: 休暇申請が承認待ち状態です";
-        // }
-        if($dayTimeOff){
-            if($dayTimeOff->status === 'pending'){
-                $issues[]="{$displayDate}:休暇申請が承認待ちです ";
-            }elseif(!in_array($dayTimeOff->status, ['approved', 'denied'])){
-                $issues[]="{$displayDate}: 休暇申請の状態が無効です";
-            }
-        }
+        $timeOffRecords = TimeOffRequestRecord::where('user_id', $user->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->get();
 
-        if ($dayAttendance) {
-            $arrivalTime = Carbon::parse($dayAttendance->recorded_at);
+        $issues = [];
+        $warnings = [];
+        $currentDate = $startDate->copy();
+        $firstCheckMethod = null;
 
-            $currentCheckMethod = $dayAttendance->check_in_method;
-            if ($firstCheckMethod === null && $currentCheckMethod) {
-                $firstCheckMethod = $currentCheckMethod;
-            } elseif ($firstCheckMethod && $currentCheckMethod && $firstCheckMethod !== $currentCheckMethod) {
-                $issues[] = "{$displayDate}: 打刻方法が統一されていません";
-            }
+        // Validate Records
+        while ($currentDate <= $endDate) {
+            if ($currentDate->isWeekend()) {
+                $holidayWork = $timeOffRecords->first(function ($record) use ($currentDate) {
+                    return $record->date == $currentDate->format('Y-m-d') &&
+                        $record->attendance_type_records_id == AttendanceTypeRecord::where('name', '休日出勤')->first()->id;
+                });
 
-            if (!$dayAttendance->arrivalDepartureRecords->count()) {
-                $issues[] = "{$displayDate}: 退社時間が記録されていません";
-            } else {
-                $departureTime = Carbon::parse($dayAttendance->arrivalDepartureRecords->first()->recorded_at);
-                if ($departureTime->lt($arrivalTime)) {
-                    $issues[] = "{$displayDate}: 退社時間が出勤時間より前になっています";
-                } elseif ($departureTime->eq($arrivalTime)) {
-                    $warnings[] = "{$displayDate}: 出勤時間と退社時間が同じです";
+                if (!$holidayWork) {
+                    $currentDate->addDay();
+                    continue;
                 }
             }
+
+            $dayAttendance = $attendanceRecords->first(fn($record) => Carbon::parse($record->recorded_at)->isSameDay($currentDate));
+            $dayTimeOff = $timeOffRecords->first(fn($record) => $record->date == $currentDate->format('Y-m-d'));
+            $displayDate = $currentDate->format('n/j');
+
+            if (!$dayAttendance && !$dayTimeOff) {
+                $issues[] = "{$displayDate}: 出勤記録または休暇申請がありません";
+            }
+
+            // if ($dayTimeOff && !in_array($dayTimeOff->status, ['approved', 'denied','pending'])) {
+            //     $warnings[] = "{$displayDate}: 休暇申請が承認待ち状態です";
+            // }
+            if ($dayTimeOff) {
+                if ($dayTimeOff->status === 'pending') {
+                    $issues[] = "{$displayDate}:休暇申請が承認待ちです ";
+                } elseif (!in_array($dayTimeOff->status, ['approved', 'denied'])) {
+                    $issues[] = "{$displayDate}: 休暇申請の状態が無効です";
+                }
+            }
+
+            if ($dayAttendance) {
+                $arrivalTime = Carbon::parse($dayAttendance->recorded_at);
+
+                $currentCheckMethod = $dayAttendance->check_in_method;
+                if ($firstCheckMethod === null && $currentCheckMethod) {
+                    $firstCheckMethod = $currentCheckMethod;
+                } elseif ($firstCheckMethod && $currentCheckMethod && $firstCheckMethod !== $currentCheckMethod) {
+                    $issues[] = "{$displayDate}: 打刻方法が統一されていません";
+                }
+
+                if (!$dayAttendance->arrivalDepartureRecords->count()) {
+                    $issues[] = "{$displayDate}: 退社時間が記録されていません";
+                } else {
+                    $departureTime = Carbon::parse($dayAttendance->arrivalDepartureRecords->first()->recorded_at);
+                    if ($departureTime->lt($arrivalTime)) {
+                        $issues[] = "{$displayDate}: 退社時間が出勤時間より前になっています";
+                    } elseif ($departureTime->eq($arrivalTime)) {
+                        $warnings[] = "{$displayDate}: 出勤時間と退社時間が同じです";
+                    }
+                }
+            }
+
+            $currentDate->addDay();
         }
 
-        $currentDate->addDay();
+        return response()->json([
+            'isValid' => empty($issues),
+            'issues' => $issues,
+            'warnings' => $warnings,
+            'periodStart' => $startDate->format('Y/m/d'),
+            'periodEnd' => $endDate->format('Y/m/d'),
+        ]);
     }
-
-    return response()->json([
-        'isValid' => empty($issues),
-        'issues' => $issues,
-        'warnings' => $warnings,
-        'periodStart' => $startDate->format('Y/m/d'),
-        'periodEnd' => $endDate->format('Y/m/d'),
-    ]);
-}
-
-
 }

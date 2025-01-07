@@ -23,7 +23,7 @@ class AccountantController extends Controller
 {
 
 
-    $query = Application::with('user');
+    $query = Application::with('user')->where('status', 'approved');
 
 
 
