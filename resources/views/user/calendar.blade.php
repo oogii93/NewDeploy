@@ -8,7 +8,7 @@
             <div class="flex justify-center mb-8">
                 <form action="{{ route('user.calendar') }}" method="GET" class="flex items-center gap-3">
                     <select name="year" class="block w-32 rounded-lg border-0 py-2.5 pl-4 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        @for ($i = date('Y'); $i <= date('Y') + 5; $i++)
+                        @for ($i = date('Y')-1; $i <= date('Y') + 5; $i++)
                             <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>
                                 {{ $i }}年
                             </option>

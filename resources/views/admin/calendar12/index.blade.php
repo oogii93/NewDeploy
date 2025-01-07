@@ -100,7 +100,7 @@
                 <div class="mt-4">
                     <label for="year" class="block mb-2">年を選択してください</label>
                     <select name="year" id="year" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" required>
-                        @for ($i = date('Y'); $i <= date('Y') +5; $i++)
+                        @for ($i = date('Y')-1; $i <= date('Y') +5; $i++)
                             <option value="{{ $i }}">{{ $i }}</option>
                         @endfor
                     </select>
