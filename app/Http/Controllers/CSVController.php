@@ -629,7 +629,7 @@ class CSVController extends Controller
             $dailyWorkedSeconds = 0;
 
             // $lateArrivalSeconds = 0;
-            // $overTimeSeconds = 0;
+            $overTimeSeconds = 0;
 
 
 
