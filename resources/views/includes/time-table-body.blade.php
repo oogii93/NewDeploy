@@ -15,6 +15,7 @@ use App\Models\AttendanceTypeRecord;
 @endphp
 
 
+
 <style>
     .custom-select {
         background-image: none;
@@ -95,7 +96,7 @@ use App\Models\AttendanceTypeRecord;
         $startOfDay = $day->startOfDay()->format('Y-m-d H:i:s');
         $endOfDay = $day->endOfDay()->format('Y-m-d H:i:s');
         $isHoliday = in_array($day->format('Y-m-d'), $holidayDates);
-        // dd($isHoliday);
+
     @endphp
 
 
@@ -375,18 +376,29 @@ use App\Models\AttendanceTypeRecord;
             $breakEndTime1 = strtotime('11:10');
             $lunchStartTime = strtotime('12:00');
             $lunchEndTime = strtotime('13:00');
-            $breakStartTime2 = strtotime('13:00');
-            $breakEndTime2 = strtotime('13:10');
+            $breakStartTime2 = strtotime('15:00');
+            $breakEndTime2 = strtotime('15:10');
             $breakStartTime3 = strtotime('17:30');
             $breakEndTime3 = strtotime('17:40');
             $regularEndTime = strtotime('17:30');
 
+
+            //nemelt
+            $morninghalfday=strtotime('3:50');
+            // dump($morninghalfday);
+
             if ($arrivalTime && $departureTime) {
                 $workedStartTime = strtotime($arrivalTime->format('H:i'));
                 $workedEndTime = strtotime($departureTime->format('H:i'));
+                 // Check if it's a half day (12:30 departure)
 
-                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
+                 if($departureTime->format('H:i') === '12:30'){
+                    $totalWorkedMinutes=230; //3 hours 50 minutes
+                 }else{
+
+
+                //     $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
+                // $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
 
                 if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
                     $totalWorkedMinutes -= 10;
@@ -402,7 +414,11 @@ use App\Models\AttendanceTypeRecord;
                 if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
                     $totalWorkedMinutes -= 10;
                 }
+                 }
+
+
             }
+
         }
 
 
@@ -787,6 +803,15 @@ use App\Models\AttendanceTypeRecord;
 
 
 <script>
+    const holidayDates = @json($holidayDates);
+</script>
+
+<script>
+
+
+
+
+
  document.addEventListener('DOMContentLoaded', function() {
     // First modal form submission
     const attendanceForm = document.getElementById('attendanceForm');
@@ -1055,7 +1080,10 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json',
-        }
+        },
+        body: JSON.stringify({
+            holidayDates: holidayDates // Pass the holiday dates to the backend
+        })
     })
     .then(response => response.json())
     .then(data => {
@@ -1063,8 +1091,8 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
         resultsDiv.innerHTML = '';
         resultsDiv.classList.remove('hidden');
 
-        // Common close button HTML
-        const closeButton = `
+       // Common close button HTML
+       const closeButton = `
             <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                     onclick="this.closest('.validation-message').remove()">
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1082,14 +1110,19 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
                         </svg>
                         <p class="text-green-800 font-medium">すべての記録が正しく入力されています</p>
                     </div>
-                    <p class="text-green-700 text-sm mt-2">検証期間: ${data.periodStart} から ${data.periodEnd}</p>
+                    <p class="text-green-700 text-sm mt-2">
+                        検証期間: ${data.periodStart} から ${data.periodEnd}<br>
+                        <span class="text-sm italic">※土日と指定された休日は検証対象外です</span>
+                    </p>
                 </div>`;
         } else {
             let issuesHtml = `
                 <div class="validation-message relative bg-yellow-50 border border-yellow-200 rounded-lg p-4 shadow-sm space-y-2 transition-all duration-300 ease-in-out">
-                    ${closeButton}`;
-
-            issuesHtml += `<p class="text-gray-800 font-medium">検証期間: ${data.periodStart} から ${data.periodEnd}</p>`;
+                    ${closeButton}
+                    <p class="text-gray-800 font-medium">
+                        検証期間: ${data.periodStart} から ${data.periodEnd}<br>
+                        <span class="text-sm italic">※土日と指定された休日は検証対象外です</span>
+                    </p>`;
 
             if (data.issues && data.issues.length > 0) {
                 issuesHtml += `
@@ -1133,12 +1166,7 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
         const resultsDiv = document.getElementById('validationResults');
         resultsDiv.innerHTML = `
             <div class="validation-message relative bg-red-50 border border-red-200 rounded-lg p-4 shadow-sm transition-all duration-300 ease-in-out">
-                <button class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                        onclick="this.closest('.validation-message').remove()">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+                ${closeButton}
                 <p class="text-red-800">エラーが発生しました。後でもう一度お試しください。</p>
             </div>`;
     })
@@ -1147,7 +1175,6 @@ function openeditHolidayModal(id, date, attendanceTypeId,  reason, bossId) {
         button.textContent = '当月の勤怠確定処理';
     });
 });
-
 
 
 

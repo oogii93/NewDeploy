@@ -1240,8 +1240,8 @@ private function isValidTimeString($timeString)
             // If overtime is less than or equal to 3:50, keep it all in A
             $totalOvertimeSecondsA += $currentOvertimeA;
         }
-
-        $dailyWorkedSeconds -= $overTimeSeconds;
+// dd($dailyWorkedSeconds, $overTimeSeconds);
+        // $dailyWorkedSeconds -= $overTimeSeconds;
     } else {
         // For normal days, apply the same logic
 
@@ -1251,6 +1251,7 @@ private function isValidTimeString($timeString)
     }
 
     $totalWorkedTime += $dailyWorkedSeconds;
+
 
 
 

@@ -14,7 +14,7 @@ use App\Rules\RecordedAtExistsRule;
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceTypeRecord;
 use App\Models\TimeOffRequestRecord;
-
+use App\Models\VacationCalendar;
 
 class TimeRecordController extends Controller
 {
@@ -692,7 +692,18 @@ class TimeRecordController extends Controller
             $endDate = $givenDate->copy()->addMonth()->subDay()->endOfDay();
         }
 
-        \Log::info("Start Date: $startDate, End Date: $endDate");
+        // \Log::info("Start Date: $startDate, End Date: $endDate");
+
+        $holidayDates=VacationCalendar::whereBetween('vacation_date',[
+            $startDate->format('Y-m-d'),
+            $endDate->format('Y-m-d')
+        ])
+        ->pluck('vacation_date')
+        ->map(function($date){
+            return Carbon::parse($date)->format('Y-m-d');
+        })
+        ->toArray();
+        // dump($holidayDates);
 
         // Fetch records within the calculated range
         $attendanceRecords = ArrivalRecord::where('user_id', $user->id)
@@ -709,19 +720,29 @@ class TimeRecordController extends Controller
         $currentDate = $startDate->copy();
         $firstCheckMethod = null;
 
-        // Validate Records
-        while ($currentDate <= $endDate) {
-            if ($currentDate->isWeekend()) {
-                $holidayWork = $timeOffRecords->first(function ($record) use ($currentDate) {
-                    return $record->date == $currentDate->format('Y-m-d') &&
-                        $record->attendance_type_records_id == AttendanceTypeRecord::where('name', '休日出勤')->first()->id;
-                });
 
-                if (!$holidayWork) {
-                    $currentDate->addDay();
-                    continue;
+            // if ($currentDate->isWeekend()) {
+            //     $holidayWork = $timeOffRecords->first(function ($record) use ($currentDate) {
+            //         return $record->date == $currentDate->format('Y-m-d') &&
+            //             $record->attendance_type_records_id == AttendanceTypeRecord::where('name', '休日出勤')->first()->id;
+            //     });
+
+            while ($currentDate <= $endDate) {
+                $currentDateStr = $currentDate->format('Y-m-d');
+
+                // Skip if it's a holiday (unless there's holiday work scheduled)
+                if (in_array($currentDateStr, $holidayDates)) {
+                    $holidayWork = $timeOffRecords->first(function ($record) use ($currentDate) {
+                        return $record->date == $currentDate->format('Y-m-d') &&
+                            $record->attendance_type_records_id == AttendanceTypeRecord::where('name', '休日出勤')->first()->id;
+                    });
+
+                    if (!$holidayWork) {
+                        $currentDate->addDay();
+                        continue;
+                    }
                 }
-            }
+
 
             $dayAttendance = $attendanceRecords->first(fn($record) => Carbon::parse($record->recorded_at)->isSameDay($currentDate));
             $dayTimeOff = $timeOffRecords->first(fn($record) => $record->date == $currentDate->format('Y-m-d'));
@@ -773,6 +794,7 @@ class TimeRecordController extends Controller
             'warnings' => $warnings,
             'periodStart' => $startDate->format('Y/m/d'),
             'periodEnd' => $endDate->format('Y/m/d'),
+            'holidayDates'=>$holidayDates
         ]);
     }
 }
