@@ -394,11 +394,27 @@ use App\Models\AttendanceTypeRecord;
 
                  if($departureTime->format('H:i') === '12:30'){
                     $totalWorkedMinutes=230; //3 hours 50 minutes
+                 }else if($arrivalTime->format('H:i') === '13:30'){
+                    if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
+            $totalWorkedMinutes -= 10;
+        }
+
+        $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
+        $totalWorkedMinutes += $afterLunchWorkedTime / 60;
+
+        if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
+            $totalWorkedMinutes -= 10;
+        }
+
+        if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
+            $totalWorkedMinutes -= 10;
+        }
+
                  }else{
 
 
-                //     $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                // $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
+                    $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
+                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
 
                 if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
                     $totalWorkedMinutes -= 10;
@@ -415,6 +431,7 @@ use App\Models\AttendanceTypeRecord;
                     $totalWorkedMinutes -= 10;
                 }
                  }
+
 
 
             }
@@ -452,14 +469,25 @@ use App\Models\AttendanceTypeRecord;
                         // Calculate Yumeya time
                         $result2 = workTimeCalcYumeya($arrivalTime->format('H:i'), $departureTime->format('H:i'));
                         $arrayOverTime1 = explode(':', $result2['overTime1']);
+                        $arrayOverTime2=explode(':', $result2['overTime2']);  //change string -iig into ','-array ,':'- tsagruu geh met,
+
                     } else {
                         // Calculate regular time
                         $result = workTimeCalc($arrivalTime->format('H:i'), $departureTime->format('H:i'));
                         $arrayOverTime1 = explode(':', $result['overTime1']);
+                        $arrayOverTime2=explode(':', $result['overTime2']);
                     }
 
-                    $totalMinutesForMonth += $arrayOverTime1[0] * 60 + $arrayOverTime1[1];
-                    echo sprintf('%02d:%02d', $arrayOverTime1[0], $arrayOverTime1[1]);
+                    $totalMinutes=($arrayOverTime1[0]*60 + $arrayOverTime1[1] )+ ($arrayOverTime2[0]*60 +$arrayOverTime2[1] );
+
+
+                    $hours=floor($totalMinutes /60);
+                    $minutes=$totalMinutes %60;
+
+
+
+                    // echo sprintf('%02d:%02d', $arrayOverTime1[0], $arrayOverTime1[1]);
+                    echo sprintf('%02d:%02d', $hours, $minutes);
                 } else {
                     echo '';
                 }

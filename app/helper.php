@@ -88,6 +88,9 @@ function workTimeCalc($startTime = '', $endTime = '')
 
             }
             $totalOverMinutes1+=$timeRangeOver1Start->diffInMinutes($overE1Time);
+
+            // dd($totalOverMinutes1);
+
             $result['overTime1']=sprintf('%02d:%02d:00', floor($totalOverMinutes1 /60) ,$totalOverMinutes1%=60);
         }
 
@@ -102,6 +105,8 @@ function workTimeCalc($startTime = '', $endTime = '')
                 $overE2Time=$eTime;
             }
             $totalOverMinutes2=$timeRangeOver2Start->diffInMinutes($overE2Time);
+
+            // dd($totalOverMinutes2);
             $result['overTime2']=sprintf('%02d:%02d:00', floor($totalOverMinutes2 /60) ,$totalOverMinutes2%=60);
         }
 
