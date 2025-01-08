@@ -918,7 +918,7 @@ class CSVController extends Controller
                     $totalOvertimeSecondsA += $currentOvertimeA;
                 }
 
-                $dailyWorkedSeconds -= $overTimeSeconds;
+                $dailyWorkedSeconds;
             } else {
                 // For normal days, apply the same logic
 
