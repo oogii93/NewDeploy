@@ -156,6 +156,7 @@ class TimeRecordController extends Controller
                 $query->where('name', '半休');
             })
             ->first();
+            // dd($timeOffRequest);
 
 
         if ($timeOffRequest) {
@@ -167,11 +168,19 @@ class TimeRecordController extends Controller
             if ($data['button'] === 'ArrivalRecord') {
                 // Set DepartureRecord to 13:00 for Yumeya users, 12:30 otherwise
                 if ($inputDate->hour <= $timeLimit && ($inputDate->hour < $timeLimit || $inputDate->minute <= $minuteLimit)) {
-                    $this->handleArrivalRecord($user, $inputDate, 'ArrivalRecord', false);
-                    $departureTime = $inputDate->copy()->setTime($isYumeya ? 13 : 12, 30);
+                    $this->handleArrivalRecord($user, $inputDate, 'ArrivalRecord', $isYumeya);
+
+
+                    $departureTime = $inputDate->copy()->setTime(
+                        $isYumeya ? 13  : 12,
+                        $isYumeya ? 0 :30
+                    );
+
                     $this->handleDepartureRecord($user, $departureTime, 'DepartureRecord');
+                    // dd($departureTime);
 
                 return redirect()->route('dashboard')->with('status', '出勤時間と半日退勤時間を記録しました。');
+
             }else if($inputDate->hour >12){
                 $inputDate->setTime(13, 30);
                 $this->handleArrivalRecord($user, $inputDate, 'ArrivalRecord', false);
@@ -205,7 +214,7 @@ class TimeRecordController extends Controller
         }
 
         if (in_array($data['button'], ['ArrivalRecord', 'SecondArrivalRecord'])) {
-            $this->handleArrivalRecord($user, $inputDate, $data['button'], false);
+            $this->handleArrivalRecord($user, $inputDate, $data['button'], $isYumeya);
         } else {
             $this->handleDepartureRecord($user, $inputDate, $data['button']);
         }
@@ -256,9 +265,9 @@ class TimeRecordController extends Controller
                 ->whereDate('recorded_at', $inputDate->format('Y-m-d'))
                 ->first();
 
-            if ($user->office && $user->office->corp->corp_name === 'ユメヤ') {
-                $inputDate->setTime(13, 0);
-            }
+            // if ($user->office && $user->office->corp->corp_name === 'ユメヤ') {
+            //     $inputDate->setTime(13, 0);
+            // }
 
             if ($departureExist) {
                 $departureExist->update([$columnName => $inputDate]);
@@ -303,36 +312,94 @@ class TimeRecordController extends Controller
 
     private function adjustArrivalTime($inputDate, $isYumeya)
     {
+        // Define all time checkpoints
         $workStartTime = $inputDate->copy()->setTime($isYumeya ? 9 : 8, $isYumeya ? 0 : 30, 0);
         $earliestAllowedTime = $workStartTime->copy()->setTime(5, 31, 0);
         $earlyArrivalCutoff = $workStartTime->copy()->subMinutes(29);
-        $sixCheck = $workStartTime->copy()->setTime(6, 00, 0);
-        $sixThirtyCheck = $workStartTime->copy()->setTime(6, 30, 0);
-        $sevenCheck = $workStartTime->copy()->setTime(7, 00, 0);
-        $sevenThirtyCheck = $workStartTime->copy()->setTime(7, 30, 00);
-        $eightCheck = $workStartTime->copy()->setTime(8, 00, 0);
-        $eightThirtyCheck = $workStartTime->copy()->setTime(8, 30, 0);
 
-        if ($inputDate->between($earliestAllowedTime, $sixCheck)) {
+        // Create immutable time checks
+        $timeChecks = [
+            $workStartTime->copy()->setTime(6, 0, 0),  // sixCheck
+            $workStartTime->copy()->setTime(6, 30, 0), // sixThirtyCheck
+            $workStartTime->copy()->setTime(7, 0, 0),  // sevenCheck
+            $workStartTime->copy()->setTime(7, 30, 0), // sevenThirtyCheck
+            $workStartTime->copy()->setTime(8, 0, 0),  // eightCheck
+            $workStartTime->copy()->setTime(8, 30, 0), // eightThirtyCheck
+            $workStartTime->copy()->setTime(9, 0, 0),  // nineCheck
+        ];
 
-            return $sixCheck;
-        } elseif ($inputDate->between($sixCheck, $sixThirtyCheck)) {
-            return $sixThirtyCheck;
-        } elseif ($inputDate->between($sixThirtyCheck, $sevenCheck)) {
-            return $sevenCheck;
-        } elseif ($inputDate->between($sevenCheck, $sevenThirtyCheck)) {
-            return $sevenThirtyCheck;
-        } elseif ($inputDate->between($sevenThirtyCheck, $eightCheck)) {
-            return $eightCheck;
-        } elseif ($isYumeya && $inputDate->between($eightCheck->addMinute(), $eightThirtyCheck)) {
-            return $eightThirtyCheck;
-        } elseif ($inputDate->between($earlyArrivalCutoff, $workStartTime)) {
-            return $workStartTime;
-        } elseif ($inputDate->lt($earliestAllowedTime)) {
+        // Handle early morning cases first
+        if ($inputDate->lt($earliestAllowedTime)) {
             return $earliestAllowedTime;
         }
 
+        // Handle the standard time blocks
+        if ($inputDate->between($timeChecks[0], $timeChecks[1])) {
+            return $timeChecks[1];  // return 6:30
+        }
+        if ($inputDate->between($timeChecks[1], $timeChecks[2])) {
+            return $timeChecks[2];  // return 7:00
+        }
+        if ($inputDate->between($timeChecks[2], $timeChecks[3])) {
+            return $timeChecks[3];  // return 7:30
+        }
+        if ($inputDate->between($timeChecks[3], $timeChecks[4])) {
+            return $timeChecks[4];  // return 8:00
+        }
+
+        // Special handling for Yumeya users after 8:00
+        if ($isYumeya) {
+            if ($inputDate->between($timeChecks[4], $timeChecks[5])) {
+                return $timeChecks[5];  // return 8:30
+            }
+            if ($inputDate->between($timeChecks[5], $timeChecks[6])) {
+                return $timeChecks[6];  // return 9:00
+            }
+        }
+
+        // Handle the period just before work start time
+        if ($inputDate->between($earlyArrivalCutoff, $workStartTime)) {
+            return $workStartTime;
+        }
+
         return $inputDate;
+
+
+
+
+
+        // $sixCheck = $workStartTime->copy()->setTime(6, 00, 0);
+        // $sixThirtyCheck = $workStartTime->copy()->setTime(6, 30, 0);
+        // $sevenCheck = $workStartTime->copy()->setTime(7, 00, 0);
+        // $sevenThirtyCheck = $workStartTime->copy()->setTime(7, 30, 00);
+        // $eightCheck = $workStartTime->copy()->setTime(8, 00, 0);
+        // $eightThirtyCheck = $workStartTime->copy()->setTime(8, 30, 0);
+        // $nineCheck=$workStartTime->copy()->setTime(9, 00,0);
+
+        // if ($inputDate->between($earliestAllowedTime, $sixCheck)) {
+
+        //     return $sixCheck;
+        // } elseif ($inputDate->between($sixCheck, $sixThirtyCheck)) {
+        //     return $sixThirtyCheck;
+        // } elseif ($inputDate->between($sixThirtyCheck, $sevenCheck)) {
+        //     return $sevenCheck;
+        // } elseif ($inputDate->between($sevenCheck, $sevenThirtyCheck)) {
+        //     return $sevenThirtyCheck;
+        // } elseif ($inputDate->between($sevenThirtyCheck, $eightCheck)) {
+        //     return $eightCheck;
+        // } elseif ($isYumeya && $inputDate->between($eightCheck->addMinute(), $eightThirtyCheck)) {
+        //     return $eightThirtyCheck;
+        // }elseif($isYumeya && $inputDate->between($eightThirtyCheck, $nineCheck)){
+        //     return $nineCheck;
+        // }
+
+        //  elseif ($inputDate->between($earlyArrivalCutoff, $workStartTime)) {
+        //     return $workStartTime;
+        // } elseif ($inputDate->lt($earliestAllowedTime)) {
+        //     return $earliestAllowedTime;
+        // }
+
+        // return $inputDate;
     }
 
 
