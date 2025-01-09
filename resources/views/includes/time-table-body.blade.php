@@ -155,7 +155,7 @@ use App\Models\AttendanceTypeRecord;
                     </div>
                 </div>
 
-                @if (!in_array($timeOffRecordForDay->status, ['approved']))
+                @if (in_array($timeOffRecordForDay->status, ['approved','pending','denied']))
                     <button
                         onclick="openEditModal('{{ $timeOffRecordForDay->id }}', '{{ $day->format('Y-m-d') }}', '{{ $timeOffRecordForDay->attendance_type_records_id }}', '{{ $timeOffRecordForDay->reason_select }}', '{{ $timeOffRecordForDay->reason }}', '{{ $timeOffRecordForDay->boss_id }}')"
                         class="text-blue-500 hover:underline text-m font-semibold mt-1 block w-full text-center">
@@ -340,9 +340,20 @@ use App\Models\AttendanceTypeRecord;
             $breakEndTime2 = strtotime('00:00');
             $regularEndTime = strtotime('18:00');    // Different end time
 
+            //yumeya
+            $yumeyaMorningHalfDay=strtotime('04:00');
+
+
+
             if ($arrivalTime && $departureTime) {
                 $workedStartTime = strtotime($arrivalTime->format('H:i'));
                 $workedEndTime = strtotime($departureTime->format('H:i'));
+
+
+
+
+
+
 
                 // Calculate first period with Yumeya's break schedule
                 $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;

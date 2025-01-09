@@ -217,130 +217,13 @@
                     </td>
                 @endif
 
-                    {{-- <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
-                        @php
-                            // Define constants for the workday, break, and lunch times
-                            $regularStartTime = strtotime('08:30');
-                            $breakStartTime1 = strtotime('11:00');
-                            $breakEndTime1 = strtotime('11:10');
-                            $lunchStartTime = strtotime('12:00');
-                            $lunchEndTime = strtotime('13:00');
-                            $breakStartTime2 = strtotime('13:00');
-                            $breakEndTime2 = strtotime('13:10');
-                            $breakStartTime3 = strtotime('17:30'); // Add the new break start time
-                            $breakEndTime3 = strtotime('17:40'); // Add the new break end time
-                            $regularEndTime = strtotime('17:30');
 
-                            // Initialize total worked minutes for the day
-                            $totalWorkedMinutes = 0;
 
-                            // Calculate worked time if $arrivalTime and $departureTime are provided
-                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
-                                $arrivalTime = \Carbon\Carbon::parse($arrivalRecord->recorded_at);
-                                $departureTime = \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at);
 
-                                $workedStartTime = strtotime($arrivalTime->format('H:i'));
-                                $workedEndTime = strtotime($departureTime->format('H:i'));
-
-                                // Calculate worked time before lunch break
-                                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
-
-                                // Subtract first break time if applicable
-                                if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
-                                    $totalWorkedMinutes -= 10;
-                                }
-
-                                // Calculate worked time after lunch break
-                                $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
-                                $totalWorkedMinutes += $afterLunchWorkedTime / 60;
-
-                                // Subtract second break time if applicable
-                                if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
-                                    $totalWorkedMinutes -= 10;
-                                }
-
-                                // Subtract the new break time if applicable
-                                if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
-                                    $totalWorkedMinutes -= 10;
-                                }
-
-                                // Print formatted total worked time for the day
-                                echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
-                            }
-                        @endphp
-                    </td> --}}
-
-                    {{-- <td class="border border-gray-400 text-left py-2 px-4 uppercase font-semibold text-xs">
-                        @php
-                            // Define general constants for the workday, break, and lunch times
-                            if ($corpName === 'ユメヤ') {
-                                // Adjusted times for "ユメヤ"
-                                $regularStartTime = strtotime('09:00');
-                                $breakStartTime1 = strtotime('00:00');
-                                $breakEndTime1 = strtotime('00:00');
-                                $lunchStartTime = strtotime('12:00');
-                                $lunchEndTime = strtotime('13:00');
-                                $breakStartTime2 = strtotime('00:00');
-                                $breakEndTime2 = strtotime('00:00');
-                                $regularEndTime = strtotime('18:00');
-                            } else {
-                                // Default times
-                                $regularStartTime = strtotime('08:30');
-                                $breakStartTime1 = strtotime('11:00');
-                                $breakEndTime1 = strtotime('11:10');
-                                $lunchStartTime = strtotime('12:00');
-                                $lunchEndTime = strtotime('13:00');
-                                $breakStartTime2 = strtotime('13:00');
-                                $breakEndTime2 = strtotime('13:10');
-                                $breakStartTime3 = strtotime('17:30');
-                                $breakEndTime3 = strtotime('17:40');
-                                $regularEndTime = strtotime('17:30');
-                            }
-
-                            // Initialize total worked minutes for the day
-                            $totalWorkedMinutes = 0;
-
-                            // Calculate worked time if $arrivalTime and $departureTime are provided
-                            if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
-                                $arrivalTime = \Carbon\Carbon::parse($arrivalRecord->recorded_at);
-                                $departureTime = \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at);
-
-                                $workedStartTime = strtotime($arrivalTime->format('H:i'));
-                                $workedEndTime = strtotime($departureTime->format('H:i'));
-
-                                // Calculate worked time before lunch break
-                                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
-
-                                // Subtract first break time if applicable
-                                if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
-                                    $totalWorkedMinutes -= 10;
-                                }
-
-                                // Calculate worked time after lunch break
-                                $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
-                                $totalWorkedMinutes += $afterLunchWorkedTime / 60;
-
-                                // Subtract second break time if applicable
-                                if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
-                                    $totalWorkedMinutes -= 10;
-                                }
-
-                                // Subtract the new break time if applicable
-                                if (!isset($corpName) || $corpName !== 'ユメヤ') {
-                                    if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
-                                        $totalWorkedMinutes -= 10;
-                                    }
-                                }
-
-                                // Print formatted total worked time for the day
-                                echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
-                            }
-                        @endphp
-                    </td> --}}
                     <td class="whitespace-nowrap px-2 py-2 text-xs sm:px-4 sm:py-3 sm:text-sm border border-gray-300">
                         @php
+
+                        $totalWorkedMinutes=0;
                             // Define general constants for the workday, break, and lunch times
                             if ($corpName === 'ユメヤ') {
                                 $regularStartTime = strtotime('09:00');
@@ -357,58 +240,99 @@
                                 $breakEndTime1 = strtotime('11:10');
                                 $lunchStartTime = strtotime('12:00');
                                 $lunchEndTime = strtotime('13:00');
-                                $breakStartTime2 = strtotime('13:00');
-                                $breakEndTime2 = strtotime('13:10');
+                                $breakStartTime2 = strtotime('15:00');
+                                $breakEndTime2 = strtotime('15:10');
                                 $breakStartTime3 = strtotime('17:30');
                                 $breakEndTime3 = strtotime('17:40');
                                 $regularEndTime = strtotime('17:30');
+
+                                // half day nemelt
+                                $morninghalfday=strtotime('3:50');
+
+
                             }
 
-                            // Initialize total worked minutes for the day
-                            $totalWorkedMinutes = 0;
 
                             // Calculate worked time if $arrivalTime and $departureTime are provided
                             if ($arrivalRecord && $arrivalRecord->arrivalDepartureRecords->count() > 0) {
                                 $arrivalTime = \Carbon\Carbon::parse($arrivalRecord->recorded_at);
                                 $departureTime = \Carbon\Carbon::parse($arrivalRecord->arrivalDepartureRecords->first()->recorded_at);
 
-                                $workedStartTime = strtotime($arrivalTime->format('H:i'));
-                                $workedEndTime = strtotime($departureTime->format('H:i'));
 
-                                // Calculate worked time before lunch break
-                                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
+                                if(!($corpName ==='ユメヤ')){
+                                    if($departureTime->format('H:i') === '12:30'){
+                                        $totalWorkedMinutes=230;
+                                    }else if($arrivalTime->format('H:i') ==='13:30'){
+                                        $workedStartTime=strtotime($arrivalTime->format('H:i'));
+                                        $workedEndTime=strtotime($departureTime->format('H:i'));
 
-                                // Subtract first break time if applicable
-                                if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
-                                    $totalWorkedMinutes -= 10;
-                                }
+                                        if($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1){
+                                            $totalWorkedMinutes -= 10;
+                                        }
 
-                                // Calculate worked time after lunch break
-                                $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
-                                $totalWorkedMinutes += $afterLunchWorkedTime / 60;
+                                        $afterLunchWorkedTime=max(0, $workedEndTime -max($workedStartTime, $lunchEndTime));
+                                        $totalWorkedMinutes +=$afterLunchWorkedTime/60;
 
-                                // Subtract second break time if applicable
-                                if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
-                                    $totalWorkedMinutes -= 10;
-                                }
+                                        if($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2){
+                                            $totalWorkedMinutes-=10;
+                                        }
+                                        if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
+                                            $totalWorkedMinutes -= 10;
+                                        }
+                                    }else{
+                                        //regular day calculation
 
-                                // Subtract the new break time if applicable
-                                if (!isset($corpName) || $corpName !== 'ユメヤ') {
-                                    if ($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3) {
-                                        $totalWorkedMinutes -= 10;
+                                        $workedStartTime=strtotime($arrivalTime->format('H:i'));
+                                        $workedEndTime=strtotime($departureTime->format('H:i'));
+
+                                        $beforeLunchWorkedTime=min($lunchStartTime, $workedEndTime)-$workedStartTime;
+                                        $totalWorkedMinutes +=$beforeLunchWorkedTime/60;
+
+                                        if($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1){
+                                            $totalWorkedMinutes-=10;
+                                        }
+
+                                        $afterLunchWorkedTime=max(0, $workedEndTime -max($workedStartTime, $lunchEndTime));
+                                        $totalWorkedMinutes+=$afterLunchWorkedTime/60;
+
+                                        if($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2){
+                                            $totalWorkedMinutes-=10;
+
+                                        }
+                                        if($workedStartTime < $breakStartTime3 && $workedEndTime >= $breakEndTime3){
+                                            $totalWorkedMinutes -=10;
+                                        }
+
+
                                     }
+
+
                                 }
+                                else{
+                                         // Yumeya calculation
+                                            $workedStartTime = strtotime($arrivalTime->format('H:i'));
+                                            $workedEndTime = strtotime($departureTime->format('H:i'));
 
-                                // Subtract dynamic break minutes if they exist
-                                $breakMinutes = $breakData[$user->id][$currentDate->format('Y-m-d')] ?? 0;
-                                $totalWorkedMinutes -= $breakMinutes;
+                                            $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
+                                            $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
 
-                                // Ensure total worked minutes don't go negative
-                                $totalWorkedMinutes = max(0, $totalWorkedMinutes);
+                                            if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
+                                                $totalWorkedMinutes -= 10;
+                                            }
 
-                                // Print formatted total worked time for the day
-                                echo sprintf('%02d:%02d', floor($totalWorkedMinutes / 60), $totalWorkedMinutes % 60);
+                                            $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
+                                            $totalWorkedMinutes += $afterLunchWorkedTime / 60;
+
+                                            if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
+                                                $totalWorkedMinutes -= 10;
+                                            }
+                                    }
+                                    $breakMinutes=$breakData[$user->id][$currentDate->format('Y-m-d')] ?? 0;
+                                    $totalWorkedMinutes-=$breakMinutes;
+
+                                    $totalWorkedMinutes=max(0, $totalWorkedMinutes);
+
+                                    echo sprintf('%02d:%02d', floor($totalWorkedMinutes/60), $totalWorkedMinutes % 60);
                             }
                         @endphp
                     </td>

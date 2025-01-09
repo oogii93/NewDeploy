@@ -107,7 +107,7 @@ class TimeOffRequestRecordController extends Controller
         'division_id' => 'required_if:status,approved|exists:divisions,id',
     ]);
 
-
+$timeOffRequest->status=$validatedData['status'];
 
     if ($validatedData['status'] === 'approved') {
         $timeOffRequest->status = $validatedData['status'];
@@ -127,6 +127,9 @@ class TimeOffRequestRecordController extends Controller
         if($timeOffRequest->attendanceTypeRecord->name === '休日出勤') {
             $timeOffRequest->is_checked = true;
             $timeOffRequest->checked_by = auth()->id();
+        }
+        else{
+            $timeOffRequest->division_id=null;
         }
     }
 
