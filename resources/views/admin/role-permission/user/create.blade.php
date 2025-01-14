@@ -90,14 +90,31 @@
         <div class="form-group">
             <label for="corp_id" class="form-label required">会社</label>
             <div class="form-input">
-                <select name="corp_id" id="corp_id" required onchange="updateEmployerId()">
+                <select name="corp_id" id="corp_id" required onchange="updateEmployerId()"
+                @if (auth()->user()->corp->corp_name==='ユメヤ')
+                disabled
+
+                @endif
+                >
                     <option value="">会社選択</option>
                     @foreach ($corps as $corp)
-                    <option value="{{ $corp->id }}" {{ old('corp_id') == $corp->id ? 'selected' : '' }}>
+                    <option value="{{ $corp->id }}"
+                        @if (auth()->user()->corp->corp_name ==='ユメヤ' && $corp->corp_name==='ユメヤ')
+                            selected
+
+                        @endif
+                        {{ old('corp_id') == $corp->id ? 'selected' : '' }}>
                         {{ $corp->corp_name }}
                     </option>
                     @endforeach
                 </select>
+
+                @if (auth()->user()->corp->corp_name ==='ユメヤ')
+                <input type="hidden" name="corp_id" value="{{ auth()->user()->corp->id }}">
+
+            @endif
+
+
             </div>
         </div>
 
@@ -105,8 +122,10 @@
         <div class="form-group">
             <label for="office_id" class="form-label required">営業所</label>
             <div class="form-input">
-                <select name="office_id" id="office_id" required onchange="updateDivisions()" disabled>
+                <select name="office_id" id="office_id" required onchange="updateDivisions()" >
                     <option value="">営業所選択</option>
+
+
                     {{-- @foreach ($offices as $office)
                     <option value="{{ $office->id }}" {{ old('office_id') == $office->id ? 'selected' : '' }}>{{ $office->office_name }}</option>
                     @endforeach --}}
@@ -116,7 +135,7 @@
         <div class="form-group">
             <label for="division_id" class="form-label required">所属</label>
             <div class="form-input">
-                <select name="division_id" id="division_id" required disabled>
+                <select name="division_id" id="division_id" required >
                     <option value="">所属選択</option>
                 </select>
             </div>
@@ -243,6 +262,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const officeSelect = document.getElementById('office_id');
     const divisionSelect = document.getElementById('division_id');
     const employerIdInput = document.getElementById('employer_id');
+
+
+
+    if(corpSelect.disabled && corpSelect.value){
+        updateOffices();
+    }
 
     corpSelect.addEventListener('change', function() {
         updateEmployerId();

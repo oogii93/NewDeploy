@@ -82,10 +82,18 @@
             @csrf
             <div>
                 <label for="corps_id" class="block mb-2">会社を選択してください</label>
-                <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+                <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
+                @if(auth()->user()->corp->corp_name ==='ユメヤ') disabled @endif
+
+                >
                     <option value="">全ての会社</option>
                     @foreach($corps as $corp)
-                        <option value="{{ $corp->id }}"{{ $selectedCorpId ==$corp->id ? 'selected' : '' }} >
+                        <option value="{{ $corp->id }}"
+                            @if (auth()->user()->corp->corp_name ==='ユメヤ' && $corp->corp_name ==='ユメヤ')
+                            selected
+
+                            @endif
+                            {{ $selectedCorpId ==$corp->id ? 'selected' : '' }} >
                             {{ $corp->corp_name }}</option>
                     @endforeach
                 </select>

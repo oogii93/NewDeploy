@@ -54,7 +54,7 @@ $currentDate = $startDate->copy();
                     'user' => $user,
                     'startDate'=>$startDate,
                     'endDate'=>$endDate,
-                    'holiday'=>$holidays,
+                    'holidays'=>$holidays,
                     'corpName'=>$corpName,
                     'breakData'=>$breakData
                     ])

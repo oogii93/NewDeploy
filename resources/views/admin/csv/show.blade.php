@@ -9,12 +9,22 @@
             @csrf
             <div>
                 <label for="corps_id" class="block mb-2">会社を選択してください</label>
-                <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200">
+
+
+                <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200"
+                @if(auth()->user()->corp->corp_name ==='ユメヤ') disabled @endif
+                >
                     <option value="">会社</option>
                     @foreach($corps as $corp)
-                        <option value="{{ $corp->id }}">{{ $corp->corp_name }}</option>
+                        <option value="{{ $corp->id }}"
+                            @if(auth()->user()->corp->corp_name ==='ユメヤ' && $corp->corp_name ==='ユメヤ')
+                            selected
+                            @endif
+                            >{{ $corp->corp_name }}</option>
                     @endforeach
                 </select>
+
+
             </div>
             <div class="mt-4">
                 <label for="office_id" class="block mb-2">所属を選択してください</label>
@@ -104,14 +114,32 @@ function populateOfficeDropdown(corpId) {
  });
 }
 
-// Add an event listener to the corporation dropdown
-corpSelect.addEventListener('change', () => {
- const selectedCorpId = corpSelect.value;
- populateOfficeDropdown(selectedCorpId);
-});
 
-// Populate the office dropdown when the page loads
-populateOfficeDropdown('{{ $selectedCorpId }}');
+@if(auth()->user()->corp->corp_name !=='ユメヤ')
+    corpSelect.addEventListener('change', ()=>{
+        const selectedCorpId=corpSelect.value;
+        populateOfficeDropdown(selectedCorpId);
+    });
+
+@endif
+
+    @if(auth()->user()->corp->corp_name ==='ユメヤ')
+        populateOfficeDropdown('{{ auth()->user()->corp->id }}');
+
+    @else
+        populateOfficeDropdown('{{ $selectedCorpId }}');
+    @endif
+
+// // Add an event listener to the corporation dropdown
+// corpSelect.addEventListener('change', () => {
+//  const selectedCorpId = corpSelect.value;
+//  populateOfficeDropdown(selectedCorpId);
+// });
+
+// // Populate the office dropdown when the page loads
+// populateOfficeDropdown('{{ $selectedCorpId }}');
+
+
  </script>
 
 @endsection

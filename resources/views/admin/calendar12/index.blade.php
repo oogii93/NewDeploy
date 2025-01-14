@@ -81,12 +81,27 @@
                 @csrf
                 <div>
                     <label for="corps_id" class="block mb-2">会社を選択してください</label>
-                    <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" required>
+
+                    <select name="corps_id" id="corps_id" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" required
+                    @if (auth()->user()->corp->corp_name ==='ユメヤ') disabled
+
+                    @endif
+                    >
                         <option value="">会社</option>
                         @foreach($corps as $corp)
-                            <option value="{{ $corp->id }}">{{ $corp->corp_name }}</option>
+                            <option value="{{ $corp->id }}"
+                                @if (auth()->user()->corp->corp_name ==='ユメヤ' && $corp->corp_name ==='ユメヤ')
+                                    selected
+
+                                @endif
+                                >{{ $corp->corp_name }}</option>
                         @endforeach
                     </select>
+
+                    @if (auth()->user()->corp->corp_name ==='ユメヤ')
+                        <input type="hidden" name="corps_id" value="{{ auth()->user()->corp->id }}">
+
+                    @endif
                 </div>
                 {{-- <div class="mt-4">
                     <label for="office_id" class="block mb-2">所属を選択してください</label>
@@ -97,11 +112,14 @@
                         @endforeach
                     </select>
                 </div> --}}
+
+
+
                 <div class="mt-4">
                     <label for="year" class="block mb-2">年を選択してください</label>
                     <select name="year" id="year" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200" required>
                         @for ($i = date('Y')-1; $i <= date('Y') +5; $i++)
-                            <option value="{{ $i }}">{{ $i }}</option>
+                            <option value="{{ $i }}" {{ $i ==date('Y') ? 'selected' : '' }}>{{ $i }}</option>
                         @endfor
                     </select>
                 </div>

@@ -97,40 +97,13 @@
                 </div>
             </div>
 
-                <div class="grid md:grid-cols-2 gap-6">
+                <div class="grid md:grid-cols-2 gap-6 mt-5">
 
 
 
-                    <div class="mb-2">
-                        <label for="customer_code" class="block text-sm font-medium text-gray-700 mb-2 mt-7">
-                            顧客コード
-                        </label>
-                        <input
-                            id="customer_code"
-                            name="customer_code"
-                            value=""
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                        >
 
 
-                        </input>
-                    </div>
 
-                    <div>
-                        <label for="icm_date" class="block text-sm font-medium text-gray-700 mb-2 mt-7">
-                            IC-M 登録日
-                        </label>
-                        <input
-                            type="date"
-                            id="icm_date"
-                            name="icm_date"
-                            value=""
-                            class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                        >
-
-
-                        </input>
-                    </div>
 
                     <div class="">
                         <label for="client_name" class="block text-sm font-medium text-gray-700 mb-2 mt-2">
@@ -564,7 +537,7 @@
 
                     <div>
                         <label for="office" class="block text-sm font-medium text-gray-700 mb-2 mt-7">
-                          支払日
+                            支払月
                         </label>
                         <select
 
@@ -582,7 +555,7 @@
                     </div>
                     <div>
                         <label for="office" class="block text-sm font-medium text-gray-700 mb-2 mt-7">
-                          日
+                            支払日
                         </label>
                         <input
 

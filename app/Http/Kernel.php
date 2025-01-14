@@ -73,5 +73,11 @@ class Kernel extends HttpKernel
 
         'is_boss'=>\App\Http\Middleware\CheckIsBoss::class,
         'taisei' => \App\Http\Middleware\CheckTaiseiCorp::class,
+
+        //yumeya admin
+
+
+        'yumeya.check'=>\App\Http\Middleware\YumeyaCheck::class,
+
     ];
 }

@@ -28,25 +28,68 @@ class UserController extends Controller
     //     return view('admin.user-details.show', compact('roles','corps', 'offices','user'));
     // }
 
-    public function index(Request $request)
-    {
-        $search = $request->input('search');
+    public function index(Request $request){
+        $search=$request->input('search');
+        $authUser=auth()->user();
 
-        $users = User::with('office.corp')
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', "%$search%")
-                    ->orWhere('id', $search)
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhereHas('office.corp', function ($q2) use ($search) {
-                        $q2->where('corp_name', 'like', "%$search%")
-                            ->orWhere('office_name', 'like', "%$search%")
-                            ->orWhere('employer_id', 'like', "%$search%");
-                    });
-            })
-            ->paginate(15);
+        $query=User::with('office.corp');
 
-        return view('admin.role-permission.user.index', compact('users', 'search'));
+  // If user is from Yumeya, only show Yumeya users
+        if($authUser->corp->corp_name ==='ユメヤ'){
+            $query->whereHas('office.corp', function($q){
+                $q->where('corp_name', 'ユメヤ');
+            });
+        }
+
+        if($search){
+            $query->where(function($q) use($search, $authUser){
+                $q->where('name', 'like',"%$search%")
+                        ->orWhere('id', $search)
+                        ->orWhere('email', 'like', "%$search%")
+                        ->orWhere('employer_id', 'like', "%$search%");
+
+                          // If user is from Yumeya, only search within Yumeya offices
+
+                        if($authUser->corp->corp_name ==='ユメヤ'){
+                            $q->orWhereHas('office', function ($q2) use ($search){
+
+                                $q2->where('office_name', 'like', "%$search%");
+                            });
+
+
+                        }else{
+                            $q->orWhereHas('office.corp', function($q2) use ($search){
+                                $q2->where('corp_name', 'like', "%$search%")
+                                    ->orWhere('office_name', 'like', "%$search%");
+                            });
+                        }
+            });
+        }
+
+        $users=$query->paginate(15);
+
+        return view('admin.role-permission.user.index', compact('users','search'));
     }
+
+    // public function index(Request $request)
+    // {
+    //     $search = $request->input('search');
+
+    //     $users = User::with('office.corp')
+    //         ->when($search, function ($query, $search) {
+    //             return $query->where('name', 'like', "%$search%")
+    //                 ->orWhere('id', $search)
+    //                 ->orWhere('email', 'like', "%$search%")
+    //                 ->orWhereHas('office.corp', function ($q2) use ($search) {
+    //                     $q2->where('corp_name', 'like', "%$search%")
+    //                         ->orWhere('office_name', 'like', "%$search%")
+    //                         ->orWhere('employer_id', 'like', "%$search%");
+    //                 });
+    //         })
+    //         ->paginate(15);
+
+    //     return view('admin.role-permission.user.index', compact('users', 'search'));
+    // }
     public function create()
     {
 

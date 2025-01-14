@@ -888,6 +888,83 @@ class CSVController extends Controller
                 }
             }
 
+            // if ($hasHalfDayOff) {
+            //     $startTimeObj = Carbon::parse($startTime);
+            //     $morningShiftStart = Carbon::parse('06:00');
+            //     $morningShiftEnd = Carbon::parse('11:00');
+            //     $afternoonShiftStart = Carbon::parse('13:00');
+            //     $afternoonShiftEnd = Carbon::parse('15:00');
+
+            //     if ($startTimeObj->between($morningShiftStart, $morningShiftEnd)) {
+            //         $workEndDay = '12:30';
+            //     } elseif ($startTimeObj->between($afternoonShiftStart, $afternoonShiftEnd)) {
+            //         $workEndDay = '17:30';
+            //     }
+
+            //     $earlyLeaveHours += $endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+
+            //     // Convert 3 hours and 50 minutes to seconds
+            //     $maxOvertimeA = (3 * 3600) + (50 * 60); // 3:50 in seconds
+
+            //     $currentOvertimeA = $dailyOvertimeSecondsA + $morningOverTimeSeconds + $overTimeSeconds;
+
+            //     if ($currentOvertimeA > $maxOvertimeA) {
+            //         // If overtime exceeds 3:50, split it
+            //         $excessOvertime = $currentOvertimeA - $maxOvertimeA;
+            //         $totalOvertimeSecondsA = $maxOvertimeA;
+            //         $totalOvertimeSecondsB += $excessOvertime;
+            //     } else {
+            //         // If overtime is less than or equal to 3:50, keep it all in A
+            //         $totalOvertimeSecondsA += $currentOvertimeA;
+            //     }
+
+            //     $dailyWorkedSeconds;
+            // } else {
+            //     // For normal days, apply the same logic
+
+
+            //     $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
+            //     $totalOvertimeSecondsB += $dailyOvertimeSecondsB + $morningOverTimeSeconds;
+            // }
+
+            // $totalWorkedTime += $dailyWorkedSeconds;
+
+
+
+            if($arrivalRecord->user->office &&
+            $arrivalRecord->user->office->corp &&
+            $arrivalRecord->user->office->corp->corp_name ==='ユメヤ'){
+
+
+
+                if($hasHalfDayOff){
+
+                    $workEndDay='13:00';
+                    $earlyLeaveHours +=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
+
+                    $maxOvertimeA=4*3600;
+                    $currentOvertimeA=$dailyOvertimeSecondsA + $morningOverTimeSeconds+$overTimeSeconds;
+
+
+               if($currentOvertimeA > $maxOvertimeA){
+                $exceedOvertime=$currentOvertimeA- $maxOvertimeA;
+                $totalOvertimeSecondsA=$maxOvertimeA;
+                $totalOvertimeSecondsB +=$exceedOvertime;
+
+               } else{
+                $totalOvertimeSecondsA +=$currentOvertimeA;
+               }
+
+               $totalWorkedTime +=$dailyWorkedSeconds;
+            }else{
+                $totalOvertimeSecondsA +=$dailyOvertimeSecondsA;
+                $totalOvertimeSecondsB+=$dailyOvertimeSecondsB + $morningOverTimeSeconds;
+
+                $totalWorkedTime += $dailyWorkedSeconds;
+
+            }
+        }else {
+            // Regular user calculations
             if ($hasHalfDayOff) {
                 $startTimeObj = Carbon::parse($startTime);
                 $morningShiftStart = Carbon::parse('06:00');
@@ -903,31 +980,27 @@ class CSVController extends Controller
 
                 $earlyLeaveHours += $endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
 
-                // Convert 3 hours and 50 minutes to seconds
+                // 3 hours and 50 minutes for regular users
                 $maxOvertimeA = (3 * 3600) + (50 * 60); // 3:50 in seconds
 
                 $currentOvertimeA = $dailyOvertimeSecondsA + $morningOverTimeSeconds + $overTimeSeconds;
 
                 if ($currentOvertimeA > $maxOvertimeA) {
-                    // If overtime exceeds 3:50, split it
                     $excessOvertime = $currentOvertimeA - $maxOvertimeA;
                     $totalOvertimeSecondsA = $maxOvertimeA;
                     $totalOvertimeSecondsB += $excessOvertime;
                 } else {
-                    // If overtime is less than or equal to 3:50, keep it all in A
                     $totalOvertimeSecondsA += $currentOvertimeA;
                 }
 
-                $dailyWorkedSeconds;
+                $totalWorkedTime += $dailyWorkedSeconds;
             } else {
-                // For normal days, apply the same logic
-
-
+                // For normal days of regular users
                 $totalOvertimeSecondsA += $dailyOvertimeSecondsA;
                 $totalOvertimeSecondsB += $dailyOvertimeSecondsB + $morningOverTimeSeconds;
+                $totalWorkedTime += $dailyWorkedSeconds;
             }
-
-            $totalWorkedTime += $dailyWorkedSeconds;
+        }
 
             // dd($totalWorkedTime);
 

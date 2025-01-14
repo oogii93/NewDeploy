@@ -70,12 +70,464 @@ use App\Http\Controllers\AttendanceTypeRecordController;
 use App\Http\Controllers\PastExamplesCategoryController;
 use App\Http\Controllers\TimeOffRequestRecordController;
 
+
+
+
+
+//Main Admin groups
 //Admin Group Route
-Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
+// Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
+    Route::group(['middleware' => ['auth', 'role:admin']], function () {
+
+        //YUMEYA newterch boloh ROute
+
+
+
+            Route::get('/admin/dashboard', [AdminDashboardController::class, 'dashboard'])
+            ->name('admin.dashboard');
+
+            //User Crud Route
+
+
+
+            Route::get('/admin/role-permission/users', [UserController::class, 'index'])
+                ->name('admin.role-permission.user.index');
+
+            Route::get('/admin/role-permission/users/create', [UserController::class, 'create'])
+                ->name('admin.role-permission.user.create');
+
+            Route::post('/admin/role-permission/users', [UserController::class, 'store'])
+                ->name('admin.role-permission.user.store');
+
+            Route::get('/admin/role-permission/users/{userId}', [UserController::class, 'show'])
+                ->name('admin.role-permission.user.show');
+
+            Route::get('/admin/role-permission/users/{id}/edit', [UserController::class, 'edit'])
+                ->name('admin.role-permission.user.edit');
+
+            Route::put('/admin/role-permission/users/{userId}', [UserController::class, 'update'])
+                ->name('admin.role-permission.user.update');
+
+            Route::get('/admin/role-permission/users/{userId}/delete', [UserController::class, 'destroy'])
+                ->name('admin.role-permission.user.destroy');
+
+            Route::get('/admin/role-permission/users/restore', [UserController::class, 'restoreIndex'])
+                ->name('admin.role-permission.user.restore.index');
+
+            Route::get('/admin/role-permission/users/{id}/restore', [UserController::class, 'restore'])
+                ->name('admin.role-permission.user.restore');
+
+            Route::get('/admin/get-employer-id/{corpId}', [UserController::class, 'generateEmployerId']);
+
+            Route::get('/get-offices-for-corp/{corpId}', [UserController::class, 'getOfficesForCorp']);
+            Route::get('/get-divisions-for-office/{officeId}', [UserController::class, 'getDivisionsForOffice']);
+
+            Route::get(
+                '/admin/dashboard/show',
+                [FilterController::class, 'show']
+            )->name('admin.show');
+
+            Route::post(
+                '/admin/filter',
+                [FilterController::class, 'filter']
+            )->name('admin.filter');
+
+            // Route::get('/admin/dashboard', [AdminDashboardController::class, 'dashboard'])
+            //     ->name('admin.dashboard');
+
+            Route::post('/admin/logout', [AdminDashboardController::class, 'logout'])
+                ->name('admin.logout');
+
+
+
+            Route::get('/admin/index', [AdminDashboardController::class, 'Index'])
+                ->name('admin.index');
+
+                //CSV controller 1 saraar tatah route
+            Route::post('/admin/download1-csv', [CSVController::class, 'download'])
+            ->name('admin.download1.csv');
+            //CSV front blade
+            Route::get('/admin/download-csv-calculated', [CSVController::class, 'show'])
+            ->name('admin.calculated');
+
+            Route::get('/admin/download/csv', [FilterDownloadController::class, 'downloadCSV'])
+            ->name('admin.download.csv');
+
+
+
+            Route::get('/admin/csv', [CSVShowController::class, 'show'])
+            ->name('admin.csv.show');
+
+
+            Route::match(['get','post'],'/admin/csv/filter', [CSVShowController::class, 'filter'])
+            ->name('admin.csv.filter');
+
+            Route::post('/admin/csv/save-checkbox-data', [CSVShowController::class, 'saveCheckboxData'])
+            ->name('checkbox.save');
+            Route::post('/admin/csv/uncheck-checkbox-data', [CSVShowController::class, 'uncheckData'])
+            ->name('checkbox.uncheck');
+
+
+            Route::post('/admin/time-records/update', [CSVShowController::class, 'updateTimeRecord'])
+            ->name('admin.time-records.update');
+            Route::delete('/admin/time-records/delete', [CSVShowController::class, 'deleteTimeRecord'])
+            ->name('admin.time-records.delete');
+
+
+                   //Holiday Route
+                   Route::put('/admin/calendar/edit-holiday/{holidayId}', [CalendarController::class, 'editHoliday'])
+                   ->name('admin.calendar.editHoliday');
+
+                   Route::delete('/admin/calendar/delete-holiday/{holidayId}/{officeId}/{corpId}', [CalendarController::class, 'deleteHoliday'])
+                   ->name('admin.calendar.deleteHoliday');
+
+                   Route::post('/admin/calendar/add-holiday', [CalendarController::class, 'addHoliday'])
+                   ->name('admin.calendar.addHoliday');
+
+                   Route::get('/admin/calendar/holiday/{holidayId}', [CalendarController::class, 'getHolidayData'])
+                   ->name('admin.calendar.getHolidayData');
+
+                   //Calendar 12
+
+                   Route::get(
+                   '/admin/calendar12',
+                   [Calendar12Controller::class, 'index']
+                   )->name('admin.calendar12.index');
+
+                   Route::post('/admin/calendar12', [Calendar12Controller::class, 'show'])
+                   ->name('admin.calendar12.show');
+
+                   Route::get(
+                   '/admin/calendar/show',
+                   [CalendarController::class, 'index']
+                   )->name('admin.calendar.index');
+
+                   Route::post(
+                   '/admin/calendar/upload',
+                   [CalendarController::class, 'store']
+                   )->name('admin.calendar.store');
+
+
+                   Route::match(['get', 'post'], '/users/{id}/details', [UserDetailController::class, 'showAndUpdate'])
+                   ->name('admin.user-details.show-update');
+
+
+                   Route::match(['get', 'post'],'users/{id}bank', [UserDetailController::class, 'bankShowAndUpdate'])
+                   ->name('admin.user-details.bank-show-update');
+
+                   Route::match(['get', 'post'],'users/{id}family', [UserDetailController::class, 'familyShowAndUpdate'])
+                   ->name('admin.user-details.family-show-update');
+
+                   //family Crud Routes
+
+                   Route::get('/users/{id}/index',[UserDetailController::class,'index'])
+                   ->name('admin.user-details.family-index');
+                   Route::get('/users/{id}/create',[UserDetailController::class,'create'])
+                   ->name('admin.user-details.family-create');
+
+                   Route::post('/family/{id}', [UserDetailController::class, 'familyStore'])
+                   ->name('admin.user-details.family-store');
+
+                   Route::get('/admin/user-details/{userId}/family/{familyId}/edit', [UserDetailController::class, 'edit'])
+                   ->name('admin.user-details.family-edit');
+
+                   Route::put('/admin/user-details/{userId}/family/{familyId}', [UserDetailController::class, 'update'])
+                   ->name('admin.user-details.family-update');
+
+                   Route::delete('/admin/user-details/{userId}/family/{familyId}', [UserDetailController::class, 'destroy'])
+                   ->name('admin.user-details.family-destroy');
 
 
 
 
+
+
+                //YUMEYA horiotoi
+
+
+
+
+
+    Route::middleware(['yumeya.check'])->group(function(){
+
+
+                Route::get('/admin/calculations', [CalculationController::class, 'index'])
+                ->name('admin.calculations.index');
+
+
+
+                        // Calculation Crud
+
+
+                Route::get('/admin/calculations/create', [CalculationController::class, 'create'])
+                ->name('admin.calculations.create');
+
+                Route::post('/admin/calculations', [CalculationController::class, 'store'])
+                ->name('admin.calculations.store');
+
+                Route::get('/admin/calculations/{calculation}', [CalculationController::class, 'show'])
+                ->name('admin.calculations.show');
+
+                Route::get('/admin/calculations/{calculation}/edit', [CalculationController::class, 'edit'])
+                ->name('admin.calculations.edit');
+
+                Route::put('/admin/calculations/{calculation}', [CalculationController::class, 'update'])
+                ->name('admin.calculations.update');
+
+                Route::delete('/admin/calculations/{calculation}', [CalculationController::class, 'destroy'])
+                ->name('admin.calculations.destroy');
+                // Route::get('admin/calculations/{corp}', [CalculationController::class, 'show'])->name('admin.calculations.show');
+
+
+                Route::get('/calculations/{id}', [CalculationController::class, 'show'])->name('admin.calculations.show');
+
+
+
+
+
+
+
+
+
+
+                //Post CRUD route
+
+                Route::get('/posts/create', [PostController::class, 'create'])
+                ->name('posts.create');
+
+                Route::post('/posts', [PostController::class, 'store'])
+                ->name('posts.store');
+
+                Route::get('/posts/{post}/edit', [PostController::class, 'edit'])
+                ->name('posts.edit');
+
+                Route::put('/posts/{post}', [PostController::class, 'update'])
+                ->name('posts.update');
+
+                Route::delete('/posts/{post}', [PostController::class, 'destroy'])
+                ->name('posts.destroy');
+
+                //Tag CRUD route
+
+                Route::get('/tags', [TagController::class, 'index'])
+                ->name('tags.index');
+
+                Route::get('/tags/create', [TagController::class, 'create'])
+                ->name('tags.create');
+
+                Route::post('/tags', [TagController::class, 'store'])
+                ->name('tags.store');
+
+                Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])
+                ->name('tags.edit');
+
+                Route::put('/tags/{tag}', [TagController::class, 'update'])
+                ->name('tags.update');
+
+                Route::delete('/tags/{tag}', [TagController::class, 'destroy'])
+                ->name('tags.destroy');
+
+                //Category CRUD route
+
+                Route::get('/categories', [CategoryController::class, 'index'])
+                ->name('categories.index');
+
+                Route::get('/categories/create', [CategoryController::class, 'create'])
+                ->name('categories.create');
+
+                Route::post('/categories', [CategoryController::class, 'store'])
+                ->name('categories.store');
+
+                Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])
+                ->name('categories.edit');
+
+                Route::put('/categories/{category}', [CategoryController::class, 'update'])
+                ->name('categories.update');
+
+                Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+                ->name('categories.destroy');
+
+                //Filter / User Routes
+
+
+
+
+                //Attendance Route CRUD
+                Route::get('/admin/attendance-type-records', [AttendanceTypeRecordController::class, 'index'])
+                ->name('admin.attendance-type-records.index');
+
+                Route::get('/admin/attendance-type-records/create', [AttendanceTypeRecordController::class, 'create'])
+                ->name('admin.attendance-type-records.create');
+
+                Route::post('/admin/attendance-type-records', [AttendanceTypeRecordController::class, 'store'])
+                ->name('admin.attendance-type-records.store');
+
+                Route::get('/admin/attendance-type-records/{attendanceTypeRecord}', [AttendanceTypeRecordController::class, 'show'])
+                ->name('admin.attendance-type-records.show');
+
+                Route::get('/admin/attendance-type-records/{attendanceTypeRecord}/edit', [AttendanceTypeRecordController::class, 'edit'])
+                ->name('admin.attendance-type-records.edit');
+
+                Route::put('/admin/attendance-type-records/{attendanceTypeRecord}', [AttendanceTypeRecordController::class, 'update'])
+                ->name('admin.attendance-type-records.update');
+
+                Route::delete('/admin/attendance-type-records/{attendanceTypeRecord}', [AttendanceTypeRecordController::class, 'destroy'])
+                ->name('admin.attendance-type-records.destroy');
+
+
+
+
+                //CORPS
+
+                Route::get('/admin/corp-office/corps', [CorpController::class, 'index'])
+                ->name('admin.corp-office.corps.index');
+
+                Route::get('/admin/corp-office/corps/create', [CorpController::class, 'create'])
+                ->name('admin.corp-office.corps.create');
+
+                Route::post('/admin/corp-office/corps', [CorpController::class, 'store'])
+                ->name('admin.corp-office.corps.store');
+
+                Route::get('/admin/corp-office/corps/{corp}', [CorpController::class, 'show'])
+                ->name('admin.corp-office.corps.show');
+
+                Route::get('/admin/corp-office/corps/{corp}/edit', [CorpController::class, 'edit'])
+                ->name('admin.corp-office.corps.edit');
+
+                Route::put('/admin/corp-office/corps/{corp}', [CorpController::class, 'update'])
+                ->name('admin.corp-office.corps.update');
+
+                Route::delete('/admin/corp-office/corps/{corp}', [CorpController::class, 'destroy'])
+                ->name('admin.corp-office.corps.destroy');
+
+                //Office CRUD Route
+
+                Route::get('/admin/corp-office/offices', [OfficeController::class, 'index'])
+                ->name('admin.corp-office.offices.index');
+
+                Route::get('/admin/corp-office/offices/create', [OfficeController::class, 'create'])
+                ->name('admin.corp-office.offices.create');
+
+                Route::post('/admin/corp-office/offices', [OfficeController::class, 'store'])
+                ->name('admin.corp-office.offices.store');
+
+                Route::get('/admin/corp-office/offices/{officeId}', [OfficeController::class, 'show'])
+                ->name('admin.corp-office.offices.show');
+
+                Route::get('/admin/corp-office/offices/{officeId}/edit', [OfficeController::class, 'edit'])
+                ->name('admin.corp-office.offices.edit');
+
+                Route::put('/admin/corp-office/offices/{officeId}', [OfficeController::class, 'update'])
+                ->name('admin.corp-office.offices.update');
+
+                Route::delete('/admin/corp-office/offices/{officeId}', [OfficeController::class, 'destroy'])
+                ->name('admin.corp-office.offices.destroy');
+
+
+
+
+                //UserDetail Route
+
+
+                // Route::get('/admin/role-permission/users/{id}/user-detail', [UserController::class, 'detail'])
+                //     ->name('admin.role-permission.user-detail');
+
+                // Route::get('/users/{id}/details', [UserDetailController::class, 'show'])->name('admin.user-details.show');
+                // Route::post('/users/{id}/details', [UserDetailController::class, 'store'])->name('admin.user-details.store');
+                // Route::put('/users/{id}/details', [UserDetailController::class, 'update'])->name('admin.user-details.update');
+
+
+
+
+                // Route::get('users/{id}bank', [UserDetailController::class, 'bankShowAndUpdate'])
+                // ->name('admin.user-details.bank-show-update');
+
+
+                // Role Crud Route
+
+                Route::get('/admin/role-permission/roles', [RoleController::class, 'index'])
+                ->name('admin.role-permission.role.index');
+
+                Route::get('/admin/role-permission/roles/create', [RoleController::class, 'create'])
+                ->name('admin.role-permission.role.create');
+
+                Route::post('/admin/role-permission/roles', [RoleController::class, 'store'])
+                ->name('admin.role-permission.role.store');
+
+                Route::get('/admin/role-permission/roles/{role}', [RoleController::class, 'show'])
+                ->name('admin.role-permission.role.show');
+
+                Route::get('/admin/role-permission/roles/{role}/edit', [RoleController::class, 'edit'])
+                ->name('admin.role-permission.role.edit');
+
+                Route::put('/admin/role-permission/roles/{role}', [RoleController::class, 'update'])
+                ->name('admin.role-permission.role.update');
+
+                Route::delete('/admin/role-permission/roles/{id}/delete', [RoleController::class, 'destroy'])
+                ->name('roles.destroy');
+
+                //Permission Crud Route
+
+                Route::get('/admin/role-permission/permissions', [PermissionController::class, 'index'])
+                ->name('admin.role-permission.permission.index');
+
+                Route::get('/admin/role-permission/permissions/create', [PermissionController::class, 'create'])
+                ->name('admin.role-permission.permission.create');
+
+                Route::post('/admin/role-permission/permissions', [PermissionController::class, 'store'])
+                ->name('admin.role-permission.permission.store');
+
+                Route::get('/admin/role-permission/permissions/{permission}', [PermissionController::class, 'show'])
+                ->name('admin.role-permission.permission.show');
+
+                Route::get('/admin/role-permission/permissions/{permission}/edit', [PermissionController::class, 'edit'])
+                ->name('admin.role-permission.permission.edit');
+
+                Route::put('/admin/role-permission/permissions/{permission}', [PermissionController::class, 'update'])
+                ->name('admin.role-permission.permission.update');
+
+                Route::delete('/admin/role-permission/permissions/{id}/delete', [PermissionController::class, 'destroy'])
+                ->name('permissions.destroy');
+
+                //Add Role Permission
+                Route::get('/admin/role-permission/roles/{roleId}/give-permissions', [RoleController::class, 'addPermissionToRole']);
+                Route::put('/admin/role-permission/roles/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole']);
+
+                //Assign corp/office
+                Route::get('/admin/users/{user}/assign-corporation', [AdminDashboardController::class, 'showAssignCorporationForm'])
+                ->name('admin.assign-corporation');
+
+                Route::post('/admin/users/{user}/assign-corporation', [AdminDashboardController::class, 'assignCorporation'])
+                ->name('admin.assign-corporation.store');
+
+                Route::get('/admin/users/{user}/assign-office', [AdminDashboardController::class, 'showAssignOfficeForm'])
+                ->name('admin.assign-office');
+
+                Route::post('/admin/users/{user}/assign-office', [AdminDashboardController::class, 'assignOffice'])
+                ->name('admin.assign-office.store');
+
+                //Division Crud route
+
+                Route::get('/admin/division', [DivisionController::class, 'index'])
+                ->name('admin.division.index');
+
+                Route::get('/admin/division/create', [DivisionController::class, 'create'])
+                ->name('admin.division.create');
+
+                Route::post('/admin/division', [DivisionController::class, 'store'])
+                ->name('admin.division.store');
+
+                Route::get('/admin/division/{division}', [DivisionController::class, 'show'])
+                ->name('admin.division.show');
+
+                Route::get('/admin/division/{division}/edit', [DivisionController::class, 'edit'])
+                ->name('admin.division.edit');
+
+                Route::put('/admin/division/{division}', [DivisionController::class, 'update'])
+                ->name('admin.division.update');
+
+                Route::delete('/admin/division/{division}', [DivisionController::class, 'destroy'])
+                ->name('admin.division.destroy');
 
 
 
@@ -92,423 +544,16 @@ Route::group(['middleware' => ['auth','role:super-admin|admin']], function () {
         // [App\Http\Controllers\CarInsuranceTestController::class, 'testNotification']);
 
 
+   // Routes NOT for ユメヤ admins
 
 
 
-    // Calculation Crud
-    Route::get('/admin/calculations', [CalculationController::class, 'index'])
-        ->name('admin.calculations.index');
 
-    Route::get('/admin/calculations/create', [CalculationController::class, 'create'])
-        ->name('admin.calculations.create');
 
-    Route::post('/admin/calculations', [CalculationController::class, 'store'])
-        ->name('admin.calculations.store');
 
-    Route::get('/admin/calculations/{calculation}', [CalculationController::class, 'show'])
-        ->name('admin.calculations.show');
 
-    Route::get('/admin/calculations/{calculation}/edit', [CalculationController::class, 'edit'])
-        ->name('admin.calculations.edit');
 
-    Route::put('/admin/calculations/{calculation}', [CalculationController::class, 'update'])
-        ->name('admin.calculations.update');
-
-    Route::delete('/admin/calculations/{calculation}', [CalculationController::class, 'destroy'])
-        ->name('admin.calculations.destroy');
-    // Route::get('admin/calculations/{corp}', [CalculationController::class, 'show'])->name('admin.calculations.show');
-
-
-    Route::get('/calculations/{id}', [CalculationController::class, 'show'])->name('admin.calculations.show');
-
-
-
-
-
-
-    //Holiday Route
-    Route::put('/admin/calendar/edit-holiday/{holidayId}', [CalendarController::class, 'editHoliday'])
-        ->name('admin.calendar.editHoliday');
-
-    Route::delete('/admin/calendar/delete-holiday/{holidayId}/{officeId}/{corpId}', [CalendarController::class, 'deleteHoliday'])
-        ->name('admin.calendar.deleteHoliday');
-
-    Route::post('/admin/calendar/add-holiday', [CalendarController::class, 'addHoliday'])
-        ->name('admin.calendar.addHoliday');
-
-    Route::get('/admin/calendar/holiday/{holidayId}', [CalendarController::class, 'getHolidayData'])
-        ->name('admin.calendar.getHolidayData');
-
-    //Calendar 12
-
-    Route::get(
-        '/admin/calendar12',
-        [Calendar12Controller::class, 'index']
-    )->name('admin.calendar12.index');
-
-    Route::post('/admin/calendar12', [Calendar12Controller::class, 'show'])
-        ->name('admin.calendar12.show');
-
-    Route::get(
-        '/admin/calendar/show',
-        [CalendarController::class, 'index']
-    )->name('admin.calendar.index');
-
-    Route::post(
-        '/admin/calendar/upload',
-        [CalendarController::class, 'store']
-    )->name('admin.calendar.store');
-
-    //CSV controller 1 saraar tatah route
-    Route::post('/admin/download1-csv', [CSVController::class, 'download'])
-        ->name('admin.download1.csv');
-    //CSV front blade
-    Route::get('/admin/download-csv-calculated', [CSVController::class, 'show'])
-        ->name('admin.calculated');
-
-    Route::get('/admin/download/csv', [FilterDownloadController::class, 'downloadCSV'])
-        ->name('admin.download.csv');
-
-    //Post CRUD route
-
-    Route::get('/posts/create', [PostController::class, 'create'])
-        ->name('posts.create');
-
-    Route::post('/posts', [PostController::class, 'store'])
-        ->name('posts.store');
-
-    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])
-        ->name('posts.edit');
-
-    Route::put('/posts/{post}', [PostController::class, 'update'])
-        ->name('posts.update');
-
-    Route::delete('/posts/{post}', [PostController::class, 'destroy'])
-        ->name('posts.destroy');
-
-    //Tag CRUD route
-
-    Route::get('/tags', [TagController::class, 'index'])
-        ->name('tags.index');
-
-    Route::get('/tags/create', [TagController::class, 'create'])
-        ->name('tags.create');
-
-    Route::post('/tags', [TagController::class, 'store'])
-        ->name('tags.store');
-
-    Route::get('/tags/{tag}/edit', [TagController::class, 'edit'])
-        ->name('tags.edit');
-
-    Route::put('/tags/{tag}', [TagController::class, 'update'])
-        ->name('tags.update');
-
-    Route::delete('/tags/{tag}', [TagController::class, 'destroy'])
-        ->name('tags.destroy');
-
-    //Category CRUD route
-
-    Route::get('/categories', [CategoryController::class, 'index'])
-        ->name('categories.index');
-
-    Route::get('/categories/create', [CategoryController::class, 'create'])
-        ->name('categories.create');
-
-    Route::post('/categories', [CategoryController::class, 'store'])
-        ->name('categories.store');
-
-    Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])
-        ->name('categories.edit');
-
-    Route::put('/categories/{category}', [CategoryController::class, 'update'])
-        ->name('categories.update');
-
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
-        ->name('categories.destroy');
-
-    //Filter / User Routes
-
-    Route::get(
-        '/admin/dashboard/show',
-        [FilterController::class, 'show']
-    )->name('admin.show');
-
-    Route::post(
-        '/admin/filter',
-        [FilterController::class, 'filter']
-    )->name('admin.filter');
-
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'dashboard'])
-        ->name('admin.dashboard');
-
-    Route::post('/admin/logout', [AdminDashboardController::class, 'logout'])
-        ->name('admin.logout');
-
-
-
-    Route::get('/admin/index', [AdminDashboardController::class, 'Index'])
-        ->name('admin.index');
-
-
-    //Attendance Route CRUD
-    Route::get('/admin/attendance-type-records', [AttendanceTypeRecordController::class, 'index'])
-        ->name('admin.attendance-type-records.index');
-
-    Route::get('/admin/attendance-type-records/create', [AttendanceTypeRecordController::class, 'create'])
-        ->name('admin.attendance-type-records.create');
-
-    Route::post('/admin/attendance-type-records', [AttendanceTypeRecordController::class, 'store'])
-        ->name('admin.attendance-type-records.store');
-
-    Route::get('/admin/attendance-type-records/{attendanceTypeRecord}', [AttendanceTypeRecordController::class, 'show'])
-        ->name('admin.attendance-type-records.show');
-
-    Route::get('/admin/attendance-type-records/{attendanceTypeRecord}/edit', [AttendanceTypeRecordController::class, 'edit'])
-        ->name('admin.attendance-type-records.edit');
-
-    Route::put('/admin/attendance-type-records/{attendanceTypeRecord}', [AttendanceTypeRecordController::class, 'update'])
-        ->name('admin.attendance-type-records.update');
-
-    Route::delete('/admin/attendance-type-records/{attendanceTypeRecord}', [AttendanceTypeRecordController::class, 'destroy'])
-        ->name('admin.attendance-type-records.destroy');
-
-
-
-
-    //CORPS
-
-    Route::get('/admin/corp-office/corps', [CorpController::class, 'index'])
-        ->name('admin.corp-office.corps.index');
-
-    Route::get('/admin/corp-office/corps/create', [CorpController::class, 'create'])
-        ->name('admin.corp-office.corps.create');
-
-    Route::post('/admin/corp-office/corps', [CorpController::class, 'store'])
-        ->name('admin.corp-office.corps.store');
-
-    Route::get('/admin/corp-office/corps/{corp}', [CorpController::class, 'show'])
-        ->name('admin.corp-office.corps.show');
-
-    Route::get('/admin/corp-office/corps/{corp}/edit', [CorpController::class, 'edit'])
-        ->name('admin.corp-office.corps.edit');
-
-    Route::put('/admin/corp-office/corps/{corp}', [CorpController::class, 'update'])
-        ->name('admin.corp-office.corps.update');
-
-    Route::delete('/admin/corp-office/corps/{corp}', [CorpController::class, 'destroy'])
-        ->name('admin.corp-office.corps.destroy');
-
-    //Office CRUD Route
-
-    Route::get('/admin/corp-office/offices', [OfficeController::class, 'index'])
-        ->name('admin.corp-office.offices.index');
-
-    Route::get('/admin/corp-office/offices/create', [OfficeController::class, 'create'])
-        ->name('admin.corp-office.offices.create');
-
-    Route::post('/admin/corp-office/offices', [OfficeController::class, 'store'])
-        ->name('admin.corp-office.offices.store');
-
-    Route::get('/admin/corp-office/offices/{officeId}', [OfficeController::class, 'show'])
-        ->name('admin.corp-office.offices.show');
-
-    Route::get('/admin/corp-office/offices/{officeId}/edit', [OfficeController::class, 'edit'])
-        ->name('admin.corp-office.offices.edit');
-
-    Route::put('/admin/corp-office/offices/{officeId}', [OfficeController::class, 'update'])
-        ->name('admin.corp-office.offices.update');
-
-    Route::delete('/admin/corp-office/offices/{officeId}', [OfficeController::class, 'destroy'])
-        ->name('admin.corp-office.offices.destroy');
-
-    //User Crud Route
-
-
-
-    Route::get('/admin/role-permission/users', [UserController::class, 'index'])
-        ->name('admin.role-permission.user.index');
-
-    Route::get('/admin/role-permission/users/create', [UserController::class, 'create'])
-        ->name('admin.role-permission.user.create');
-
-    Route::post('/admin/role-permission/users', [UserController::class, 'store'])
-        ->name('admin.role-permission.user.store');
-
-    Route::get('/admin/role-permission/users/{userId}', [UserController::class, 'show'])
-        ->name('admin.role-permission.user.show');
-
-    Route::get('/admin/role-permission/users/{id}/edit', [UserController::class, 'edit'])
-        ->name('admin.role-permission.user.edit');
-
-    Route::put('/admin/role-permission/users/{userId}', [UserController::class, 'update'])
-        ->name('admin.role-permission.user.update');
-
-    Route::get('/admin/role-permission/users/{userId}/delete', [UserController::class, 'destroy'])
-        ->name('admin.role-permission.user.destroy');
-
-    Route::get('/admin/role-permission/users/restore', [UserController::class, 'restoreIndex'])
-        ->name('admin.role-permission.user.restore.index');
-
-    Route::get('/admin/role-permission/users/{id}/restore', [UserController::class, 'restore'])
-        ->name('admin.role-permission.user.restore');
-
-    Route::get('/admin/get-employer-id/{corpId}', [UserController::class, 'generateEmployerId']);
-
-    Route::get('/get-offices-for-corp/{corpId}', [UserController::class, 'getOfficesForCorp']);
-    Route::get('/get-divisions-for-office/{officeId}', [UserController::class, 'getDivisionsForOffice']);
-
-
-    //UserDetail Route
-
-
-    // Route::get('/admin/role-permission/users/{id}/user-detail', [UserController::class, 'detail'])
-    //     ->name('admin.role-permission.user-detail');
-
-    // Route::get('/users/{id}/details', [UserDetailController::class, 'show'])->name('admin.user-details.show');
-    // Route::post('/users/{id}/details', [UserDetailController::class, 'store'])->name('admin.user-details.store');
-    // Route::put('/users/{id}/details', [UserDetailController::class, 'update'])->name('admin.user-details.update');
-    Route::match(['get', 'post'], '/users/{id}/details', [UserDetailController::class, 'showAndUpdate'])
-    ->name('admin.user-details.show-update');
-
-
-    Route::match(['get', 'post'],'users/{id}bank', [UserDetailController::class, 'bankShowAndUpdate'])
-    ->name('admin.user-details.bank-show-update');
-
-    Route::match(['get', 'post'],'users/{id}family', [UserDetailController::class, 'familyShowAndUpdate'])
-    ->name('admin.user-details.family-show-update');
-
-    //family Crud Routes
-
-    Route::get('/users/{id}/index',[UserDetailController::class,'index'])
-        ->name('admin.user-details.family-index');
-    Route::get('/users/{id}/create',[UserDetailController::class,'create'])
-        ->name('admin.user-details.family-create');
-
-    Route::post('/family/{id}', [UserDetailController::class, 'familyStore'])
-    ->name('admin.user-details.family-store');
-
-    Route::get('/admin/user-details/{userId}/family/{familyId}/edit', [UserDetailController::class, 'edit'])
-    ->name('admin.user-details.family-edit');
-
-    Route::put('/admin/user-details/{userId}/family/{familyId}', [UserDetailController::class, 'update'])
-        ->name('admin.user-details.family-update');
-
-    Route::delete('/admin/user-details/{userId}/family/{familyId}', [UserDetailController::class, 'destroy'])
-    ->name('admin.user-details.family-destroy');
-
-
-
-    // Route::get('users/{id}bank', [UserDetailController::class, 'bankShowAndUpdate'])
-    // ->name('admin.user-details.bank-show-update');
-
-
-    // Role Crud Route
-
-    Route::get('/admin/role-permission/roles', [RoleController::class, 'index'])
-        ->name('admin.role-permission.role.index');
-
-    Route::get('/admin/role-permission/roles/create', [RoleController::class, 'create'])
-        ->name('admin.role-permission.role.create');
-
-    Route::post('/admin/role-permission/roles', [RoleController::class, 'store'])
-        ->name('admin.role-permission.role.store');
-
-    Route::get('/admin/role-permission/roles/{role}', [RoleController::class, 'show'])
-        ->name('admin.role-permission.role.show');
-
-    Route::get('/admin/role-permission/roles/{role}/edit', [RoleController::class, 'edit'])
-        ->name('admin.role-permission.role.edit');
-
-    Route::put('/admin/role-permission/roles/{role}', [RoleController::class, 'update'])
-        ->name('admin.role-permission.role.update');
-
-    Route::delete('/admin/role-permission/roles/{id}/delete', [RoleController::class, 'destroy'])
-        ->name('roles.destroy');
-
-    //Permission Crud Route
-
-    Route::get('/admin/role-permission/permissions', [PermissionController::class, 'index'])
-        ->name('admin.role-permission.permission.index');
-
-    Route::get('/admin/role-permission/permissions/create', [PermissionController::class, 'create'])
-        ->name('admin.role-permission.permission.create');
-
-    Route::post('/admin/role-permission/permissions', [PermissionController::class, 'store'])
-        ->name('admin.role-permission.permission.store');
-
-    Route::get('/admin/role-permission/permissions/{permission}', [PermissionController::class, 'show'])
-        ->name('admin.role-permission.permission.show');
-
-    Route::get('/admin/role-permission/permissions/{permission}/edit', [PermissionController::class, 'edit'])
-        ->name('admin.role-permission.permission.edit');
-
-    Route::put('/admin/role-permission/permissions/{permission}', [PermissionController::class, 'update'])
-        ->name('admin.role-permission.permission.update');
-
-    Route::delete('/admin/role-permission/permissions/{id}/delete', [PermissionController::class, 'destroy'])
-        ->name('permissions.destroy');
-
-    //Add Role Permission
-    Route::get('/admin/role-permission/roles/{roleId}/give-permissions', [RoleController::class, 'addPermissionToRole']);
-    Route::put('/admin/role-permission/roles/{roleId}/give-permissions', [RoleController::class, 'givePermissionToRole']);
-
-    //Assign corp/office
-    Route::get('/admin/users/{user}/assign-corporation', [AdminDashboardController::class, 'showAssignCorporationForm'])
-        ->name('admin.assign-corporation');
-
-    Route::post('/admin/users/{user}/assign-corporation', [AdminDashboardController::class, 'assignCorporation'])
-        ->name('admin.assign-corporation.store');
-
-    Route::get('/admin/users/{user}/assign-office', [AdminDashboardController::class, 'showAssignOfficeForm'])
-        ->name('admin.assign-office');
-
-    Route::post('/admin/users/{user}/assign-office', [AdminDashboardController::class, 'assignOffice'])
-        ->name('admin.assign-office.store');
-
-    //Division Crud route
-
-    Route::get('/admin/division', [DivisionController::class, 'index'])
-        ->name('admin.division.index');
-
-    Route::get('/admin/division/create', [DivisionController::class, 'create'])
-        ->name('admin.division.create');
-
-    Route::post('/admin/division', [DivisionController::class, 'store'])
-        ->name('admin.division.store');
-
-    Route::get('/admin/division/{division}', [DivisionController::class, 'show'])
-        ->name('admin.division.show');
-
-    Route::get('/admin/division/{division}/edit', [DivisionController::class, 'edit'])
-        ->name('admin.division.edit');
-
-    Route::put('/admin/division/{division}', [DivisionController::class, 'update'])
-        ->name('admin.division.update');
-
-    Route::delete('/admin/division/{division}', [DivisionController::class, 'destroy'])
-        ->name('admin.division.destroy');
-
-
-    Route::get('/admin/csv', [CSVShowController::class, 'show'])
-    ->name('admin.csv.show');
-
-
-    Route::match(['get','post'],'/admin/csv/filter', [CSVShowController::class, 'filter'])
-    ->name('admin.csv.filter');
-
-    Route::post('/admin/csv/save-checkbox-data', [CSVShowController::class, 'saveCheckboxData'])
-    ->name('checkbox.save');
-    Route::post('/admin/csv/uncheck-checkbox-data', [CSVShowController::class, 'uncheckData'])
-    ->name('checkbox.uncheck');
-
-
-    Route::post('/admin/time-records/update', [CSVShowController::class, 'updateTimeRecord'])
-    ->name('admin.time-records.update');
-Route::delete('/admin/time-records/delete', [CSVShowController::class, 'deleteTimeRecord'])
-    ->name('admin.time-records.delete');
-
-
-
+   });
 
 
 }); //Admin Group route END
@@ -678,8 +723,10 @@ Route::post('/time/end-break', [TimeRecordController::class, 'endBreak'])->name(
     Route::post('/forms/store/{type}', [FormController::class, 'store'])
     ->name('forms.store');
 
-    Route::match(['post', 'put'], '/forms/{type}/{id?}', [FormController::class, 'update'])
-    ->name('forms.update');
+    // Route::match(['post', 'put'], '/forms/{type}/{id?}', [FormController::class, 'update'])
+    // ->name('forms.update');
+
+    Route::put('/forms/{type}/{id}', [FormController::class, 'update'])->name('forms.update');
 
 
 

@@ -156,6 +156,7 @@ class TimeRecordController extends Controller
                 $query->where('name', '半休');
             })
             ->first();
+            // dd($isYumeya);
             // dd($timeOffRequest);
 
 
@@ -181,9 +182,11 @@ class TimeRecordController extends Controller
 
                 return redirect()->route('dashboard')->with('status', '出勤時間と半日退勤時間を記録しました。');
 
-            }else if($inputDate->hour >12){
-                $inputDate->setTime(13, 30);
-                $this->handleArrivalRecord($user, $inputDate, 'ArrivalRecord', false);
+            }elseif($inputDate->hour >12){
+
+                $inputDate->setTime($isYumeya ? 13 : 13, $isYumeya ? 0 : 30);
+                $this->handleArrivalRecord($user, $inputDate,'ArrivalRecord', false);
+
                 return redirect()->route('dashboard')->with('success', '午後半日出勤時間を記録しました。');
             }
 

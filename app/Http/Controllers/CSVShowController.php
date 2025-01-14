@@ -25,19 +25,29 @@ class CSVShowController extends Controller
 
     public function show(Request $request)
     {
-        $corps = Corp::get();
-        $offices = collect();
-        $selectedCorpId = $request->input('corps_id');
-        $calculations=$selectedCorpId ? Calculation::where('corp_id' , $selectedCorpId)->get() : collect();
-        $selectedYear = $request->input('year', date('Y'));
-        $selectedMonth = $request->input('month', date('n'));
 
-        if ($selectedCorpId) {
-            $offices = Office::where('corp_id', $selectedCorpId)->get();
-            // dd($offices); // Add this line to inspect the data
-        } else {
-            $offices = Office::all();
-        }
+        // if(auth()->user()->corp->corp_name === 'ユメヤ'){
+
+
+
+        // }else {
+            $corps = Corp::get();
+            $offices = collect();
+            $selectedCorpId = $request->input('corps_id');
+            $calculations=$selectedCorpId ? Calculation::where('corp_id' , $selectedCorpId)->get() : collect();
+            $selectedYear = $request->input('year', date('Y'));
+            $selectedMonth = $request->input('month', date('n'));
+
+            if ($selectedCorpId) {
+                $offices = Office::where('corp_id', $selectedCorpId)->get();
+                // dd($offices); // Add this line to inspect the data
+            } else{
+                $offices = Office::all();
+            }
+
+
+
+
 
 
         return view('admin.csv.show', compact('corps', 'offices', 'selectedCorpId', 'selectedYear', 'selectedMonth','calculations'));
@@ -52,11 +62,13 @@ class CSVShowController extends Controller
           $officeId = $request->input('office_id');
           $selectedYear = $request->input('year', date('Y'));
           $selectedMonth = $request->input('month', date('n'));
+
           $users = User::query();
 
 
           $corp = Corp::find($corpId);
         $corpName = $corp ? $corp->corp_name : null;
+        // dd($corpName);
 
           if ($corpId) {
               $users->whereHas('office', function ($query) use ($corpId) {
@@ -252,6 +264,8 @@ class CSVShowController extends Controller
             }
         }
 
+
+
    public function deleteTimeRecord(Request $request)
 
 
@@ -349,6 +363,29 @@ class CSVShowController extends Controller
                 $arrival->arrivalDepartureRecords()->create(['recorded_at' => $inputDate]);
             }
         }
+
+        public function update(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|integer',
+        'date' => 'required|date',
+        'time' => 'required',
+        'type' => 'required|string',
+    ]);
+
+    // Update the time record in the database
+    ArrivalRecord::updateOrCreate(
+        [
+            'user_id' => $request->input('user_id'),
+            'date' => $request->input('date'),
+            'type' => $request->input('type'),
+        ],
+        ['time' => $request->input('time')]
+    );
+
+    return redirect()->back()->with('success', 'Time record updated successfully.');
+}
+
 
 
 

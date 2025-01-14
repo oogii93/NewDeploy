@@ -487,51 +487,98 @@ class FormController extends Controller
 
     public function update(Request $request, $type, $id = null)
     {
-        $formClass = 'App\\Models\\Forms\\Form' . ucfirst($type);
+        $formClass = 'App\\Models\\ApplicationType' . $type;
 
-        if (!class_exists($formClass)) {
-            abort(404, 'Form type not found');
-        }
+        try {
+            $data = $request->except(['_token', '_method']);
 
-        $validatedData = $request->validate([
-            // ... other validation rules ...
-            'reason' => 'nullable',
-            'boss_id' => 'required',
-            // Add other fields as necessary
-        ]);
-
-        if ($id) {
-            // Updating existing form
-            $form = $formClass::findOrFail($id);
-            $form->update($validatedData);
-        } else {
-            // Creating new form
-            $form = new $formClass();
-            $form->fill($validatedData);
-            $form->save();
-
-            // Create new application only if it's a new form
-            $application = new Application();
-            $application->user_id = auth()->id();
-            $application->status = "pending";
-            $application->boss_id = $validatedData['boss_id'];
-            $application->applicationable()->associate($form);
-            $application->save();
-        }
-
-        // If updating, find the associated application and update its boss_id
-        if ($id) {
-            $application = Application::where('applicationable_type', get_class($form))
-                                      ->where('applicationable_id', $form->id)
-                                      ->first();
-            if ($application) {
-                $application->boss_id = $validatedData['boss_id'];
-                $application->save();
+            if (isset($data['result-input'])) {
+                $data['result_input'] = $data['result-input'];
+                unset($data['result-input']);
             }
-        }
 
-        return redirect()->route('applications.show', $application->id);
+            // If we have an ID, update existing record
+            if ($id) {
+                $form = $formClass::findOrFail($id);
+                $form->update($data);
+            }
+            // If no ID, create new record
+            else {
+                $form = $formClass::create($data);
+
+                // Create new application for new form
+                $application = new Application([
+                    'user_id' => auth()->id(),
+                    'status' => 'pending',
+                    'boss_id' => $data['boss_id'] ?? null
+                ]);
+
+                $form->application()->save($application);
+            }
+
+            // Get the application (either existing or newly created)
+            $application = $form->application;
+
+            // return redirect()->route('applications.show', $application->id);
+            return redirect()->back()->with('success', 'suceessfully');
+
+        } catch (\Exception $e) {
+            \Log::error('Update failed: ' . $e->getMessage());
+            return back()->withInput();
+        }
     }
+
+    // public function update(Request $request, $type, $id = null)
+    // {
+    //     $formClass = 'App\\Models\\Forms\\Form' . ucfirst($type);
+
+    //     if (!class_exists($formClass)) {
+    //         abort(404, 'Form type not found');
+    //     }
+
+    //     $validatedData = $request->validate([
+    //         // ... other validation rules ...
+    //         'reason' => 'nullable',
+    //         'boss_id' => 'required',
+    //         // Add other fields as necessary
+    //     ]);
+
+    //     if ($id) {
+    //         // Updating existing form
+    //         $form = $formClass::findOrFail($id);
+    //         $form->update($validatedData);
+    //     } else {
+    //         // Creating new form
+    //         $form = new $formClass();
+    //         $form->fill($validatedData);
+    //         $form->save();
+
+    //         // Create new application only if it's a new form
+    //         $application = new Application();
+    //         $application->user_id = auth()->id();
+    //         $application->status = "pending";
+    //         $application->boss_id = $validatedData['boss_id'];
+    //         $application->applicationable()->associate($form);
+    //         $application->save();
+    //     }
+
+    //     // If updating, find the associated application and update its boss_id
+    //     if ($id) {
+    //         $application = Application::where('applicationable_type', get_class($form))
+    //                                   ->where('applicationable_id', $form->id)
+    //                                   ->first();
+    //         if ($application) {
+    //             $application->boss_id = $validatedData['boss_id'];
+    //             $application->save();
+    //         }
+    //     }
+
+    //     dd($request->all());
+
+    //     return redirect()->route('applications.show', $application->id);
+    // }
+
+
 
         // ... other methods ...
 

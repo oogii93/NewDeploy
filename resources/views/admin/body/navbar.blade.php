@@ -84,6 +84,13 @@
 
                 </li>
 
+                {{-- @auth
+                @if(auth()->user()->corp->corp_name === 'ユメヤ')
+
+                @endauth --}}
+
+            @if (!(auth()->user()->office && auth()->user()->office->corp && auth()->user()->office->corp->corp_name === 'ユメヤ'))
+
                 <li class="relative group shadow">
                     <div class="flex flex-col items-center justify-center w-24 h-16  bg-sky-200  group-hover:bg-gray-50">
 
@@ -112,6 +119,9 @@
                         <a href="{{ route('admin.division.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">課</a>
                     </div>
                 </li>
+
+
+
 
                 <li class="relative group shadow">
                     <div class="flex flex-col items-center justify-center w-24 h-16  bg-sky-200  group-hover:bg-gray-50">
@@ -164,6 +174,7 @@
 
                     </div>
                 </li>
+            @endif
 
 
 
@@ -183,8 +194,8 @@
                     </div>
 
                     <div class="absolute z-10 hidden bg-white divide-y divide-gray-100 shadow-lg group-hover:block">
-                        <a href="{{ route('admin.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">フィルター</a>
-                        <a href="{{ route('admin.calculated') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">給料計算</a>
+                        {{-- <a href="{{ route('admin.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">フィルター</a> --}}
+                        {{-- <a href="{{ route('admin.calculated') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">給料計算</a> --}}
                         <a href="{{ route('admin.csv.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">給与計算データ作成</a>
                         <a href="{{ route('admin.calendar.index') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">公休設定</a>
                         <a href="{{ route('admin.calendar12.show') }}" class="block px-4 py-2 w-48 hover:bg-teal-500 hover:text-white">全社年間公休設定</a>
@@ -224,6 +235,8 @@
                 </li>
 
 
+            @if (!(auth()->user()->office && auth()->user()->office->corp && auth()->user()->office->corp->corp_name === 'ユメヤ'))
+
 
                 <li class="relative group shadow">
 
@@ -232,9 +245,10 @@
                             <path d="M0 0h48v48h-48z" fill="none"/>
                             <path d="M44 11.44l-9.19-7.71-2.57 3.06 9.19 7.71 2.57-3.06zm-28.24-4.66l-2.57-3.06-9.19 7.71 2.57 3.06 9.19-7.71zm9.24 9.22h-3v12l9.49 5.71 1.51-2.47-8-4.74v-10.5zm-1.01-8c-9.95 0-17.99 8.06-17.99 18s8.04 18 17.99 18 18.01-8.06 18.01-18-8.06-18-18.01-18zm.01 32c-7.73 0-14-6.27-14-14s6.27-14 14-14 14 6.27 14 14-6.26 14-14 14z"/>
                         </svg>
-                        <span class="mr-2 text-gray-800 text-xs">Calculations</span>
+                        <span class="mr-2 text-gray-800 text-xs">勤怠設定</span>
                     </a>
                 </li>
+            @endif
 
 
                 <li class="relative group shadow">
@@ -284,12 +298,12 @@
             <li class="w-full border-b border-gray-400">
                 <button onclick="window.location.href='{{ route('admin.role-permission.permission.index') }}'" class="block text-md font text-white w-full py-2 px-4 hover:bg-gray-500">許可</button>
             </li>
-            <li class="w-full border-b border-gray-400">
+            {{-- <li class="w-full border-b border-gray-400">
                 <button onclick="window.location.replace('{{ route('admin.show') }}')" class="block text-md font text-white w-full py-2 px-4 hover:bg-gray-500">フィルター</button>
             </li>
             <li class="w-full border-b border-gray-400">
                 <button onclick="window.location.href='{{ route('admin.calculated') }}'" class="block text-md font text-white w-full py-2 px-4 hover:bg-gray-500">フィルターCSV</button>
-            </li>
+            </li> --}}
 
 
             <li class="w-full border-b border-gray-400">

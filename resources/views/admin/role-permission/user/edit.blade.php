@@ -89,14 +89,28 @@
         <div class="form-group">
             <label for="corp_id" class="form-label required">会社</label>
             <div class="form-input">
-                <select name="corp_id" id="corp_id">
+                <select name="corp_id" id="corp_id"
+                @if (auth()->user()->corp->corp_name ==='ユメヤ')
+                disabled
+
+                @endif
+                >
                     <option value="">会社選択</option>
                     @foreach ($corps as $corp)
-                    <option value="{{ $corp->id }}" {{ old('corp_id', $user->corp_id) == $corp->id ? 'selected' : '' }}>
+                    <option value="{{ $corp->id }}"
+                        @if(auth()->user()->corp->corp_name ==='ユメヤ' && $corp->corp_name==='ユメヤ')
+                            selected
+                        @endif
+                        {{ old('corp_id', $user->corp_id) == $corp->id ? 'selected' : '' }}>
                         {{ $corp->corp_name }}
                     </option>
                     @endforeach
                 </select>
+
+                @if (auth()->user()->corp->corp_name==='ユメヤ')
+                <input type="hidden" name="corp_id" value="{{ auth()->user()->corp->id }}">
+
+                @endif
             </div>
         </div>
 

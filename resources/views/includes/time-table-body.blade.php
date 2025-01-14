@@ -322,46 +322,41 @@ use App\Models\AttendanceTypeRecord;
 
 <td class="px-4 py-3 whitespace-nowrap text-center border-r border-gray-300 shadow-sm text-sm">
     @php
-        // Check if user is from Yumeya
-        $isYumeya = auth()->user()->office &&
-                    auth()->user()->office->corp &&
-                    auth()->user()->office->corp->corp_name === 'ユメヤ';
+     // Check if user is from Yumeya
+    $isYumeya = auth()->user()->office &&
+                auth()->user()->office->corp &&
+                auth()->user()->office->corp->corp_name === 'ユメヤ';
 
-        $totalWorkedMinutes = 0;
+    $totalWorkedMinutes = 0;
 
-        if ($isYumeya) {
-            // Yumeya specific times
-            $regularStartTime = strtotime('09:00');  // Different start time for Yumeya
-            $breakStartTime1 = strtotime('00:00');   // Different break times
-            $breakEndTime1 = strtotime('00:00');
-            $lunchStartTime = strtotime('12:00');    // Different lunch time
-            $lunchEndTime = strtotime('13:00');
-            $breakStartTime2 = strtotime('00:00');
-            $breakEndTime2 = strtotime('00:00');
-            $regularEndTime = strtotime('18:00');    // Different end time
+    if ($isYumeya) {
+        // Yumeya specific times
+        $regularStartTime = strtotime('09:00');
+        $breakStartTime1 = strtotime('00:00');
+        $breakEndTime1 = strtotime('00:00');
+        $lunchStartTime = strtotime('12:00');
+        $lunchEndTime = strtotime('13:00');
+        $breakStartTime2 = strtotime('00:00');
+        $breakEndTime2 = strtotime('00:00');
+        $regularEndTime = strtotime('18:00');
 
-            //yumeya
-            $yumeyaMorningHalfDay=strtotime('04:00');
+        // Define Yumeya half day time
+        $yumeyaMorningHalfDay = strtotime('04:00');
 
+        if ($arrivalTime && $departureTime) {
+            $workedStartTime = strtotime($arrivalTime->format('H:i'));
+            $workedEndTime = strtotime($departureTime->format('H:i'));
 
+            // Check if it's a half day (13:00 departure)
+            if ($departureTime->format('H:i') === '13:00') {
+                // Use the predefined half day time (4 hours)
+                $totalWorkedMinutes = ($yumeyaMorningHalfDay - strtotime('00:00')) / 60;
+            }
 
-            if ($arrivalTime && $departureTime) {
-                $workedStartTime = strtotime($arrivalTime->format('H:i'));
-                $workedEndTime = strtotime($departureTime->format('H:i'));
-
-
-
-
-
-
-
-                // Calculate first period with Yumeya's break schedule
-                $beforeLunchWorkedTime = min($lunchStartTime, $workedEndTime) - $workedStartTime;
-                $totalWorkedMinutes += $beforeLunchWorkedTime / 60;
-
-                if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
-                    $totalWorkedMinutes -= 10;
-                }
+            else if ($arrivalTime->format('H:i') === '13:30') {
+            if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
+                $totalWorkedMinutes -= 10;
+            }
 
                 $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
                 $totalWorkedMinutes += $afterLunchWorkedTime / 60;
@@ -380,7 +375,9 @@ use App\Models\AttendanceTypeRecord;
                     }
                 }
             }
-        } else {
+        }
+    } else
+         {
             // Original calculation for other companies
             $regularStartTime = strtotime('08:30');
             $breakStartTime1 = strtotime('11:00');
