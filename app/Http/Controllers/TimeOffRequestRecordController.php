@@ -96,10 +96,72 @@ class TimeOffRequestRecordController extends Controller
         return view('time_off_boss.index', compact('timeOffRequestRecords', 'divisions', 'searchQuery'));
     }
 
-    public function updateStatus(Request $request, $id)
+//     public function updateStatus(Request $request, $id)
+// {
+
+
+//     $timeOffRequest = TimeOffRequestRecord::findOrFail($id);
+
+//     $validatedData = $request->validate([
+//         'status' => 'required|in:approved,denied',
+//         'division_id' => 'required_if:status,approved|exists:divisions,id',
+//     ]);
+
+// $timeOffRequest->status=$validatedData['status'];
+
+//     if ($validatedData['status'] === 'approved') {
+//         $timeOffRequest->status = $validatedData['status'];
+//         $timeOffRequest->division_id = $validatedData['division_id'];
+
+
+
+//         if($validatedData['division_id'] == 6) {
+//             $timeOffRequest->hr_checked = false;
+
+
+
+//             $hrUsers = User::where('division_id', 6)->get();
+
+//         }
+
+//         if($timeOffRequest->attendanceTypeRecord->name === '休日出勤') {
+//             $timeOffRequest->is_checked = true;
+//             $timeOffRequest->checked_by = auth()->id();
+//         }
+//         else{
+//             $timeOffRequest->division_id=null;
+//         }
+//     }
+
+//     $timeOffRequest->save();
+
+
+
+//     // Add this temporary check right after saving
+//     $verifyRecord = TimeOffRequestRecord::find($id);
+
+
+//     // Before returning, let's check if there are any unchecked notifications
+//     $uncheckedCount = TimeOffRequestRecord::uncheckedHrNotifications()->count();
+//     //   Notify the user about the status change
+
+
+//         $timeOffRequest->user->notify(new TimeOffRequestStatusChangedNotification($timeOffRequest));
+
+
+//         $message = $validatedData['status'] === 'approved'
+//             ? '勤怠届が承認されました。'
+//             : '勤怠届が拒否されました。';
+
+//         return redirect()->route('time_off_boss.index')->with('success', $message);
+
+
+//     // Rest of your code...
+// }
+
+
+public function updateStatus(Request $request, $id)
 {
-
-
     $timeOffRequest = TimeOffRequestRecord::findOrFail($id);
 
     $validatedData = $request->validate([
@@ -107,56 +169,57 @@ class TimeOffRequestRecordController extends Controller
         'division_id' => 'required_if:status,approved|exists:divisions,id',
     ]);
 
-$timeOffRequest->status=$validatedData['status'];
+    // First, update the basic status
+    $timeOffRequest->status = $validatedData['status'];
 
     if ($validatedData['status'] === 'approved') {
-        $timeOffRequest->status = $validatedData['status'];
-        $timeOffRequest->division_id = $validatedData['division_id'];
+        // Store the HR division ID (assuming it's 6)
+        $hrDivisionId = 6;
 
+        // If the selected division is HR
+        if ($validatedData['division_id'] == $hrDivisionId) {
+            $timeOffRequest->division_id = $hrDivisionId;
+            $timeOffRequest->hr_checked = false; // Marking as not checked by HR yet
 
+            // Get HR users for notification
+            $hrUsers = User::where('division_id', $hrDivisionId)->get();
 
-        if($validatedData['division_id'] == 6) {
-            $timeOffRequest->hr_checked = false;
-
-
-
-            $hrUsers = User::where('division_id', 6)->get();
-
+            // Notify HR users
+            foreach ($hrUsers as $hrUser) {
+                $hrUser->notify(new TimeOffRequestHumanResourcedNotification($timeOffRequest));
+            }
         }
 
-        if($timeOffRequest->attendanceTypeRecord->name === '休日出勤') {
+        // Special handling for holiday work
+        if ($timeOffRequest->attendanceTypeRecord->name === '休日出勤') {
             $timeOffRequest->is_checked = true;
             $timeOffRequest->checked_by = auth()->id();
         }
-        else{
-            $timeOffRequest->division_id=null;
-        }
+    } else {
+        // If denied, clear the division assignment
+        $timeOffRequest->division_id = null;
     }
 
+    // Save the changes
     $timeOffRequest->save();
 
-
-
-    // Add this temporary check right after saving
+    // Verify the save was successful
     $verifyRecord = TimeOffRequestRecord::find($id);
+    if (!$verifyRecord || $verifyRecord->status !== $validatedData['status']) {
+        return redirect()->route('time_off_boss.index')->with('error', '更新に失敗しました。');
+    }
 
-
-    // Before returning, let's check if there are any unchecked notifications
+    // Update unchecked notifications count
     $uncheckedCount = TimeOffRequestRecord::uncheckedHrNotifications()->count();
-    //   Notify the user about the status change
 
+    // Notify the requesting user
+    $timeOffRequest->user->notify(new TimeOffRequestStatusChangedNotification($timeOffRequest));
 
-        $timeOffRequest->user->notify(new TimeOffRequestStatusChangedNotification($timeOffRequest));
+    $message = $validatedData['status'] === 'approved'
+        ? '勤怠届が承認されました。'
+        : '勤怠届が拒否されました。';
 
-
-        $message = $validatedData['status'] === 'approved'
-            ? '勤怠届が承認されました。'
-            : '勤怠届が拒否されました。';
-
-        return redirect()->route('time_off_boss.index')->with('success', $message);
-
-
-    // Rest of your code...
+    return redirect()->route('time_off_boss.index')->with('success', $message);
 }
 
 

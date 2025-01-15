@@ -10,13 +10,13 @@
 
 <div class="mb-6">
     <h3 class="text-lg font-normal leading-relaxed text-gray-700">
-        お疲れ様です。<span class="text-green-700">{{ $timeOffRequest->user->name }}</span>さんから休暇申請が提出されました。
+       人事課通知
     </h3>
 </div>
-
-<div class="bg-gray-50 p-4 rounded-lg mb-6">
+<div class="bg-gray-50 p-4 rounded-lg mb-6 mt-2">
     <h4 class="font-bold mb-3">申請内容:</h4>
     <ul class="space-y-2">
+        <li>申請者: {{ $timeOffRequest->user->name }}</li>
         <li>勤怠区分: {{ $timeOffRequest->attendanceTypeRecord->name }}</li>
         <li>日付: {{ $timeOffRequest->date }}</li>
         <li>理由: {{ $timeOffRequest->reason }}</li>
@@ -25,6 +25,7 @@
         @endif
     </ul>
 </div>
+
 
 
 

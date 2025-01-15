@@ -29,7 +29,7 @@ class NewApplication2Notification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database','mail'];
     }
 
     /**
@@ -38,9 +38,20 @@ class NewApplication2Notification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+
+                    ->subject('社内注文届')
+                    ->markdown('vendor.mail.html.company-order',[
+
+                     'application'=>$this->application2,
+                     'user'=>$this->application2->user,
+                     'created_at'=>$this->application2->created_at,
+
+
+
+
+
+                    ]);
+
     }
 
     /**

@@ -30,7 +30,7 @@ class TimeOffRequestHumanResourcedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database','mail'];
     }
 
     /**
@@ -39,9 +39,16 @@ class TimeOffRequestHumanResourcedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+
+        ->subject('休暇申請書届け')
+        ->markdown('vendor.mail.html.time-off-request-HR',[
+            'timeOffRequest'=>$this->timeOffRequest,
+              'type' => $this->timeOffRequest->attendanceTypeRecord->name,
+
+              'user_name'=>$this->timeOffRequest->user->name,
+
+
+        ]);
     }
 
     /**
@@ -55,7 +62,7 @@ class TimeOffRequestHumanResourcedNotification extends Notification
             'message' => 'New time off request assigned to HR',
             'user_name' => $this->timeOffRequest->user->name,
             'date' => $this->timeOffRequest->date,
-            'type' => $this->timeOffRequest->attendanceTypeRecord->name,
+            // 'type' => $this->timeOffRequest->attendanceTypeRecord->name,
             'reason' => $this->timeOffRequest->reason,
         ];
     }

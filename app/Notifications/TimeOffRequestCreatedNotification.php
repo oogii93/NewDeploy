@@ -43,6 +43,7 @@ class TimeOffRequestCreatedNotification extends Notification
         ->markdown('vendor.mail.html.time-off-request', [
             'timeOffRequest' => $this->timeOffRequest,
             'actionText' => '申請を確認する',
+            'type' => $this->timeOffRequest->attendanceTypeRecord->name,
             'actionUrl' => url('/time-off-requests/' . $this->timeOffRequest->id),
             'level' => 'primary'
         ]);

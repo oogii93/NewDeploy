@@ -48,10 +48,11 @@
 
                             {{-- Time-Off Request Notification --}}
                             @elseif(isset($notification->data['user_name']) && !isset($notification->data['type']))
+
                                 @if(auth()->user()->division_id == 6)
                                 {{-- HR specific time off request notification --}}
                                 <div class="flex items-center space-x-4">
-                                    <div class="bg-pink-100 p-3 rounded-full">
+                                    <div class="bg-red-100 p-3 rounded-full">
                                         <svg class="w-6 h-6 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2-2 4 4M15 8l2 2"></path>
                                         </svg>
@@ -86,7 +87,7 @@
                             {{-- Time-Off Request Status Change Notification --}}
                             @elseif(isset($notification->data['status']))
                                 <div class="flex items-center space-x-4">
-                                    <div class="bg-indigo-100 p-3 rounded-full">
+                                    <div class="bg-red-700 p-3 rounded-full">
                                         <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12h-4l-2 2-6-6m16 8l-3 3-6-6"></path>
                                         </svg>
