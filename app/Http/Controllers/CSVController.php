@@ -934,6 +934,7 @@ class CSVController extends Controller
             if($arrivalRecord->user->office &&
             $arrivalRecord->user->office->corp &&
             $arrivalRecord->user->office->corp->corp_name ==='ユメヤ'){
+                // dd($hasHalfDayOff);
 
 
 
@@ -942,21 +943,40 @@ class CSVController extends Controller
                     $workEndDay='13:00';
                     $earlyLeaveHours +=$endTimeCarbon->diffInSeconds(Carbon::parse($workEndDay));
 
+
+
                     $maxOvertimeA=4*3600;
                     $currentOvertimeA=$dailyOvertimeSecondsA + $morningOverTimeSeconds+$overTimeSeconds;
 
 
+
+                    $targetHalfDaySeconds=4*3600;
+                    if($dailyWorkedSeconds < $targetHalfDaySeconds){
+                        $dailyWorkedSeconds=$targetHalfDaySeconds;
+                    }
+
                if($currentOvertimeA > $maxOvertimeA){
+
+
                 $exceedOvertime=$currentOvertimeA- $maxOvertimeA;
                 $totalOvertimeSecondsA=$maxOvertimeA;
                 $totalOvertimeSecondsB +=$exceedOvertime;
 
+
+
+
+
                } else{
                 $totalOvertimeSecondsA +=$currentOvertimeA;
+
+
                }
+
 
                $totalWorkedTime +=$dailyWorkedSeconds;
             }else{
+
+   // Normal day calculations for Yumeya
                 $totalOvertimeSecondsA +=$dailyOvertimeSecondsA;
                 $totalOvertimeSecondsB+=$dailyOvertimeSecondsB + $morningOverTimeSeconds;
 
@@ -971,6 +991,7 @@ class CSVController extends Controller
                 $morningShiftEnd = Carbon::parse('11:00');
                 $afternoonShiftStart = Carbon::parse('13:00');
                 $afternoonShiftEnd = Carbon::parse('15:00');
+
 
                 if ($startTimeObj->between($morningShiftStart, $morningShiftEnd)) {
                     $workEndDay = '12:30';

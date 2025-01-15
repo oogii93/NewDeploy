@@ -354,26 +354,36 @@ use App\Models\AttendanceTypeRecord;
             }
 
             else if ($arrivalTime->format('H:i') === '13:30') {
-            if ($workedStartTime < $breakStartTime1 && $workedEndTime >= $breakEndTime1) {
-                $totalWorkedMinutes -= 10;
+          $totalWorkedMinutes=($workedEndTime -$workedStartTime)/60;
+
+
+
+
+
+            }
+            else{
+
+
+            $totalWorkedMinutes = ($workedEndTime - $workedStartTime) / 60;
+
+
+
+            if ($workedStartTime < $lunchStartTime && $workedEndTime > $lunchEndTime) {
+                $totalWorkedMinutes -= 60; // 1 hour lunch break
             }
 
-                $afterLunchWorkedTime = max(0, $workedEndTime - max($workedStartTime, $lunchEndTime));
-                $totalWorkedMinutes += $afterLunchWorkedTime / 60;
-
-                if ($workedStartTime < $breakStartTime2 && $workedEndTime >= $breakEndTime2) {
-                    $totalWorkedMinutes -= 10;
+             // Add second period calculation if exists
+             if ($arrivalSecondTime && $departureSecondTime) {
+                $workedSecondStartTime = strtotime($arrivalSecondTime->format('H:i'));
+                $workedSecondEndTime = strtotime($departureSecondTime->format('H:i'));
+                if ($workedSecondEndTime - $workedSecondStartTime > 0) {
+                    $secondTotalWorkedMinutes = ($workedSecondEndTime - $workedSecondStartTime) / 60;
+                    $totalWorkedMinutes += $secondTotalWorkedMinutes;
                 }
+            }
 
-                // Add second period calculation for Yumeya
-                if ($arrivalSecondTime && $departureSecondTime) {
-                    $workedSecondStartTime = strtotime($arrivalSecondTime->format('H:i'));
-                    $workedSecondEndTime = strtotime($departureSecondTime->format('H:i'));
-                    if ($workedSecondEndTime - $workedSecondStartTime > 0) {
-                        $secondTotalWorkedMinutes = ($workedSecondEndTime - $workedSecondStartTime) / 60;
-                        $totalWorkedMinutes += $secondTotalWorkedMinutes;
-                    }
-                }
+
+
             }
         }
     } else
