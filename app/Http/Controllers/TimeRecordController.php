@@ -5,16 +5,17 @@ namespace App\Http\Controllers;
 use DB;
 use Log;
 use Auth;
+use DateTime;
 use Carbon\Carbon;
 use App\Models\Breaks;
 use Illuminate\Http\Request;
 use App\Models\ArrivalRecord;
 use App\Models\DepartureRecord;
+use App\Models\VacationCalendar;
 use App\Rules\RecordedAtExistsRule;
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceTypeRecord;
 use App\Models\TimeOffRequestRecord;
-use App\Models\VacationCalendar;
 
 class TimeRecordController extends Controller
 {
@@ -252,40 +253,65 @@ class TimeRecordController extends Controller
 
     private function handleDepartureRecord($user, $inputDate, $buttonType)
     {
+        // Check for half-day time off request
+        $timeOffRequest = TimeOffRequestRecord::where('user_id', $user->id)
+            ->whereDate('date', $inputDate->format('Y-m-d'))
+            ->whereHas('attendanceTypeRecord', function ($query) {
+                $query->where('name', '半休');
+            })
+            ->first();
 
+        // Get arrival record
+        $arrivalRecord = ArrivalRecord::where('user_id', $user->id)
+            ->whereDate('recorded_at', $inputDate->format('Y-m-d'))
+            ->first();
+
+        // Check if user belongs to Yumeya company
+        $isYumeya = $user->office && $user->office->corp->corp_name === 'ユメヤ';
+
+        // Handle departure time limits
+        if ($timeOffRequest && $arrivalRecord) {
+            // Convert recorded_at to Carbon instance
+            $arrivalTime = Carbon::parse($arrivalRecord->recorded_at);
+
+            // If arrival is before 11:00 AM
+            if ($arrivalTime->format('H:i') <= '11:00') {
+                // Set departure time based on company
+                if ($isYumeya) {
+                    $inputDate->setTime(13, 0); // 13:00 for Yumeya
+                } else {
+                    $inputDate->setTime(12, 30); // 12:30 for regular companies
+                }
+            }
+        }
+
+        // Adjust date if time is before 8 AM
         if ($inputDate->hour < 8) {
             $inputDate->subDay();
         }
 
-        $exist = ArrivalRecord::where('user_id', $user->id)
-            ->whereDate('recorded_at', $inputDate->format('Y-m-d'))
-            ->first();
-
-        if ($exist) {
+        // Handle existing arrival record
+        if ($arrivalRecord) {
             $columnName = $buttonType === 'DepartureRecord' ? 'recorded_at' : 'second_recorded_at';
-            $departureExist = $exist
+            $departureExist = $arrivalRecord
                 ->arrivalDepartureRecords()
                 ->whereDate('recorded_at', $inputDate->format('Y-m-d'))
                 ->first();
 
-            // if ($user->office && $user->office->corp->corp_name === 'ユメヤ') {
-            //     $inputDate->setTime(13, 0);
-            // }
-
             if ($departureExist) {
                 $departureExist->update([$columnName => $inputDate]);
             } else {
-                $exist->arrivalDepartureRecords()->create([
+                $arrivalRecord->arrivalDepartureRecords()->create([
                     'recorded_at' => $buttonType === 'DepartureRecord' ? $inputDate : null,
                     'second_recorded_at' => $buttonType === 'SecondDepartureRecord' ? $inputDate : null,
                 ]);
             }
         } else {
+            // Create new arrival and departure records
             $arrival = $user->userArrivalRecords()->create(['recorded_at' => $inputDate]);
             $arrival->arrivalDepartureRecords()->create(['recorded_at' => $inputDate]);
         }
     }
-
     private function checkIfArrivalAndDepartureExist($user, $date)
     {
         $record = ArrivalRecord::where('user_id', $user->id)
